@@ -1,5 +1,5 @@
-
-## 无需约束，配置XDMA时，PCIe Block Location 选择 X0Y1 即可。
+## PCIE 只需要约束时钟源以及 复位引脚，
+## 其他无需约束，配置XDMA时，PCIe Block Location 选择 X0Y1 即可。
 #  x1  所用通道为227
 #  x4  所用通道为227
 #  x8  所用通道为227 + 226
@@ -7,4 +7,6 @@
 
 set_property LOC AK10 [get_ports {pcie_ref_clk_n[0]}]
 set_property LOC AK11 [get_ports {pcie_ref_clk_p[0]}]
+
+set_property LOC AR26 [get_ports {pcie_perst}]
 
