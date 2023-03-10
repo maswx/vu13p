@@ -1,5 +1,5 @@
-set_property PACKAGE_PIN AY23 [get_ports c3_ddr4_clk_clk_p]
-set_property PACKAGE_PIN BA23 [get_ports c3_ddr4_clk_clk_n]
+set_property PACKAGE_PIN AE31 [get_ports c3_ddr4_clk_clk_p]
+set_property PACKAGE_PIN AE32 [get_ports c3_ddr4_clk_clk_n]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports c3_ddr4_clk_clk_p]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports c3_ddr4_clk_clk_n]
 
