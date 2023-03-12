@@ -3,47 +3,42 @@
 
 ## 如何使用
 
-* 编译工程
+### [01 tandem PCIe](./prj/01_mcap_led/readme.md)
 
-目前只支持 prj/02_pcie_ddr4x4 . 有空再全部做成 tcl 脚本。
-
-```shell
-cd prj/02_pcie_ddr4x4
-vivado -mode batch -source project.tcl
-```
-
-```tcl
-
-# 开始编译 
-launch_runs synth_1 -jobs 8
-wait_on_run synth_1
+* 介绍如何通过PCIE下载固件
+* 介绍如何使用dcp文件进行增量编译
+* 介绍如何将一部分pcie/ddr4逻辑固化到prom中，后续逻辑修改仅通过pcie下载
 
 
-# 生成bin/bit文件
-set_property STEPS.WRITE_BITSTREAM.ARGS.BIN_FILE true [get_runs impl_1]
+### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
 
-# 布局布线
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-wait_on_run impl_1
 
-# 开启GUI
-start_gui
+* 测试板载4组DDR4内存
+* 介绍PCIE相关驱动
 
-```
+### [05 PCIE DDR4 QSFP](./readme.md)
 
-### 02_pcie_ddr4x4
+* 介绍 Chip2Chip环回
+* 提供板卡RDMA案例
 
-* 总体结构
-![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram.png)
 
-* 地址分配
-![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_addr.png)
-	
-* MIG OK
-![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_ok.png)
+### [06 PCIE DDR4 QSFP](./readme.md)
 
-* C OK
-![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_testOK.png)
+* 100G 以太网相关工程
+
+
+### [07 PCIE DDR4 DMA](./readme.md)
+
+* 内存搬移相关
+* 驱动
+
+
+### [08 PCIE DDR4 FIR](./readme.md)
+
+* 基于固定的dcp模块，外部编写一组FIR滤波器
+* 使用matlab提供激励， 并用simulink查看内部逻辑
+
+
 
 
 
