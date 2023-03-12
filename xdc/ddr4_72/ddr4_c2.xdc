@@ -1,13 +1,8 @@
-set_property PACKAGE_PIN BA20 [get_ports c2_data_compare_error]
-set_property PACKAGE_PIN BB20 [get_ports c2_init_calib_complete]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports clk_in1_p]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports clk_in1_n]
-set_property IOSTANDARD LVCMOS12 [get_ports c2_data_compare_error]
-set_property IOSTANDARD LVCMOS12 [get_ports c2_init_calib_complete]
-set_property PACKAGE_PIN AY23 [get_ports clk_in1_p]
+set_property PACKAGE_PIN AE31 [get_ports c2_ddr4_clk_clk_p]
+set_property PACKAGE_PIN AE32 [get_ports c2_ddr4_clk_clk_n]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports c2_ddr4_clk_clk_p]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports c2_ddr4_clk_clk_n]
 
-
-set_property PACKAGE_PIN AE31 [get_ports c2_sys_clk_p]
 set_property PACKAGE_PIN AH33 [get_ports {c2_ddr4_adr[0]}]
 set_property PACKAGE_PIN AF34 [get_ports {c2_ddr4_adr[1]}]
 set_property PACKAGE_PIN AD33 [get_ports {c2_ddr4_adr[2]}]
@@ -117,15 +112,15 @@ set_property PACKAGE_PIN BD33 [get_ports {c2_ddr4_dq[69]}]
 set_property PACKAGE_PIN BC29 [get_ports {c2_ddr4_dq[70]}]
 set_property PACKAGE_PIN BE33 [get_ports {c2_ddr4_dq[71]}]
 
-set_property PACKAGE_PIN AJ27 [get_ports {c2_ddr4_dm_dbi_n[0]}]
-set_property PACKAGE_PIN AT33 [get_ports {c2_ddr4_dm_dbi_n[1]}]
-set_property PACKAGE_PIN AW29 [get_ports {c2_ddr4_dm_dbi_n[2]}]
-set_property PACKAGE_PIN AP31 [get_ports {c2_ddr4_dm_dbi_n[3]}]
-set_property PACKAGE_PIN BF39 [get_ports {c2_ddr4_dm_dbi_n[4]}]
-set_property PACKAGE_PIN BC34 [get_ports {c2_ddr4_dm_dbi_n[5]}]
-set_property PACKAGE_PIN BA34 [get_ports {c2_ddr4_dm_dbi_n[6]}]
-set_property PACKAGE_PIN BC31 [get_ports {c2_ddr4_dm_dbi_n[7]}]
-set_property PACKAGE_PIN BF32 [get_ports {c2_ddr4_dm_dbi_n[8]}]
+set_property PACKAGE_PIN AJ27 [get_ports {c2_ddr4_dm_n[0]}]
+set_property PACKAGE_PIN AT33 [get_ports {c2_ddr4_dm_n[1]}]
+set_property PACKAGE_PIN AW29 [get_ports {c2_ddr4_dm_n[2]}]
+set_property PACKAGE_PIN AP31 [get_ports {c2_ddr4_dm_n[3]}]
+set_property PACKAGE_PIN BF39 [get_ports {c2_ddr4_dm_n[4]}]
+set_property PACKAGE_PIN BC34 [get_ports {c2_ddr4_dm_n[5]}]
+set_property PACKAGE_PIN BA34 [get_ports {c2_ddr4_dm_n[6]}]
+set_property PACKAGE_PIN BC31 [get_ports {c2_ddr4_dm_n[7]}]
+set_property PACKAGE_PIN BF32 [get_ports {c2_ddr4_dm_n[8]}]
 
 
 set_property PACKAGE_PIN AH28 [get_ports {c2_ddr4_dqs_t[0]}]
@@ -138,12 +133,16 @@ set_property PACKAGE_PIN AW35 [get_ports {c2_ddr4_dqs_t[6]}]
 set_property PACKAGE_PIN BA32 [get_ports {c2_ddr4_dqs_t[7]}]
 set_property PACKAGE_PIN BD30 [get_ports {c2_ddr4_dqs_t[8]}]
 
-
-
-
-
-
-
+set_property PACKAGE_PIN AH32 [get_ports {c2_ddr4_ck_c[0]}]
+set_property PACKAGE_PIN AH29 [get_ports {c2_ddr4_dqs_c[0]}] 
+set_property PACKAGE_PIN AN33 [get_ports {c2_ddr4_dqs_c[1]}] 
+set_property PACKAGE_PIN AV29 [get_ports {c2_ddr4_dqs_c[2]}]
+set_property PACKAGE_PIN AM30 [get_ports {c2_ddr4_dqs_c[3]}]
+set_property PACKAGE_PIN BE40 [get_ports {c2_ddr4_dqs_c[4]}]
+set_property PACKAGE_PIN BC37 [get_ports {c2_ddr4_dqs_c[5]}] 
+set_property PACKAGE_PIN AW36 [get_ports {c2_ddr4_dqs_c[6]}]
+set_property PACKAGE_PIN BB32 [get_ports {c2_ddr4_dqs_c[7]}]
+set_property PACKAGE_PIN BD31 [get_ports {c2_ddr4_dqs_c[8]}]
 
 
 
