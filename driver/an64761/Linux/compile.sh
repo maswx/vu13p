@@ -2,6 +2,8 @@
 
 ## NOTES: 
 
+# 注意安装 依赖  sudo apt-get install zlib-dev
+
 make PCIUTILS_PATH=../pcieutils/pciutils-3.9.0
 
 
