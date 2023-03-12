@@ -9,11 +9,6 @@ set_property PACKAGE_PIN BB21 [get_ports {led[2]}]
 set_property PACKAGE_PIN BB20 [get_ports {led[1]}]
 set_property PACKAGE_PIN BA20 [get_ports {led[0]}]
 
-#set_property PACKAGE_PIN BC23 [get_ports {sw1}]
-#set_property PACKAGE_PIN BD20 [get_ports {led_green}]
-
-
-
 
 
 set_property IOSTANDARD LVCMOS12 [get_ports {led[7]}]
