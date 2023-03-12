@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <string.h>
+#define _LARGEFILE64_SOURCE     /* See feature_test_macros(7) */
 /* ltoh: little to host */
 /* htol: little to host */
 #if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -33,7 +34,11 @@
 #  define htoll(x)     __bswap_32(x)
 #  define htols(x)     __bswap_16(x)
 #endif
- 
+#define __USE_FILE_OFFSET64
+#define __USE_LARGEFILE64
+#define _LARGEFILE64_SOURCE
+
+
 #define MAP_SIZE (1024*1024UL)
 #define MAP_MASK (MAP_SIZE - 1)
  
@@ -44,8 +49,8 @@ int control_fd;
 int c2h_dma_fd;
 int h2c_dma_fd;
  
-static unsigned int h2c_fpga_ddr_addr;
-static unsigned int c2h_fpga_ddr_addr;
+static unsigned long h2c_fpga_ddr_addr;
+static unsigned long c2h_fpga_ddr_addr;
  
  
 static int open_control(char *filename)
@@ -78,7 +83,7 @@ uint32_t read_control(int offset)
 }
  
  
-void put_data_to_fpga_ddr(unsigned int fpga_ddr_addr,short int *buffer,unsigned int len)
+void put_data_to_fpga_ddr(unsigned long fpga_ddr_addr,short int *buffer,unsigned int len)
 {
     if(h2c_dma_fd >= 0)
     {
@@ -87,7 +92,7 @@ void put_data_to_fpga_ddr(unsigned int fpga_ddr_addr,short int *buffer,unsigned 
         write(h2c_dma_fd,buffer,len*2);
     }
 }
-void get_data_from_fpga_ddr(unsigned int fpga_ddr_addr,short int  *buffer,unsigned int len)
+void get_data_from_fpga_ddr(unsigned long fpga_ddr_addr,short int  *buffer,unsigned int len)
 {
     if(c2h_dma_fd >= 0)
     {
@@ -137,7 +142,7 @@ int main(void){
 	}
     h2c_fpga_ddr_addr = 0xc0000000;
     c2h_fpga_ddr_addr = 0xc0000000;
-	printf("fpga_ddr_addr = %x\n", h2c_fpga_ddr_addr);
+	printf("fpga_ddr_addr = %lx\n", h2c_fpga_ddr_addr);
     printf("c2h_dma_fd = %x\n", c2h_dma_fd);
     printf("h2c_dma_fd = %x\n", h2c_dma_fd);
     printf("control_fd = %x\n", control_fd);
