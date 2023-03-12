@@ -10,6 +10,9 @@
 ```shell
 cd prj/02_pcie_ddr4x4
 vivado -mode batch -source project.tcl
+```
+
+```tcl
 
 # 开始编译 
 launch_runs synth_1 -jobs 8
@@ -28,7 +31,19 @@ start_gui
 
 ```
 
+### 02_pcie_ddr4x4
 
+* 总体结构
+![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram.png)
+
+* 地址分配
+![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_addr.png)
+	
+* MIG OK
+![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_ok.png)
+
+* C OK
+![](./prj/02_pcie_ddr4x4/images/pciex16_4xddr4_bram_testOK.png)
 
 
 
