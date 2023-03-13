@@ -4,6 +4,12 @@
 
 ## 1 原理
 
+![](./images/tandem_find_two_tandem.png)
+![](./images/tandem_linux_test.png)
+![](./images/tandem_pcie_block.png)
+![](./images/tandem_pcie_error.png)
+![](./images/tandem_pcie_id.png)
+![](./images/tandem_xdma_setting.png)
 
 
 ## 2. 以led驱动为例
