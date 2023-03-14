@@ -7,8 +7,7 @@
       "name": "base",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2",
-      "validated": "true"
+      "tool_version": "2022.2"
     },
     "design_tree": {
       "xdma_0": "",
@@ -777,17 +776,7 @@
     "ports": {
       "pcie_perst": {
         "type": "rst",
-        "direction": "I",
-        "parameters": {
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "POLARITY": {
-            "value": "ACTIVE_LOW",
-            "value_src": "default"
-          }
-        }
+        "direction": "I"
       },
       "pcie_lnk_up": {
         "direction": "O"
@@ -803,20 +792,29 @@
           "axilite_master_en": {
             "value": "true"
           },
+          "cfg_mgmt_if": {
+            "value": "false"
+          },
           "mcap_enablement": {
-            "value": "DFX_over_PCIe"
+            "value": "Tandem_PCIe"
           },
           "mcap_fpga_bitstream_version": {
-            "value": "00000010"
+            "value": "00000000"
           },
           "mode_selection": {
-            "value": "Basic"
+            "value": "Advanced"
+          },
+          "pcie_extended_tag": {
+            "value": "false"
           },
           "pl_link_cap_max_link_speed": {
             "value": "8.0_GT/s"
           },
           "pl_link_cap_max_link_width": {
             "value": "X16"
+          },
+          "xdma_num_usr_irq": {
+            "value": "8"
           },
           "xdma_rnum_chnl": {
             "value": "4"
