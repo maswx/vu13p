@@ -1,3 +1,6 @@
+
+set orig_proj_dir  ./project
+set origin_dir     ./
 source project.tcl
 
 # 开始编译 
