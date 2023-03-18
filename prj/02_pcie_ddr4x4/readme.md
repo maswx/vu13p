@@ -3,31 +3,33 @@
 
 * 编译工程
 
-目前只支持 prj/02_pcie_ddr4x4 . 有空再全部做成 tcl 脚本。
+请确保你已经正常安装了vivado, 查看vivado路径
 
 ```shell
-cd prj/02_pcie_ddr4x4
-vivado -mode batch -source project.tcl
-```
-
-```tcl
-
-# 开始编译 
-launch_runs synth_1 -jobs 8
-wait_on_run synth_1
-
-
-# 生成bin/bit文件
-set_property STEPS.WRITE_BITSTREAM.ARGS.BIN_FILE true [get_runs impl_1]
-
-# 布局布线
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-wait_on_run impl_1
-
-# 开启GUI
-start_gui
+which -a vivado 
 
 ```
+
+如果没有，则需要source 一下
+
+```shell
+source /opt/Xilinx/Vivado/2022.2/settings64.sh
+```
+
+如果你像我一样使用zsh , 那只能添加路径到 ~/.zshrc
+```shell
+export  PATH=/opt/Xilinx/Vivado/2022.2/bin/:$PATH
+```
+
+
+编译工程。
+
+```shell
+make
+```
+
+如果你的机器支持多核CPU，诸如线程撕裂者，可以修改 `./compile.tcl`中 `launch_runs synth_1 -jobs 8` 的jobs的个数，比如我通常会修改为12以加快编译速度
+
 
 ### 02_pcie_ddr4x4
 
