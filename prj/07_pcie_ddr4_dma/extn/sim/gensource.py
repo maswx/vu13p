@@ -38,6 +38,12 @@ f2 = 100  # 第二个正弦波的频率 (赫兹)
 num_taps = 33  # FIR滤波器的系数个数
 cutoff_freq = 30  # 滤波器截止频率 (赫兹)
 
+# 如果您已经安装了 Noto 字体，可以使用以下命令
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+
+# 或者，如果您使用的是其他字体，请将 'font_name' 替换为所需字体的名称
+# plt.rcParams['font.family'] = 'font_name'
+
 # 生成时间序列
 t = np.linspace(0, duration, int(fs * duration), endpoint=False)
 
