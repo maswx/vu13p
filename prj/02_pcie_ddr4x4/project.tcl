@@ -59,9 +59,9 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../xdc/ddr4_72/ddr4_c2.xdc"]"\
  "[file normalize "$origin_dir/../../xdc/ddr4_72/ddr4_c3.xdc"]"\
  "[file normalize "$origin_dir/../../xdc/vu13p_clock.xdc"]"\
- "[file normalize "$origin_dir/../../xdc/vu13p_genbin.xdc"]"\
  "[file normalize "$origin_dir/../../xdc/vu13p_led.xdc"]"\
  "[file normalize "$origin_dir/../../xdc/vu13p_pcie.xdc"]"\
+ "[file normalize "$origin_dir/project.srcs/sources_1/constrs/constrs.xdc"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
