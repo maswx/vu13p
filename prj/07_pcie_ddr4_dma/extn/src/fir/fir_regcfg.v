@@ -54,7 +54,7 @@ module fir_regcfg
 	output reg   [15:0]          testvec_sel
 );
 
-always @(posedge clk or posedge rst) begin
+always @(posedge clk or posedge rst) 
 if(rst)
 	begin
 	coeff_00 <= 16'd0; 
@@ -95,7 +95,6 @@ if(rst)
 else if(wb_we && wb_stb && wb_cyc && wb_adr[7:6] == 2'b00)
 	begin
 	if(wb_sel[0])
-		begin
 		case(wb_adr[5:0])
 			6'h00  : coeff_00[7:0] <= wb_wr_dat[7:0]; 
 			6'h01  : coeff_01[7:0] <= wb_wr_dat[7:0];
@@ -133,9 +132,7 @@ else if(wb_we && wb_stb && wb_cyc && wb_adr[7:6] == 2'b00)
 			6'd30  : testvec_sel[7:0]   <= wb_wr_dat[7:0];
 			default:;
 		endcase
-		end
 	if(wb_sel[1])
-		begin
 		case(wb_adr[5:0])
 			6'h00  : coeff_00[15:8] <= wb_wr_dat[15:8]; 
 			6'h01  : coeff_01[15:8] <= wb_wr_dat[15:8];
@@ -173,12 +170,10 @@ else if(wb_we && wb_stb && wb_cyc && wb_adr[7:6] == 2'b00)
 			6'd30  : testvec_sel[15:8]   <= wb_wr_dat[15:8];
 			default:;
 		endcase
-		end
 	end
-
 reg [15:0] readbak_dat;
 reg        readbak_ack;
-always @(posedge clk or posedge rst) begin
+always @(posedge clk or posedge rst) 
 if(rst)
 	begin
     readbak_dat <= 16'd0;

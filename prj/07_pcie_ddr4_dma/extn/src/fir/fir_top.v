@@ -8,7 +8,7 @@ module fir_top(
     input         rst        ,
            
     input  [15:0] data_in    ,
-    output [31:0] data_out   ,
+    output [15:0] data_out   ,
 
     input         i2c_scl_i  ,
     output        i2c_scl_o  ,
@@ -71,7 +71,7 @@ wire  [15:0]          testvec_sel;
 wire  [63:0]          testvec_fir;
 wire  [63:0]          testvec_wbx;
 
-fir_filter fir_filter_inst(
+fir_core fir_filter_inst(
     .clk      (clk      ), 
     .rst      (rst      ), 
     .data_in  (data_in  ),
@@ -215,4 +215,4 @@ assign testvec_wbx = {
 
 assign testvec   = testvec_sel == 16'd0 ? testvec_fir : testvec_wbx;
 
-
+endmodule

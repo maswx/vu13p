@@ -21,7 +21,7 @@
 
 
 //  verilog
-module fir_filter (
+module fir_core (
     input wire         clk     , 
     input wire         rst     , 
     input wire  [15:0] data_in ,
@@ -58,7 +58,7 @@ module fir_filter (
 	input       [15:0] coeff_30,
 	input       [15:0] coeff_31,
 	input       [15:0] coeff_32,
-    output wire [31:0] data_out,
+    output wire [15:0] data_out,
 	output wire [63:0] testvec  //送到逻辑分析仪的测试矢量
 );
 
@@ -102,57 +102,36 @@ module fir_filter (
 
     // 定义内部信号
     reg [15:0] data_buffer [32:0];
-    wire [31:0] mult_result [32:0];
-    wire [31:0] accum_result_stage1 [7:0];
-    wire [31:0] accum_result_stage2 [1:0];
-    wire [31:0] final_result;
-    reg [31:0] final_result_d1;
-    reg [31:0] final_result_d2;
+    wire [15:0] mult_result [32:0];
+    reg  [15:0] accum_result_stage1 [7:0];
+    reg  [15:0] accum_result_stage2 [1:0];
+    reg  [15:0] final_result;
+    reg  [15:0] mult_result_d1;
+    reg  [15:0] mult_result_d2;
 
     // 有符号数乘法器子模块实例化
-    genvar i;
-    wire [47:0] result[32:0];
     generate
+    genvar i;
 		// 使用DSP48E1原语进行乘法运算
         for (i = 0; i < 33; i = i + 1) begin
-			DSP48E1 dsp_inst (
-    		    .CLK(1'b1), // 假设静态时钟
-    		    .A(data_buffer[i]),
-    		    .B(coeff[i]      ),
-    		    .C(48'h0),
-    		    .P(result[i]),
-    		    .Opmode(7'b0000001), // 选择乘法模式
-    		    .ALUMODE(4'b0000),   // 选择无ALU操作
-    		    .CARRYINSEL(3'b000), // 选择无进位输入
-    		    .CARRYIN(1'b0),      // 无进位输入
-    		    .CEA(1'b1),          // A输入使能
-    		    .CEB(1'b1),          // B输入使能
-    		    .CEADIN(1'b1),       // AD输入使能
-    		    .CEALUMODE(1'b1),    // ALU模式使能
-    		    .CEC(1'b1),          // C输入使能
-    		    .CECARRYIN(1'b1),    // 进位输入使能
-    		    .CECTRL(1'b1),       // 控制信号使能
-    		    .CEM(1'b1),          // M输入使能
-    		    .CEP(1'b1),          // P输入使能
-    		    .RSTALUMODE(1'b0),   // 无ALU复位
-    		    .RSTALLCARRYIN(1'b0),// 无进位复位
-    		    .RSTCTRL(1'b0),      // 无控制信号复位
-    		    .RSTM(1'b0),         // 无M复位
-    		    .RSTP(1'b0)          // 无P复位
-    		);
-			assign mult_result[i] = result[i][31:0];
+			libv_base_smult #(16,16,16) libv_base_smult_inst(
+				.a(data_buffer[i]), 
+				.b(coeff[i]      ), 
+				.o(mult_result[i]     )
+			);
         end
     endgenerate
 
     // 累加器 - 第一级（每4个加法）
+	integer k;
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            for (i = 0; i < 8; i = i + 1) begin
-                accum_result_stage1[i] <= 32'h0;
+            for (k = 0; k < 8; k = k + 1) begin
+                accum_result_stage1[k] <= 16'h0;
             end
         end else begin
-            for (i = 0; i < 8; i = i + 1) begin
-                accum_result_stage1[i] <= mult_result[4*i] + mult_result[4*i+1] + mult_result[4*i+2] + mult_result[4*i+3];
+            for (k = 0; k < 8; k = k + 1) begin
+                accum_result_stage1[k] <= mult_result[4*k] + mult_result[4*k+1] + mult_result[4*k+2] + mult_result[4*k+3];
             end
         end
     end
@@ -160,20 +139,20 @@ module fir_filter (
     // 累加器 - 第二级（每2个加法）
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            for (i = 0; i < 2; i = i + 1) begin
-                accum_result_stage2[i] <= 32'h0;
+            for (k = 0; k < 2; k = k + 1) begin
+                accum_result_stage2[k] <= 16'h0;
             end
         end else begin
-            for (i = 0; i < 2; i = i + 1) begin
-                accum_result_stage2[i] <= accum_result_stage1[4*i] + accum_result_stage1[4*i+1] + accum_result_stage1[4*i+2] + accum_result_stage1[4*i+3];
+            for (k = 0; k < 2; k = k + 1) begin
+                accum_result_stage2[k] <= accum_result_stage1[4*k] + accum_result_stage1[4*k+1] + accum_result_stage1[4*k+2] + accum_result_stage1[4*k+3];
             end
         end
     end
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-			mult_result_d1 <= 32'd0;
-    		mult_result_d2 <= 32'd0;
+			mult_result_d1 <= 16'd0;
+    		mult_result_d2 <= 16'd0;
         end else begin
 			mult_result_d1 <= mult_result[32];
     		mult_result_d2 <= mult_result_d1;
@@ -185,7 +164,7 @@ module fir_filter (
     // 累加器 - 最后一级
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            final_result <= 32'h0;
+            final_result <= 16'h0;
         end else begin
             final_result <= accum_result_stage2[0] + accum_result_stage2[1] + mult_result_d2;
         end
@@ -196,13 +175,13 @@ module fir_filter (
     // 延迟线（用于存储输入数据）
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            for (integer i = 0; i < 33; i = i + 1) begin
-                data_buffer[i] <= 16'h0;
+            for (integer k = 0; k < 33; k = k + 1) begin
+                data_buffer[k] <= 16'h0;
             end
         end else begin
             data_buffer[32] <= data_buffer[31];
-            for (integer i = 31; i > 0; i = i - 1) begin
-                data_buffer[i] <= data_buffer[i-1];
+            for (integer k = 31; k > 0; k = k - 1) begin
+                data_buffer[k] <= data_buffer[k-1];
             end
             data_buffer[0] <= data_in;
         end
@@ -210,11 +189,11 @@ module fir_filter (
 
 
 assign testvec = {
-	accum_result_stage1 [0][31:16] ,
-	accum_result_stage2 [0][31:16] ,
+	accum_result_stage2 [0][15:0] ,
+	data_out[15:0],
 	data_in[15:0],
-	coeff[1][7:0],
-	coeff[0][7:0]
+	coeff[1][15:8],
+	coeff[0][15:8]
 };
 
 endmodule
