@@ -117,7 +117,7 @@ module fir_core (
 			libv_base_smult #(16,16,16) libv_base_smult_inst(
 				.a(data_buffer[i]), 
 				.b(coeff[i]      ), 
-				.o(mult_result[i]     )
+				.o(mult_result[i])
 			);
         end
     endgenerate
@@ -188,29 +188,26 @@ module fir_core (
     end
 
 
+//wire [15:0] accum_0 = accum_result_stage1 [0];
+//wire [15:0] accum_1 = accum_result_stage1 [1];
+//wire [15:0] accum_2 = accum_result_stage1 [2];
+//wire [15:0] accum_3 = accum_result_stage1 [3];
+//wire [15:0] accum_4 = accum_result_stage1 [4];
+//wire [15:0] accum_5 = accum_result_stage1 [5];
+//wire [15:0] accum_6 = accum_result_stage1 [6];
+//wire [15:0] accum_7 = accum_result_stage1 [7];
+
+//wire [15:0] accum_20 = accum_result_stage2 [0];
+//wire [15:0] accum_21 = accum_result_stage2 [1];
+
+
 assign testvec = {
 	accum_result_stage2 [0][15:0] ,
-	data_out[15:0],
+	accum_result_stage1 [0],
 	data_in[15:0],
 	coeff[1][15:8],
 	coeff[0][15:8]
 };
-
-endmodule
-
-
-module signed_multiplier (
-    input wire [15:0] a,
-    input wire [15:0] b,
-    output wire [31:0] product
-);
-
-    // 将输入信号转换为有符号数
-    //wire signed [15:0] a_signed = $signed(a);
-    //wire signed [15:0] b_signed = $signed(b);
-    wire signed [15:0] a_signed = a;
-    wire signed [15:0] b_signed = b;
-
 
 endmodule
 
