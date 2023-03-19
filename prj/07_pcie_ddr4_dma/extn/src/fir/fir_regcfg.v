@@ -72,9 +72,9 @@ if(rst)
 	coeff_12 <= 16'd0;
 	coeff_13 <= 16'd0;
 	coeff_14 <= 16'd0;
-	coeff_15 <= 16'd0;
-	coeff_16 <= 16'hffff;
-	coeff_17 <= 16'd0;
+	coeff_15 <= 16'd10;
+	coeff_16 <= 16'd30000;
+	coeff_17 <= 16'd10;
 	coeff_18 <= 16'd0;
 	coeff_19 <= 16'd0;
 	coeff_20 <= 16'd0;
