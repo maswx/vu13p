@@ -14,7 +14,6 @@ end
 initial begin
     $dumpfile("simv.vcd");
     $dumpvars(0, tb.fir_top_inst);
-    $finish;
 end
 
 
