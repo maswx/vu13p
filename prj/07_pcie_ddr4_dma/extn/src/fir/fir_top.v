@@ -4,20 +4,20 @@
 //========================================================================
 
 module fir_top(
-    input         clk        ,
-    input         rst        ,
-           
-    input  [15:0] data_in    ,
-    output [15:0] data_out   ,
-
-    input         i2c_scl_i  ,
-    output        i2c_scl_o  ,
-    output        i2c_scl_t  ,
-    input         i2c_sda_i  ,
-    output        i2c_sda_o  ,
-    output        i2c_sda_t  ,
-
-	output [63:0] testvec  //送到逻辑分析仪的测试矢量
+    input         clk        ,//i 
+    input         rst        ,//i
+                                 
+    input  [15:0] data_in    ,//i
+    output [15:0] data_out   ,//o
+                                 
+    input         i2c_scl_i  ,//i
+    output        i2c_scl_o  ,//o
+    output        i2c_scl_t  ,//o
+    input         i2c_sda_i  ,//i
+    output        i2c_sda_o  ,//o
+    output        i2c_sda_t  ,//o
+                                 
+	output [63:0] testvec     //o送到逻辑分析仪的测试矢量
 );
 
 
