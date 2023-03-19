@@ -1,0 +1,3 @@
+[submodule "prj/07_pcie_ddr4_dma/extn/src/iic/iic"]
+	path = prj/07_pcie_ddr4_dma/extn/src/iic/iic
+	url = https://github.com/maswx/verilog-i2c.git
