@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xEDA318939EF2AFB4",
+      "boundary_crc": "0x316E4404628170B2",
       "device": "xcvu13p-fhgb2104-2-i",
       "gen_directory": "../../../../project.gen/sources_1/bd/base",
       "name": "base",
@@ -16,7 +16,6 @@
       "axi_dma_0": "",
       "axi_dma_1": "",
       "ddr4_1": "",
-      "smartconnect_0": "",
       "smartconnect_1": "",
       "smartconnect_2": "",
       "smartconnect_3": "",
@@ -35,7 +34,9 @@
       "ddr4_2": "",
       "proc_sys_reset_4": "",
       "smartconnect_5": "",
-      "axi_dma_2": ""
+      "axi_dma_2": "",
+      "xlconstant_0": "",
+      "smartconnect_6": ""
     },
     "interface_ports": {
       "source_mm2s": {
@@ -272,37 +273,6 @@
           "TVALID": {
             "physical_name": "testvec_s2mm_tvalid",
             "direction": "I"
-          }
-        }
-      },
-      "iic": {
-        "mode": "Master",
-        "vlnv_bus_definition": "xilinx.com:interface:iic:1.0",
-        "vlnv": "xilinx.com:interface:iic_rtl:1.0",
-        "port_maps": {
-          "SCL_I": {
-            "physical_name": "iic_scl_i",
-            "direction": "I"
-          },
-          "SCL_O": {
-            "physical_name": "iic_scl_o",
-            "direction": "O"
-          },
-          "SCL_T": {
-            "physical_name": "iic_scl_t",
-            "direction": "O"
-          },
-          "SDA_I": {
-            "physical_name": "iic_sda_i",
-            "direction": "I"
-          },
-          "SDA_O": {
-            "physical_name": "iic_sda_o",
-            "direction": "O"
-          },
-          "SDA_T": {
-            "physical_name": "iic_sda_t",
-            "direction": "O"
           }
         }
       },
@@ -1004,6 +974,27 @@
       },
       "tb_clk_locked": {
         "direction": "O"
+      },
+      "pcie_lnk_up": {
+        "direction": "O"
+      },
+      "iic_scl_i": {
+        "direction": "I"
+      },
+      "iic_scl_o": {
+        "direction": "O"
+      },
+      "iic_scl_t": {
+        "direction": "O"
+      },
+      "iic_sda_i": {
+        "direction": "I"
+      },
+      "iic_sda_o": {
+        "direction": "O"
+      },
+      "iic_sda_t": {
+        "direction": "O"
       }
     },
     "components": {
@@ -1183,7 +1174,7 @@
             },
             "parameters": {
               "master_id": {
-                "value": "2"
+                "value": "6"
               }
             }
           }
@@ -1231,7 +1222,7 @@
             },
             "parameters": {
               "master_id": {
-                "value": "3"
+                "value": "7"
               }
             }
           }
@@ -1307,82 +1298,6 @@
                   "offset_base_param": "C0_DDR4_MEMORY_MAP_CTRL_BASEADDR",
                   "offset_high_param": "C0_DDR4_MEMORY_MAP_CTRL_HIGHADDR"
                 }
-              }
-            }
-          }
-        }
-      },
-      "smartconnect_0": {
-        "vlnv": "xilinx.com:ip:smartconnect:1.0",
-        "xci_name": "base_smartconnect_0_0",
-        "xci_path": "ip/base_smartconnect_0_0/base_smartconnect_0_0.xci",
-        "inst_hier_path": "smartconnect_0",
-        "parameters": {
-          "NUM_CLKS": {
-            "value": "2"
-          }
-        },
-        "interface_ports": {
-          "S00_AXI": {
-            "mode": "Slave",
-            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-            "parameters": {
-              "NUM_READ_OUTSTANDING": {
-                "value": "32"
-              },
-              "NUM_WRITE_OUTSTANDING": {
-                "value": "16"
-              }
-            },
-            "bridges": [
-              "M00_AXI"
-            ]
-          },
-          "S01_AXI": {
-            "mode": "Slave",
-            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-            "parameters": {
-              "NUM_READ_OUTSTANDING": {
-                "value": "2"
-              },
-              "NUM_WRITE_OUTSTANDING": {
-                "value": "16"
-              }
-            },
-            "bridges": [
-              "M00_AXI"
-            ]
-          },
-          "M00_AXI": {
-            "mode": "Master",
-            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-            "parameters": {
-              "MAX_BURST_LENGTH": {
-                "value": "256"
-              },
-              "NUM_READ_OUTSTANDING": {
-                "value": "32"
-              },
-              "NUM_READ_THREADS": {
-                "value": "1"
-              },
-              "NUM_WRITE_OUTSTANDING": {
-                "value": "16"
-              },
-              "NUM_WRITE_THREADS": {
-                "value": "1"
-              },
-              "RUSER_BITS_PER_BYTE": {
-                "value": "0"
-              },
-              "SUPPORTS_NARROW_BURST": {
-                "value": "0"
-              },
-              "WUSER_BITS_PER_BYTE": {
-                "value": "0"
               }
             }
           }
@@ -1830,7 +1745,7 @@
         "inst_hier_path": "xlconcat_0",
         "parameters": {
           "NUM_PORTS": {
-            "value": "4"
+            "value": "5"
           }
         }
       },
@@ -2288,7 +2203,7 @@
             },
             "parameters": {
               "master_id": {
-                "value": "6"
+                "value": "4"
               }
             }
           }
@@ -2301,13 +2216,106 @@
             }
           }
         }
+      },
+      "xlconstant_0": {
+        "vlnv": "xilinx.com:ip:xlconstant:1.1",
+        "xci_name": "base_xlconstant_0_0",
+        "xci_path": "ip/base_xlconstant_0_0/base_xlconstant_0_0.xci",
+        "inst_hier_path": "xlconstant_0",
+        "parameters": {
+          "CONST_VAL": {
+            "value": "0"
+          },
+          "CONST_WIDTH": {
+            "value": "4"
+          }
+        }
+      },
+      "smartconnect_6": {
+        "vlnv": "xilinx.com:ip:smartconnect:1.0",
+        "xci_name": "base_smartconnect_1_0",
+        "xci_path": "ip/base_smartconnect_1_0/base_smartconnect_1_0.xci",
+        "inst_hier_path": "smartconnect_6",
+        "parameters": {
+          "NUM_CLKS": {
+            "value": "2"
+          },
+          "NUM_SI": {
+            "value": "2"
+          }
+        },
+        "interface_ports": {
+          "S00_AXI": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "NUM_READ_OUTSTANDING": {
+                "value": "32"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "16"
+              }
+            },
+            "bridges": [
+              "M00_AXI"
+            ]
+          },
+          "S01_AXI": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "NUM_READ_OUTSTANDING": {
+                "value": "32"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "16"
+              }
+            },
+            "bridges": [
+              "M00_AXI"
+            ]
+          },
+          "M00_AXI": {
+            "mode": "Master",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "MAX_BURST_LENGTH": {
+                "value": "256"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "32"
+              },
+              "NUM_READ_THREADS": {
+                "value": "1"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "16"
+              },
+              "NUM_WRITE_THREADS": {
+                "value": "1"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0"
+              }
+            }
+          }
+        }
       }
     },
     "interface_nets": {
       "axi_dma_0_M_AXI_S2MM": {
         "interface_ports": [
           "axi_dma_0/M_AXI_S2MM",
-          "smartconnect_0/S01_AXI"
+          "smartconnect_6/S01_AXI"
         ]
       },
       "axi_dma_1_M_AXIS_MM2S": {
@@ -2326,12 +2334,6 @@
         "interface_ports": [
           "axi_dma_2/M_AXI_S2MM",
           "smartconnect_5/S01_AXI"
-        ]
-      },
-      "axi_iic_0_IIC": {
-        "interface_ports": [
-          "iic",
-          "axi_iic_0/IIC"
         ]
       },
       "axis_data_fifo_0_M_AXIS": {
@@ -2400,12 +2402,6 @@
           "axis_data_fifo_2/S_AXIS"
         ]
       },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ddr4_1/C0_DDR4_S_AXI"
-        ]
-      },
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
@@ -2421,7 +2417,7 @@
       "smartconnect_2_M01_AXI": {
         "interface_ports": [
           "smartconnect_2/M01_AXI",
-          "smartconnect_0/S00_AXI"
+          "smartconnect_6/S00_AXI"
         ]
       },
       "smartconnect_2_M02_AXI": {
@@ -2490,6 +2486,12 @@
           "ddr4_2/C0_DDR4_S_AXI"
         ]
       },
+      "smartconnect_6_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_6/M00_AXI",
+          "ddr4_1/C0_DDR4_S_AXI"
+        ]
+      },
       "testvec_s2mm_1": {
         "interface_ports": [
           "testvec_s2mm",
@@ -2540,6 +2542,30 @@
           "xlconcat_0/In3"
         ]
       },
+      "axi_iic_0_scl_o": {
+        "ports": [
+          "axi_iic_0/scl_o",
+          "iic_scl_o"
+        ]
+      },
+      "axi_iic_0_scl_t": {
+        "ports": [
+          "axi_iic_0/scl_t",
+          "iic_scl_t"
+        ]
+      },
+      "axi_iic_0_sda_o": {
+        "ports": [
+          "axi_iic_0/sda_o",
+          "iic_sda_o"
+        ]
+      },
+      "axi_iic_0_sda_t": {
+        "ports": [
+          "axi_iic_0/sda_t",
+          "iic_sda_t"
+        ]
+      },
       "clk_wiz_0_clk_out1": {
         "ports": [
           "clk_wiz_0/clk_out1",
@@ -2563,9 +2589,9 @@
       "ddr4_1_c0_ddr4_ui_clk": {
         "ports": [
           "ddr4_1/c0_ddr4_ui_clk",
-          "smartconnect_0/aclk",
           "proc_sys_reset_1/slowest_sync_clk",
-          "smartconnect_4/aclk2"
+          "smartconnect_4/aclk2",
+          "smartconnect_6/aclk1"
         ]
       },
       "ddr4_2_c0_ddr4_ui_clk": {
@@ -2574,6 +2600,18 @@
           "proc_sys_reset_4/slowest_sync_clk",
           "smartconnect_5/aclk1",
           "smartconnect_4/aclk3"
+        ]
+      },
+      "iic_scl_i_1": {
+        "ports": [
+          "iic_scl_i",
+          "axi_iic_0/scl_i"
+        ]
+      },
+      "iic_sda_i_1": {
+        "ports": [
+          "iic_sda_i",
+          "axi_iic_0/sda_i"
         ]
       },
       "pcie_perst_1": {
@@ -2673,7 +2711,6 @@
           "smartconnect_4/aclk",
           "axis_data_fifo_0/m_axis_aclk",
           "axi_dma_0/m_axi_s2mm_aclk",
-          "smartconnect_0/aclk1",
           "axi_dma_1/m_axi_mm2s_aclk",
           "axis_data_fifo_2/m_axis_aclk",
           "axis_data_fifo_1/s_axis_aclk",
@@ -2682,7 +2719,8 @@
           "clk_wiz_0/clk_in1",
           "smartconnect_5/aclk",
           "axi_dma_2/m_axi_s2mm_aclk",
-          "axi_dma_2/s_axi_lite_aclk"
+          "axi_dma_2/s_axi_lite_aclk",
+          "smartconnect_6/aclk"
         ]
       },
       "xdma_0_axi_aresetn": {
@@ -2703,14 +2741,26 @@
           "proc_sys_reset_4/ext_reset_in",
           "smartconnect_5/aresetn",
           "axi_dma_2/axi_resetn",
-          "smartconnect_0/aresetn",
-          "smartconnect_1/aresetn"
+          "smartconnect_1/aresetn",
+          "smartconnect_6/aresetn"
+        ]
+      },
+      "xdma_0_user_lnk_up": {
+        "ports": [
+          "xdma_0/user_lnk_up",
+          "pcie_lnk_up"
         ]
       },
       "xlconcat_0_dout": {
         "ports": [
           "xlconcat_0/dout",
           "xdma_0/usr_irq_req"
+        ]
+      },
+      "xlconstant_0_dout": {
+        "ports": [
+          "xlconstant_0/dout",
+          "xlconcat_0/In4"
         ]
       }
     },
