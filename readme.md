@@ -16,27 +16,16 @@
 * 测试板载4组DDR4内存
 * 介绍PCIE相关驱动
 
-### [05 PCIE DDR4 QSFP](./readme.md)
 
-* 介绍 Chip2Chip环回
-* 提供板卡RDMA案例
-
-
-### [06 PCIE DDR4 QSFP](./readme.md)
-
-* 100G 以太网相关工程
-
-
-### [07 PCIE DDR4 DMA](./readme.md)
+### [07 PCIE DDR4 DMA](./prj/07_pcie_ddr4_dma/docs/readme.md)
 
 * 内存搬移相关
 * 驱动
-
-
-### [08 PCIE DDR4 FIR](./readme.md)
-
 * 基于固定的dcp模块，外部编写一组FIR滤波器
 * 使用matlab提供激励， 并用simulink查看内部逻辑
+
+
+
 
 
 
