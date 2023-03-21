@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x316E4404628170B2",
+      "boundary_crc": "0x316E4404B573F4EB",
       "device": "xcvu13p-fhgb2104-2-i",
       "gen_directory": "../../../../project.gen/sources_1/bd/base",
       "name": "base",
@@ -36,7 +36,13 @@
       "smartconnect_5": "",
       "axi_dma_2": "",
       "xlconstant_0": "",
-      "smartconnect_6": ""
+      "smartconnect_6": "",
+      "axi_clock_converter_0": "",
+      "axi_clock_converter_1": "",
+      "axi_clock_converter_2": "",
+      "axi_clock_converter_3": "",
+      "axi_clock_converter_4": "",
+      "axi_clock_converter_5": ""
     },
     "interface_ports": {
       "source_mm2s": {
@@ -1310,7 +1316,7 @@
         "inst_hier_path": "smartconnect_1",
         "parameters": {
           "NUM_CLKS": {
-            "value": "2"
+            "value": "1"
           },
           "NUM_SI": {
             "value": "2"
@@ -1779,7 +1785,7 @@
         "inst_hier_path": "smartconnect_4",
         "parameters": {
           "NUM_CLKS": {
-            "value": "4"
+            "value": "1"
           },
           "NUM_MI": {
             "value": "3"
@@ -2097,7 +2103,7 @@
         "inst_hier_path": "smartconnect_5",
         "parameters": {
           "NUM_CLKS": {
-            "value": "2"
+            "value": "1"
           }
         },
         "interface_ports": {
@@ -2238,7 +2244,7 @@
         "inst_hier_path": "smartconnect_6",
         "parameters": {
           "NUM_CLKS": {
-            "value": "2"
+            "value": "1"
           },
           "NUM_SI": {
             "value": "2"
@@ -2309,9 +2315,135 @@
             }
           }
         }
+      },
+      "axi_clock_converter_0": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_0_0",
+        "xci_path": "ip/base_axi_clock_converter_0_0/base_axi_clock_converter_0_0.xci",
+        "inst_hier_path": "axi_clock_converter_0",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
+      },
+      "axi_clock_converter_1": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_0_1",
+        "xci_path": "ip/base_axi_clock_converter_0_1/base_axi_clock_converter_0_1.xci",
+        "inst_hier_path": "axi_clock_converter_1",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
+      },
+      "axi_clock_converter_2": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_0_2",
+        "xci_path": "ip/base_axi_clock_converter_0_2/base_axi_clock_converter_0_2.xci",
+        "inst_hier_path": "axi_clock_converter_2",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
+      },
+      "axi_clock_converter_3": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_1_0",
+        "xci_path": "ip/base_axi_clock_converter_1_0/base_axi_clock_converter_1_0.xci",
+        "inst_hier_path": "axi_clock_converter_3",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
+      },
+      "axi_clock_converter_4": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_2_0",
+        "xci_path": "ip/base_axi_clock_converter_2_0/base_axi_clock_converter_2_0.xci",
+        "inst_hier_path": "axi_clock_converter_4",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
+      },
+      "axi_clock_converter_5": {
+        "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+        "xci_name": "base_axi_clock_converter_3_0",
+        "xci_path": "ip/base_axi_clock_converter_3_0/base_axi_clock_converter_3_0.xci",
+        "inst_hier_path": "axi_clock_converter_5",
+        "interface_ports": {
+          "S_AXI": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "bridges": [
+              "M_AXI"
+            ]
+          }
+        }
       }
     },
     "interface_nets": {
+      "axi_clock_converter_0_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_0/M_AXI",
+          "ddr4_0/C0_DDR4_S_AXI"
+        ]
+      },
+      "axi_clock_converter_1_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_1/M_AXI",
+          "ddr4_0/C0_DDR4_S_AXI_CTRL"
+        ]
+      },
+      "axi_clock_converter_2_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_2/M_AXI",
+          "ddr4_1/C0_DDR4_S_AXI"
+        ]
+      },
+      "axi_clock_converter_3_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_3/M_AXI",
+          "ddr4_1/C0_DDR4_S_AXI_CTRL"
+        ]
+      },
+      "axi_clock_converter_4_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_4/M_AXI",
+          "ddr4_2/C0_DDR4_S_AXI"
+        ]
+      },
+      "axi_clock_converter_5_M_AXI": {
+        "interface_ports": [
+          "axi_clock_converter_5/M_AXI",
+          "ddr4_2/C0_DDR4_S_AXI_CTRL"
+        ]
+      },
       "axi_dma_0_M_AXI_S2MM": {
         "interface_ports": [
           "axi_dma_0/M_AXI_S2MM",
@@ -2405,7 +2537,7 @@
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
-          "ddr4_0/C0_DDR4_S_AXI"
+          "axi_clock_converter_0/S_AXI"
         ]
       },
       "smartconnect_2_M00_AXI": {
@@ -2465,31 +2597,31 @@
       "smartconnect_4_M00_AXI": {
         "interface_ports": [
           "smartconnect_4/M00_AXI",
-          "ddr4_0/C0_DDR4_S_AXI_CTRL"
+          "axi_clock_converter_1/S_AXI"
         ]
       },
       "smartconnect_4_M01_AXI": {
         "interface_ports": [
           "smartconnect_4/M01_AXI",
-          "ddr4_1/C0_DDR4_S_AXI_CTRL"
+          "axi_clock_converter_3/S_AXI"
         ]
       },
       "smartconnect_4_M02_AXI": {
         "interface_ports": [
           "smartconnect_4/M02_AXI",
-          "ddr4_2/C0_DDR4_S_AXI_CTRL"
+          "axi_clock_converter_5/S_AXI"
         ]
       },
       "smartconnect_5_M00_AXI": {
         "interface_ports": [
           "smartconnect_5/M00_AXI",
-          "ddr4_2/C0_DDR4_S_AXI"
+          "axi_clock_converter_4/S_AXI"
         ]
       },
       "smartconnect_6_M00_AXI": {
         "interface_ports": [
           "smartconnect_6/M00_AXI",
-          "ddr4_1/C0_DDR4_S_AXI"
+          "axi_clock_converter_2/S_AXI"
         ]
       },
       "testvec_s2mm_1": {
@@ -2581,25 +2713,25 @@
       "ddr4_0_c0_ddr4_ui_clk": {
         "ports": [
           "ddr4_0/c0_ddr4_ui_clk",
-          "smartconnect_1/aclk",
           "proc_sys_reset_0/slowest_sync_clk",
-          "smartconnect_4/aclk1"
+          "axi_clock_converter_1/m_axi_aclk",
+          "axi_clock_converter_0/m_axi_aclk"
         ]
       },
       "ddr4_1_c0_ddr4_ui_clk": {
         "ports": [
           "ddr4_1/c0_ddr4_ui_clk",
           "proc_sys_reset_1/slowest_sync_clk",
-          "smartconnect_4/aclk2",
-          "smartconnect_6/aclk1"
+          "axi_clock_converter_3/m_axi_aclk",
+          "axi_clock_converter_2/m_axi_aclk"
         ]
       },
       "ddr4_2_c0_ddr4_ui_clk": {
         "ports": [
           "ddr4_2/c0_ddr4_ui_clk",
           "proc_sys_reset_4/slowest_sync_clk",
-          "smartconnect_5/aclk1",
-          "smartconnect_4/aclk3"
+          "axi_clock_converter_5/m_axi_aclk",
+          "axi_clock_converter_4/m_axi_aclk"
         ]
       },
       "iic_scl_i_1": {
@@ -2623,7 +2755,9 @@
       "proc_sys_reset_0_peripheral_aresetn": {
         "ports": [
           "proc_sys_reset_0/peripheral_aresetn",
-          "ddr4_0/c0_ddr4_aresetn"
+          "ddr4_0/c0_ddr4_aresetn",
+          "axi_clock_converter_1/m_axi_aresetn",
+          "axi_clock_converter_0/m_axi_aresetn"
         ]
       },
       "proc_sys_reset_0_peripheral_reset": {
@@ -2635,7 +2769,9 @@
       "proc_sys_reset_1_peripheral_aresetn": {
         "ports": [
           "proc_sys_reset_1/peripheral_aresetn",
-          "ddr4_1/c0_ddr4_aresetn"
+          "ddr4_1/c0_ddr4_aresetn",
+          "axi_clock_converter_3/m_axi_aresetn",
+          "axi_clock_converter_2/m_axi_aresetn"
         ]
       },
       "proc_sys_reset_1_peripheral_reset": {
@@ -2659,7 +2795,9 @@
       "proc_sys_reset_4_peripheral_aresetn": {
         "ports": [
           "proc_sys_reset_4/peripheral_aresetn",
-          "ddr4_2/c0_ddr4_aresetn"
+          "ddr4_2/c0_ddr4_aresetn",
+          "axi_clock_converter_5/m_axi_aresetn",
+          "axi_clock_converter_4/m_axi_aresetn"
         ]
       },
       "proc_sys_reset_4_peripheral_reset": {
@@ -2708,19 +2846,25 @@
           "axi_dma_0/s_axi_lite_aclk",
           "axi_iic_0/s_axi_aclk",
           "smartconnect_2/aclk",
-          "smartconnect_4/aclk",
           "axis_data_fifo_0/m_axis_aclk",
           "axi_dma_0/m_axi_s2mm_aclk",
           "axi_dma_1/m_axi_mm2s_aclk",
           "axis_data_fifo_2/m_axis_aclk",
           "axis_data_fifo_1/s_axis_aclk",
-          "smartconnect_1/aclk1",
           "clk_wiz_0/s_axi_aclk",
           "clk_wiz_0/clk_in1",
           "smartconnect_5/aclk",
           "axi_dma_2/m_axi_s2mm_aclk",
           "axi_dma_2/s_axi_lite_aclk",
-          "smartconnect_6/aclk"
+          "smartconnect_6/aclk",
+          "axi_clock_converter_0/s_axi_aclk",
+          "axi_clock_converter_1/s_axi_aclk",
+          "axi_clock_converter_3/s_axi_aclk",
+          "axi_clock_converter_2/s_axi_aclk",
+          "axi_clock_converter_5/s_axi_aclk",
+          "axi_clock_converter_4/s_axi_aclk",
+          "smartconnect_4/aclk",
+          "smartconnect_1/aclk"
         ]
       },
       "xdma_0_axi_aresetn": {
@@ -2742,7 +2886,13 @@
           "smartconnect_5/aresetn",
           "axi_dma_2/axi_resetn",
           "smartconnect_1/aresetn",
-          "smartconnect_6/aresetn"
+          "smartconnect_6/aresetn",
+          "axi_clock_converter_0/s_axi_aresetn",
+          "axi_clock_converter_1/s_axi_aresetn",
+          "axi_clock_converter_3/s_axi_aresetn",
+          "axi_clock_converter_2/s_axi_aresetn",
+          "axi_clock_converter_5/s_axi_aresetn",
+          "axi_clock_converter_4/s_axi_aresetn"
         ]
       },
       "xdma_0_user_lnk_up": {
