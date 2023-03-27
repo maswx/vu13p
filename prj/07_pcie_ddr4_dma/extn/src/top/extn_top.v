@@ -9,22 +9,22 @@
 `timescale 1 ps / 1 ps
 
 module base_wrapper
-output                   c0_ddr4_act_n           ,//o 
-output             [16:0]c0_ddr4_adr             ,//o
-output             [ 1:0]c0_ddr4_ba              ,//o
-output             [ 0:0]c0_ddr4_bg              ,//o
-output             [ 0:0]c0_ddr4_ck_c            ,//o
-output             [ 0:0]c0_ddr4_ck_t            ,//o
-output             [ 0:0]c0_ddr4_cke             ,//o
-input                    c0_ddr4_clk_clk_n       ,//i
-input                    c0_ddr4_clk_clk_p       ,//i
-output             [ 0:0]c0_ddr4_cs_n            ,//o
-inout              [ 8:0]c0_ddr4_dm_n            ,//i
-inout              [71:0]c0_ddr4_dq              ,//i
-inout              [ 8:0]c0_ddr4_dqs_c           ,//i
-inout              [ 8:0]c0_ddr4_dqs_t           ,//i
-output             [ 0:0]c0_ddr4_odt             ,//o
-output                   c0_ddr4_reset_n         ,//o
+output                   c3_ddr4_act_n           ,//o 
+output             [16:0]c3_ddr4_adr             ,//o
+output             [ 1:0]c3_ddr4_ba              ,//o
+output             [ 0:0]c3_ddr4_bg              ,//o
+output             [ 0:0]c3_ddr4_ck_c            ,//o
+output             [ 0:0]c3_ddr4_ck_t            ,//o
+output             [ 0:0]c3_ddr4_cke             ,//o
+input                    c3_ddr4_clk_clk_n       ,//i
+input                    c3_ddr4_clk_clk_p       ,//i
+output             [ 0:0]c3_ddr4_cs_n            ,//o
+inout              [ 8:0]c3_ddr4_dm_n            ,//i
+inout              [71:0]c3_ddr4_dq              ,//i
+inout              [ 8:0]c3_ddr4_dqs_c           ,//i
+inout              [ 8:0]c3_ddr4_dqs_t           ,//i
+output             [ 0:0]c3_ddr4_odt             ,//o
+output                   c3_ddr4_reset_n         ,//o
 output                   c1_ddr4_act_n           ,//o
 output             [16:0]c1_ddr4_adr             ,//o
 output             [ 1:0]c1_ddr4_ba              ,//o
@@ -96,22 +96,22 @@ wire iic_sda_o;
 wire iic_sda_t;
 
 base base_inst     (
-   .c0_ddr4_act_n        (c0_ddr4_act_n         ),
-   .c0_ddr4_adr          (c0_ddr4_adr           ),
-   .c0_ddr4_ba           (c0_ddr4_ba            ),
-   .c0_ddr4_bg           (c0_ddr4_bg            ),
-   .c0_ddr4_ck_c         (c0_ddr4_ck_c          ),
-   .c0_ddr4_ck_t         (c0_ddr4_ck_t          ),
-   .c0_ddr4_cke          (c0_ddr4_cke           ),
-   .c0_ddr4_clk_clk_n    (c0_ddr4_clk_clk_n     ),
-   .c0_ddr4_clk_clk_p    (c0_ddr4_clk_clk_p     ),
-   .c0_ddr4_cs_n         (c0_ddr4_cs_n          ),
-   .c0_ddr4_dm_n         (c0_ddr4_dm_n          ),
-   .c0_ddr4_dq           (c0_ddr4_dq            ),
-   .c0_ddr4_dqs_c        (c0_ddr4_dqs_c         ),
-   .c0_ddr4_dqs_t        (c0_ddr4_dqs_t         ),
-   .c0_ddr4_odt          (c0_ddr4_odt           ),
-   .c0_ddr4_reset_n      (c0_ddr4_reset_n       ),
+   .c3_ddr4_act_n        (c3_ddr4_act_n         ),
+   .c3_ddr4_adr          (c3_ddr4_adr           ),
+   .c3_ddr4_ba           (c3_ddr4_ba            ),
+   .c3_ddr4_bg           (c3_ddr4_bg            ),
+   .c3_ddr4_ck_c         (c3_ddr4_ck_c          ),
+   .c3_ddr4_ck_t         (c3_ddr4_ck_t          ),
+   .c3_ddr4_cke          (c3_ddr4_cke           ),
+   .c3_ddr4_clk_clk_n    (c3_ddr4_clk_clk_n     ),
+   .c3_ddr4_clk_clk_p    (c3_ddr4_clk_clk_p     ),
+   .c3_ddr4_cs_n         (c3_ddr4_cs_n          ),
+   .c3_ddr4_dm_n         (c3_ddr4_dm_n          ),
+   .c3_ddr4_dq           (c3_ddr4_dq            ),
+   .c3_ddr4_dqs_c        (c3_ddr4_dqs_c         ),
+   .c3_ddr4_dqs_t        (c3_ddr4_dqs_t         ),
+   .c3_ddr4_odt          (c3_ddr4_odt           ),
+   .c3_ddr4_reset_n      (c3_ddr4_reset_n       ),
    .c1_ddr4_act_n        (c1_ddr4_act_n         ),
    .c1_ddr4_adr          (c1_ddr4_adr           ),
    .c1_ddr4_ba           (c1_ddr4_ba            ),
