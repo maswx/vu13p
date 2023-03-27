@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x316E4404B573F4EB",
+      "boundary_crc": "0xFDE2956ADBF90555",
       "device": "xcvu13p-fhgb2104-2-i",
       "gen_directory": "../../../../project.gen/sources_1/bd/base",
       "name": "base",
@@ -282,7 +282,7 @@
           }
         }
       },
-      "c0_ddr4": {
+      "c3_ddr4": {
         "mode": "Master",
         "vlnv_bus_definition": "xilinx.com:interface:ddr4:1.0",
         "vlnv": "xilinx.com:interface:ddr4_rtl:1.0",
@@ -346,88 +346,88 @@
         },
         "port_maps": {
           "ACT_N": {
-            "physical_name": "c0_ddr4_act_n",
+            "physical_name": "c3_ddr4_act_n",
             "direction": "O"
           },
           "ADR": {
-            "physical_name": "c0_ddr4_adr",
+            "physical_name": "c3_ddr4_adr",
             "direction": "O",
             "left": "16",
             "right": "0"
           },
           "BA": {
-            "physical_name": "c0_ddr4_ba",
+            "physical_name": "c3_ddr4_ba",
             "direction": "O",
             "left": "1",
             "right": "0"
           },
           "BG": {
-            "physical_name": "c0_ddr4_bg",
+            "physical_name": "c3_ddr4_bg",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "CK_C": {
-            "physical_name": "c0_ddr4_ck_c",
+            "physical_name": "c3_ddr4_ck_c",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "CK_T": {
-            "physical_name": "c0_ddr4_ck_t",
+            "physical_name": "c3_ddr4_ck_t",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "CKE": {
-            "physical_name": "c0_ddr4_cke",
+            "physical_name": "c3_ddr4_cke",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "CS_N": {
-            "physical_name": "c0_ddr4_cs_n",
+            "physical_name": "c3_ddr4_cs_n",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "DM_N": {
-            "physical_name": "c0_ddr4_dm_n",
+            "physical_name": "c3_ddr4_dm_n",
             "direction": "IO",
             "left": "8",
             "right": "0"
           },
           "DQ": {
-            "physical_name": "c0_ddr4_dq",
+            "physical_name": "c3_ddr4_dq",
             "direction": "IO",
             "left": "71",
             "right": "0"
           },
           "DQS_C": {
-            "physical_name": "c0_ddr4_dqs_c",
+            "physical_name": "c3_ddr4_dqs_c",
             "direction": "IO",
             "left": "8",
             "right": "0"
           },
           "DQS_T": {
-            "physical_name": "c0_ddr4_dqs_t",
+            "physical_name": "c3_ddr4_dqs_t",
             "direction": "IO",
             "left": "8",
             "right": "0"
           },
           "ODT": {
-            "physical_name": "c0_ddr4_odt",
+            "physical_name": "c3_ddr4_odt",
             "direction": "O",
             "left": "0",
             "right": "0"
           },
           "RESET_N": {
-            "physical_name": "c0_ddr4_reset_n",
+            "physical_name": "c3_ddr4_reset_n",
             "direction": "O"
           }
         }
       },
-      "c0_ddr4_clk": {
+      "c3_ddr4_clk": {
         "mode": "Slave",
         "vlnv_bus_definition": "xilinx.com:interface:diff_clock:1.0",
         "vlnv": "xilinx.com:interface:diff_clock_rtl:1.0",
@@ -442,11 +442,11 @@
         },
         "port_maps": {
           "CLK_N": {
-            "physical_name": "c0_ddr4_clk_clk_n",
+            "physical_name": "c3_ddr4_clk_clk_n",
             "direction": "I"
           },
           "CLK_P": {
-            "physical_name": "c0_ddr4_clk_clk_p",
+            "physical_name": "c3_ddr4_clk_clk_p",
             "direction": "I"
           }
         }
@@ -2494,7 +2494,7 @@
       },
       "ddr4_0_C0_DDR4": {
         "interface_ports": [
-          "c0_ddr4",
+          "c3_ddr4",
           "ddr4_0/C0_DDR4"
         ]
       },
@@ -2512,7 +2512,7 @@
       },
       "diff_clock_rtl_0_1": {
         "interface_ports": [
-          "c0_ddr4_clk",
+          "c3_ddr4_clk",
           "ddr4_0/C0_SYS_CLK"
         ]
       },
