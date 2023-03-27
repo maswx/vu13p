@@ -5,14 +5,14 @@ log=logs
 outdir=output
 top_module=extn_top
 
-increme=off
+increme="off"
 
 
 vivado -journal ${log}/project_${DATE}_jou \
 	   -log ${log}/project_${DATE}_log \
 	   -mode batch -source ./prj.tcl \
-	   -tclargs ./tcl/src.tcl   \
-                ./tcl/xdc.tcl   \
+	   -tclargs ./src.tcl   \
+                ./xdc.tcl   \
 	            ${outdir}_${DATE} \
                 ${top_module}       \
                 ${increme}

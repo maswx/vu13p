@@ -2,8 +2,10 @@
 
 
 add_files "
+    [glob ../src/iic/i2c_slave.v]
+    [glob ../src/iic/i2c_slave_wbm.v]
+    [glob ../src/iic/axis_fifo.v]
     [glob ../src/fir/*.v]
-    [glob ../src/iic/*.v]
     [glob ../src/lib/*.v]
     [glob ../src/top/*.v]
 "
