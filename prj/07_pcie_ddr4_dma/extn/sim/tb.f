@@ -1,4 +1,4 @@
--y ../src/iic/iic/rtl
+-y ../src/iic
 -y ../src/lib
 -y ../src/fir
 
