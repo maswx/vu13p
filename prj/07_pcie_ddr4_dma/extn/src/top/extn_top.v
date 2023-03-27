@@ -8,7 +8,7 @@
 
 `timescale 1 ps / 1 ps
 
-module base_wrapper
+module base_wrapper (
 output                   c3_ddr4_act_n           ,//o 
 output             [16:0]c3_ddr4_adr             ,//o
 output             [ 1:0]c3_ddr4_ba              ,//o

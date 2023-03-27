@@ -175,12 +175,12 @@ module fir_core (
     // 延迟线（用于存储输入数据）
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            for (integer k = 0; k < 33; k = k + 1) begin
+            for (k = 0; k < 33; k = k + 1) begin
                 data_buffer[k] <= 16'h0;
             end
         end else begin
             data_buffer[32] <= data_buffer[31];
-            for (integer k = 31; k > 0; k = k - 1) begin
+            for (k = 31; k > 0; k = k - 1) begin
                 data_buffer[k] <= data_buffer[k-1];
             end
             data_buffer[0] <= data_in;
