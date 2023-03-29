@@ -7,11 +7,11 @@ add_files "
     [glob ../src/iic/axis_fifo.v]
     [glob ../src/fir/*.v]
     [glob ../src/lib/*.v]
-    [glob ../src/top/*.v]
+    [glob ../src/top/extn2_top.v]
 "
 
 
 add_files "
-	[glob ../../base/project.srcs/sources_1/bd/base/ip/base_*/*.xci]
-	[glob ../../base/project.srcs/sources_1/bd/base/base.bd]
+	[glob ../../base2/project.srcs/sources_1/bd/base/ip/base*/*.xci]
+	[glob ../../base2/project.srcs/sources_1/bd/base/base.bd]
 "
