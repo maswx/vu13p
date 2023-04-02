@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x996A2CAA3BCAA2AD",
+      "boundary_crc": "0x996A2CAA831DFDB7",
       "device": "xcvu13p-fhgb2104-2-e",
       "gen_directory": "../../../../project.gen/sources_1/bd/base",
       "name": "base",
@@ -110,7 +110,7 @@
             "value_src": "user_prop"
           },
           "CAS_WRITE_LATENCY": {
-            "value": "12",
+            "value": "11",
             "value_src": "user_prop"
           },
           "CS_ENABLED": {
@@ -146,7 +146,7 @@
             "value_src": "user_prop"
           },
           "TIMEPERIOD_PS": {
-            "value": "833",
+            "value": "1000",
             "value_src": "user_prop"
           }
         },
@@ -243,8 +243,7 @@
             "value_src": "default"
           },
           "FREQ_HZ": {
-            "value": "100000000",
-            "value_src": "default"
+            "value": "400000000"
           }
         },
         "port_maps": {
@@ -750,13 +749,13 @@
             "value": "72"
           },
           "C0.DDR4_InputClockPeriod": {
-            "value": "2499"
+            "value": "2500"
           },
           "C0.DDR4_MemoryPart": {
             "value": "MT40A512M16HA-083E"
           },
           "C0.DDR4_TimePeriod": {
-            "value": "833"
+            "value": "1000"
           }
         },
         "interface_ports": {
