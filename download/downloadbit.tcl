@@ -10,4 +10,5 @@ set_property FULL_PROBES.FILE {} [get_hw_devices xcvu13p_0]
 set_property PROGRAM.FILE $bitname [get_hw_devices xcvu13p_0]
 program_hw_devices [get_hw_devices xcvu13p_0]
 refresh_hw_device [lindex [get_hw_devices xcvu13p_0] 0]
-
+close_hw_target
+disconnect_hw_server
