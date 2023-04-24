@@ -157,7 +157,7 @@ import time
 import mmap
 
 # 定义IIC 类
-class pcie_dev:
+class pcie_iic:
     def __init__(self,fd) -> None:
         self.fd = fd
         """
@@ -246,6 +246,21 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
         print(lsb)
         print(msb)
 
+
+
+
+
+
+
+# 定义测试函数 main
+
+if __name__ == '__main__':
+    dev = "/dev/xdma0_user"
+    fd = os.open(dev, os.O_RDWR)
+    iic=pcie_iic(fd)
+    iic.iic_read(0x0, 0x0000) #16'd54 
+    iic.iic_read(0x0, 0x0001) #16'd159
+    iic.iic_read(0x0, 0x0002) #16'd344
 
 
 
