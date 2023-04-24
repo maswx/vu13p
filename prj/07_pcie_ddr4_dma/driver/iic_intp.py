@@ -235,7 +235,7 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
             # | 3 | int(3) | 0 | 读/写取反 | 中断（3）- 接收FIFO满 |
             self.mapped_iic.seek(0x28)
             sta = self.mapped_iic.read(1)
-            if sta & 0x04 == 0:
+            if int.from_bytes(sta, byteorder='little') & 0x04 == 0:
                 break
          
         self.mapped_iic.seek(0x28)
