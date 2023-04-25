@@ -229,7 +229,7 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
         self.mapped_iic.write(tmp)
         # 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
         self.mapped_iic.seek(0x108)
-        self.mapped_iic.write(struct.pack('B',0x2))  
+        self.mapped_iic.write(struct.pack('B',0x202))  
 
         while True: # 等待接收完成
             # | 3 | int(3) | 0 | 读/写取反 | 中断（3）- 接收FIFO满 |
@@ -243,11 +243,66 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
         self.mapped_iic.seek(0x28)
         msb = self.mapped_iic.read(1)
 
-        print(lsb)
-        print(msb)
+        # 将8bit的lsb和msb合并成16bit的数据
+        lsb = int.from_bytes(lsb, byteorder='little')
+        msb = int.from_bytes(msb, byteorder='little')
+        data = (msb << 8) | lsb
+        print("data: ", data)
+        return data
 
 
 
+    def iic_write(self, devaddr, addr, data):
+        '''
+     动态写入操作：
+         1. 使用写入操作将 START + 从设备地址一起写入 TX FIFO
+         2. 将从设备的子寄存器地址写入 TX FIFO
+         3. 将除最后一个字节外的所有数据字节都写入 TX FIFO
+         4. 将 STOP + 最后一个数据字节写入 TX FIFO
+         5. 使用控制寄存器来启用控制器
+         6. 轮询 TX_FIFO_EMPTY 的状态寄存器，以判定数据发射状态（TX_FIFO_Empty = 1 表示数据发射已完成）。
+         7. 如果用户想要检查写入操作是否正确，可通过以下步骤来进行调试：
+         8. 请检查发射占用寄存器，确认是否已发射所有数据。
+         9. 用户还可以执行上述读取操作以便通过读取和验证数据来交叉验证写入操作。
+         10.如果有来自从设备的 ACK，还请以相同方式检查子寄存器，以对通信进行调试。
+         11.检查 TX_FIFO_Empty 标记，确认是否所有数据都已完成发射。
+         12.如果步骤 6 中未发现任何问题，则表示您可将数据写入从设备，请检查是否已建立通信。
+        Write
+        _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _         _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _         _ _ _ _ _ _ _ _     _
+         |_|_|_|_|_|_|_|_| |_|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_|___|
+        ST  Device Addr   W A   Address MSB   A         Address LSB   A   Data byte 0   A         Data byte N   A  SP 
+        '''
+        # 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
+        tmp = (devaddr & 0xfe | 0x100 | 0x01).to_bytes(2, 'big')
+        self.mapped_iic.seek(0x108)
+        self.mapped_iic.write(tmp)
+        # 2. 将从设备的子寄存器地址写入 TX FIFO
+        tmp = (addr>>8 & 0xFF).to_bytes(1, 'big')
+        self.mapped_iic.seek(0x108)
+        self.mapped_iic.write(tmp)
+        tmp = (addr    & 0xFF).to_bytes(1, 'big')
+        self.mapped_iic.seek(0x108)
+        self.mapped_iic.write(tmp)
+        # 3. 将除最后一个字节外的所有数据字节都写入 TX FIFO
+        tmp = (data>>8 & 0xFF).to_bytes(1, 'big')
+        self.mapped_iic.seek(0x108)
+        self.mapped_iic.write(tmp)
+        # 4. 将 STOP + 最后一个数据字节写入 TX FIFO
+        tmp = (data    & 0xFF | 0x200).to_bytes(2, 'big')
+        self.mapped_iic.seek(0x108)
+        self.mapped_iic.write(tmp)
+
+        # 5. 使用控制寄存器来启用控制器
+        self.mapped_iic.seek(0x100)
+        self.mapped_iic.write(struct.pack('B',0x8))  # 复位FIFO 
+
+        # 6. 轮询 TX_FIFO_EMPTY 的状态寄存器，以判定数据发射状态（TX_FIFO_Empty = 1 表示数据发射已完成）。
+        while True: # 等待接收完成
+            # | 7 | TX_FIFO_EMPTY | 1 | R | 发送 FIFO 空。当发送 FIFO 为空时，此位被设置为高。注意：此位在 TX FIFO 变为空时立即变为高电平。此时，最后一个字节的数据可能仍在输出管道中或部分传输。 |
+            self.mapped_iic.seek(0x104)
+            sta = self.mapped_iic.read(1)
+            if int.from_bytes(sta, byteorder='little') & 0x08 == 0:
+                break
 
 
 
