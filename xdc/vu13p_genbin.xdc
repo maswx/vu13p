@@ -10,8 +10,8 @@ set_property BITSTREAM.CONFIG.SPI_FALL_EDGE Yes [current_design]
 #set bscan_cells [get_cells -hierarchical -filter {PRIMITIVE_TYPE =~ CONFIGURATION.BSCAN.*}]
 #set_property HD.TANDEM_IP_PBLOCK Stage1_Main $bscan_cells
 #set_property HD.TANDEM_IP_PBLOCK Stage1_Main [get_cells -hierarchical -filter {PRIMITIVE_TYPE =~ CONFIGURATION.BSCAN.*}]
-set_property HD.OVERRIDE_PERSIST false [current_design]
-set_property HD.TANDEM_BITSTREAMS Separate [current_design]
+#-- set_property HD.OVERRIDE_PERSIST false [current_design]
+#-- set_property HD.TANDEM_BITSTREAMS Separate [current_design]
 #set_property HD.TANDEM_IP_PBLOCK Stage1_Config_IO [get_cells sys_reset_n_ibuf]  
 #set_property HD.TANDEM_IP_PBLOCK Stage1_Main [get_cells util_ds_buf_0]
 
