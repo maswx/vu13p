@@ -150,6 +150,7 @@ Table 2‐17: Receive FIFO Programmable Depth Interrupt Register (0x120)RX_FIFO_
 import threading
 import select
 
+import time 
 
 import os
 import struct
@@ -168,10 +169,10 @@ class pcie_iic:
           "range": "64K"
         }, 
         """
-        self.mapped_dma_w = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0xff820000)
-        self.mapped_dma_r = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0xff810000)
-        self.mapped_iic   = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0xff800000)
-        self.mapped_clk   = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0xff830000)
+        self.mapped_dma_w = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0x00820000)
+        self.mapped_dma_r = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0x00810000)
+        self.mapped_iic   = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0x00800000)
+        self.mapped_clk   = mmap.mmap(self.fd, length=0x10000, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ | mmap.PROT_WRITE, offset=0x00830000)
 
         self.iic_init()
 
@@ -192,6 +193,10 @@ class pcie_iic:
         #self.mapped_iic.write(struct.pack('B',0xc))  
         #self.mapped_iic.seek(0x1c) #使能全局中断
         #self.mapped_iic.write(struct.pack('B',0x80000000))  
+        # test:
+        self.mapped_iic.seek(0x020)
+        data = self.mapped_iic.read(1)  
+        print("addr 0x20 = ", hex(data[0]))
 
     def iic_read(self, devaddr, addr):
         '''
@@ -212,31 +217,77 @@ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _         _ _ _ _ _ _ _ _   _   _ _ _ _ _ _ 
  |_|_|_|_|_|_|_|_| |_|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_|_| |_|_|_|_|_|_|_|_|___|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_| |_|
 ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr   R A   Data byte 0   A         Data byte N   N  SP
         '''
+        # 0. init ,清除FIFO
+        tmp = struct.pack('B', (0x02))
+        self.mapped_iic.seek(0x100)
+        self.mapped_iic.write(tmp)
+        tmp = struct.pack('B', (0x00))
+        self.mapped_iic.seek(0x100)
+        self.mapped_iic.write(tmp)
+        self.mapped_iic.seek(0x100)
+        tmp = self.mapped_iic.read(1)
+        print("CR addr 0x100 = ",hex(tmp[0]))
+
+        self.mapped_iic.seek(0x104)
+        sta = self.mapped_iic.read(1)
+        print("addr 0x104 = ", hex(sta[0]))
+
         # 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
-        tmp = (devaddr & 0xfe | 0x100 | 0x01).to_bytes(2, 'big')
+        #tmp = (devaddr & 0xfe | 0x100 | 0x01).to_bytes(2, 'big')
+        tmp = struct.pack('<H', (devaddr & 0xfe | 0x100 | 0x01))
         self.mapped_iic.seek(0x108)
         self.mapped_iic.write(tmp)
         # 2. 将从设备的子寄存器地址写入 TX FIFO
-        tmp = (addr>>8 & 0xFF).to_bytes(1, 'big')
+        tmp = struct.pack('B', ((addr >> 8) & 0xff ))
         self.mapped_iic.seek(0x108)
         self.mapped_iic.write(tmp)
-        tmp = (addr    & 0xFF).to_bytes(1, 'big')
+        tmp = struct.pack('B', ((addr     ) & 0xff ))
         self.mapped_iic.seek(0x108)
         self.mapped_iic.write(tmp)
         #3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
-        tmp = (devaddr & 0xfe | 0x100      ).to_bytes(2, 'big')
+        tmp = struct.pack('<H', (devaddr & 0xfe | 0x100 ))
         self.mapped_iic.seek(0x108)
         self.mapped_iic.write(tmp)
         # 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
         self.mapped_iic.seek(0x108)
-        self.mapped_iic.write(struct.pack('B',0x202))  
+        self.mapped_iic.write(struct.pack('<H',0x201))  
 
+        #---------------------------------------------
+        self.mapped_iic.seek(0x100)
+        sta = self.mapped_iic.read(2)
+        print("CR: addr 0x100 = ", hex(sta[0]))
+
+        # 5. 使用控制寄存器来启用控制器
+        tmp = struct.pack('B', (0x4D))
+        self.mapped_iic.seek(0x100)
+        self.mapped_iic.write(tmp)
+
+        self.mapped_iic.seek(0x100)
+        sta = self.mapped_iic.read(2)
+        print("CR: addr 0x100 = ", hex(sta[0]))
+        # 6. 轮询 RX_FIFO_EMPTY 的状态寄存器，以查看数据接收状态（如果 RX_FIFO = 0，则数据已进入接收 FIFO 内）
+        time.sleep(1)
         while True: # 等待接收完成
             # | 3 | int(3) | 0 | 读/写取反 | 中断（3）- 接收FIFO满 |
-            self.mapped_iic.seek(0x28)
+            self.mapped_iic.seek(0x100)
+            tmp = self.mapped_iic.read(1)
+            print("contrl  addr 0x100 = ",hex(tmp[0]))
+            self.mapped_iic.seek(0x104)
             sta = self.mapped_iic.read(1)
-            if int.from_bytes(sta, byteorder='little') & 0x04 == 0:
+            print("state : addr 0x104 = ", hex(sta[0]))
+            self.mapped_iic.seek(0x114)
+            sta = self.mapped_iic.read(1)
+            print("TXFIFO: addr 0x114 = ", hex(sta[0]))
+            self.mapped_iic.seek(0x118)
+            sta = self.mapped_iic.read(1)
+            print("RXFIFO: addr 0x118 = ", hex(sta[0]))
+            self.mapped_iic.seek(0x020)
+            sta = self.mapped_iic.read(1)
+            print("IER : addr 0x028 = ", hex(sta[0]), "\n")
+            if int.from_bytes(sta, byteorder='little') & 0x80 == 1:
                 break
+            else:
+                time.sleep(1)
          
         self.mapped_iic.seek(0x28)
         lsb = self.mapped_iic.read(1)
@@ -304,7 +355,13 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
             if int.from_bytes(sta, byteorder='little') & 0x08 == 0:
                 break
 
+    def seek_write(self, addr, data):
+        self.mapped_iic.seek(addr)
+        self.mapped_iic.write(struct.pack('<I',data))  # 复位FIFO 
 
+    def seek_read(self, addr, len):
+        self.mapped_iic.seek(addr)
+        self.mapped_iic.read(len)
 
 
 # 定义测试函数 main
