@@ -211,7 +211,7 @@ fir_top dut_top_inst(
     .data_in    (data_in                ),//i   
     .data_out   (data_out               ),//o
     .i2c_scl_i  (iic_scl_o              ),//i
-    .i2c_scl_o  (/*float*/              ),//o   
+    .i2c_scl_o  (iic_scl_i              ),//o   
     .i2c_scl_t  (/*float*/              ),//o
     .i2c_sda_i  (iic_sda_o              ),//i
     .i2c_sda_o  (iic_sda_i              ),//o
