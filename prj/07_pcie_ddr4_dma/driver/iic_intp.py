@@ -196,7 +196,7 @@ class pcie_iic:
         # test:
         self.mapped_iic.seek(0x020)
         data = self.mapped_iic.read(1)  
-        print("addr 0x20 = ", hex(data[0]))
+        print("0. addr 0x20 = ", hex(data[0]))
 
     def iic_read(self, devaddr, addr):
         '''
@@ -226,15 +226,17 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
         self.mapped_iic.write(tmp)
         self.mapped_iic.seek(0x100)
         tmp = self.mapped_iic.read(1)
-        print("CR addr 0x100 = ",hex(tmp[0]))
+        print("1. CR addr 0x100 = ",hex(tmp[0]))
 
         self.mapped_iic.seek(0x104)
         sta = self.mapped_iic.read(1)
-        print("addr 0x104 = ", hex(sta[0]))
+        print("2. addr 0x104 = ", hex(sta[0]))
 
         # 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
         #tmp = (devaddr & 0xfe | 0x100 | 0x01).to_bytes(2, 'big')
-        tmp = struct.pack('<H', (devaddr & 0xfe | 0x100 | 0x01))
+        #tmp = struct.pack('<H', (devaddr & 0xfe | 0x100 | 0x01))
+        tmp = struct.pack('B', 0)
+
         self.mapped_iic.seek(0x108)
         self.mapped_iic.write(tmp)
         # 2. 将从设备的子寄存器地址写入 TX FIFO
@@ -255,7 +257,7 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
         #---------------------------------------------
         self.mapped_iic.seek(0x100)
         sta = self.mapped_iic.read(2)
-        print("CR: addr 0x100 = ", hex(sta[0]))
+        print("3. CR: addr 0x100 = ", hex(sta[0]))
 
         # 5. 使用控制寄存器来启用控制器
         tmp = struct.pack('B', (0x4D))
@@ -264,26 +266,26 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
 
         self.mapped_iic.seek(0x100)
         sta = self.mapped_iic.read(2)
-        print("CR: addr 0x100 = ", hex(sta[0]))
+        print("4. CR: addr 0x100 = ", hex(sta[0]))
         # 6. 轮询 RX_FIFO_EMPTY 的状态寄存器，以查看数据接收状态（如果 RX_FIFO = 0，则数据已进入接收 FIFO 内）
         time.sleep(1)
         while True: # 等待接收完成
             # | 3 | int(3) | 0 | 读/写取反 | 中断（3）- 接收FIFO满 |
             self.mapped_iic.seek(0x100)
             tmp = self.mapped_iic.read(1)
-            print("contrl  addr 0x100 = ",hex(tmp[0]))
+            print("5.1 contrl  addr 0x100 = ",hex(tmp[0]))
             self.mapped_iic.seek(0x104)
             sta = self.mapped_iic.read(1)
-            print("state : addr 0x104 = ", hex(sta[0]))
+            print("5.2 state : addr 0x104 = ", hex(sta[0]))
             self.mapped_iic.seek(0x114)
             sta = self.mapped_iic.read(1)
-            print("TXFIFO: addr 0x114 = ", hex(sta[0]))
+            print("5.3 TXFIFO: addr 0x114 = ", hex(sta[0]))
             self.mapped_iic.seek(0x118)
             sta = self.mapped_iic.read(1)
-            print("RXFIFO: addr 0x118 = ", hex(sta[0]))
+            print("5.4 RXFIFO: addr 0x118 = ", hex(sta[0]))
             self.mapped_iic.seek(0x020)
             sta = self.mapped_iic.read(1)
-            print("IER : addr 0x028 = ", hex(sta[0]), "\n")
+            print("5.5 IER : addr 0x028 = ", hex(sta[0]), "\n")
             if int.from_bytes(sta, byteorder='little') & 0x80 == 1:
                 break
             else:
@@ -369,6 +371,7 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
 if __name__ == '__main__':
     dev = "/dev/xdma0_user"
     fd = os.open(dev, os.O_RDWR)
+    #fd = os.open(dev, "r+b")
     iic=pcie_iic(fd)
     iic.iic_read(0x0, 0x0000) #16'd54 
     iic.iic_read(0x0, 0x0001) #16'd159
