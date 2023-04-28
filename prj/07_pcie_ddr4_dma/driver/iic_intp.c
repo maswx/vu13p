@@ -132,6 +132,7 @@ Table 2‐17: Receive FIFO Programmable Depth Interrupt Register (0x120)RX_FIFO_
 
 
 */
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -226,38 +227,61 @@ ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr 
 	uint32_t sta;
     //# 0. init ,清除FIFO
     mem_write(mem, 0x100, 0x2);//     清除FIFO
-    mem_write(mem, 0x100, 0x0);// 取消清除FIFO
+    mem_write(mem, 0x100, 0xd);// 取消清除FIFO
 	printf("复位后 : 0x100 = %x\n", mem_read(mem, 0x100));
 
-    mem_write(mem, 0x108, devaddr & 0xfe | 0x100 | 0x01);// 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
-    mem_write(mem, 0x108, ((addr>>8) & 0xff)           );// 2. 将从设备的子寄存器地址写入 TX FIFO
-    mem_write(mem, 0x108, ((addr   ) & 0xff)           );// 2. 将从设备的子寄存器地址写入 TX FIFO
-    mem_write(mem, 0x108, devaddr & 0xfe | 0x100       );// 3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
+    mem_write(mem, 0x108, (devaddr & 0xfe) | 0x100 | 0x01);// 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
+	printf("1. 0x108 = %08x\n", mem_read(mem, 0x108));
+    mem_write(mem, 0x108, ((regaddr>>8) & 0xff)        );// 2. 将从设备的子寄存器地址写入 TX FIFO
+	printf("2. 0x108 = %08x\n", mem_read(mem, 0x108));
+    mem_write(mem, 0x108, ((regaddr   ) & 0xff)        );// 2. 将从设备的子寄存器地址写入 TX FIFO
+	printf("3. 0x108 = %08x\n", mem_read(mem, 0x108));
+
+    mem_write(mem, 0x100, 0x0d);//生成重复启动
+	while(1)
+	{// # 等待接收完成
+        printf("3.1 contrl  addr   0x100 = %08x\n", mem_read(mem, 0x100));
+        printf("3.1 状态寄存器     0x104 = %08x\n", mem_read(mem, 0x104));
+        printf("3.1 发端FIFO个数   0x114 = %08x\n", mem_read(mem, 0x114));
+        printf("3.1 收端FIFO个数   0x118 = %08x\n", mem_read(mem, 0x118));
+        printf("3.1 中断状态寄存器 0x028 = %08x\n", mem_read(mem, 0x020));
+		printf("\n");
+		sta = mem_read(mem, 0x104);
+        if((sta & 0x80))
+            break;
+		else
+			sleep(1);
+	} 
+
+
+    mem_write(mem, 0x108, (devaddr & 0xfe) | 0x100       );// 3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
+	printf("4. 0x108 = %08x\n", mem_read(mem, 0x108));
     mem_write(mem, 0x108, 0x2            | 0x200       );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
+	printf("5. 0x108 = %08x\n", mem_read(mem, 0x108));
 	
-    mem_write(mem, 0x100, 0x4D                         );// 5. 使用控制寄存器来启用控制器
+    mem_write(mem, 0x100, 0x0d                         );// 5. 使用控制寄存器来启用控制器
 
     //# 6. 轮询 RX_FIFO_EMPTY 的状态寄存器，以查看数据接收状态（如果 RX_FIFO = 0，则数据已进入接收 FIFO 内）
 	while(1)
 	{// # 等待接收完成
-        printf("5.1 contrl  addr 0x100 = %08x", mem_read(mem, 0x100));
-        printf("5.1 contrl  addr 0x104 = %08x", mem_read(mem, 0x104));
-        printf("5.1 contrl  addr 0x114 = %08x", mem_read(mem, 0x114));
-        printf("5.1 contrl  addr 0x118 = %08x", mem_read(mem, 0x118));
-        printf("5.1 contrl  addr 0x028 = %08x", mem_read(mem, 0x020));
+        printf("5.1 contrl  addr   0x100 = %08x\n", mem_read(mem, 0x100));
+        printf("5.1 状态寄存器     0x104 = %08x\n", mem_read(mem, 0x104));
+        printf("5.1 发端FIFO个数   0x114 = %08x\n", mem_read(mem, 0x114));
+        printf("5.1 收端FIFO个数   0x118 = %08x\n", mem_read(mem, 0x118));
+        printf("5.1 中断状态寄存器 0x028 = %08x\n", mem_read(mem, 0x020));
 		printf("\n");
-		sta = mem_read(mem, 0x20);
-        if sta & 0x80 == 1:
-            break
-        else:
-            time.sleep(1)
+		sta = mem_read(mem, 0x104);
+        if((sta & 0x80))
+            break;
+		else
+			sleep(1);
 	} 
 	uint32_t lsb = mem_read(mem, 0x28);
 	uint32_t msb = mem_read(mem, 0x28);
 	msb = msb << 8 | lsb;
 
-    printf("data: %x", msb)
-    return msb
+    printf("data: %x", msb);
+    return msb;
 
 
 }
