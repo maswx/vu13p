@@ -82,8 +82,10 @@ base base_inst     (
    .c0_ddr4_reset_n      (c0_ddr4_reset_n       ),
    .iic_scl_i            (iic_scl_i             ),
    .iic_scl_o            (iic_scl_o             ),
+   .iic_scl_t            (iic_scl_t             ),
    .iic_sda_i            (iic_sda_i             ),
    .iic_sda_o            (iic_sda_o             ),
+   .iic_sda_t            (iic_sda_t             ),
    .pcie_lane_rxn        (pcie_lane_rxn         ),
    .pcie_lane_rxp        (pcie_lane_rxp         ),
    .pcie_lane_txn        (pcie_lane_txn         ),
@@ -135,21 +137,32 @@ base base_inst     (
 //--output                   testvec_s2mm_tready     ,//o
 //--input                    testvec_s2mm_tvalid      //i
 
+wire dut_scl_t;
+wire dut_sda_t;
+wire dut_scl_o;
+wire dut_sda_o;
 wire [15:0]data_in  = source_mm2s_tdata[15:0];
 wire [15:0]data_out;
 wire [63:0]testvec ;
+
+wire dut_sda_i = iic_sda_t ? iic_sda_o : 1'b1;
+wire dut_scl_i = iic_scl_t ? iic_scl_o : 1'b1;
+
+wire iic_sda_i = dut_sda_t ? dut_sda_o : 1'b1;
+wire iic_scl_i = dut_scl_t ? dut_scl_o : 1'b1;
+
 
 fir_top dut_top_inst(
     .clk        ( tb_clk                ),//i
     .rst        (~tb_clk_locked         ),//i
     .data_in    (data_in                ),//i   
     .data_out   (data_out               ),//o
-    .i2c_scl_i  (iic_scl_o              ),//i
-    .i2c_scl_o  (iic_scl_i              ),//o   
-    .i2c_scl_t  (/*float*/              ),//o
-    .i2c_sda_i  (iic_sda_o              ),//i
-    .i2c_sda_o  (iic_sda_i              ),//o
-    .i2c_sda_t  (/*float*/              ),//o
+    .i2c_scl_i  (dut_scl_i              ),//i
+    .i2c_scl_o  (dut_scl_o              ),//o   
+    .i2c_scl_t  (dut_scl_t              ),//o
+    .i2c_sda_i  (dut_sda_i              ),//i
+    .i2c_sda_o  (dut_sda_o              ),//o
+    .i2c_sda_t  (dut_sda_t              ),//o
 	.testvec    (testvec                ) //o送到逻辑分析仪的测试矢量
 );                 
                       
