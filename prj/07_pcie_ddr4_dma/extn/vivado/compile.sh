@@ -4,6 +4,7 @@ git_hone_path=$(git rev-parse --show-toplevel)
 log=logs
 outdir=output
 top_module=extn_top
+jobx=10
 
 increme="off"
 
@@ -15,7 +16,8 @@ vivado -journal ${log}/project_${DATE}_jou \
                 ./xdc.tcl   \
 	            ${outdir}_${DATE} \
                 ${top_module}       \
-                ${increme}
+                ${increme}\
+				${jobx}
 
 
 
