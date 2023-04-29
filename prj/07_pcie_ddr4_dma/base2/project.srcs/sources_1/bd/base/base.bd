@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x996A2CAA831DFDB7",
+      "boundary_crc": "0x639E6CD2DFEB23CA",
       "device": "xcvu13p-fhgb2104-2-e",
       "gen_directory": "../../../../project.gen/sources_1/bd/base",
       "name": "base",
@@ -25,7 +25,9 @@
       "clk_wiz_0": "",
       "axis_data_fifo_0": "",
       "axis_data_fifo_1": "",
-      "axis_data_fifo_2": ""
+      "axis_data_fifo_2": "",
+      "ila_0": "",
+      "clk_wiz_1": ""
     },
     "interface_ports": {
       "pcie_ref": {
@@ -636,6 +638,15 @@
         }
       },
       "tb_clk_locked": {
+        "direction": "O"
+      },
+      "iic_scl_i": {
+        "direction": "I"
+      },
+      "iic_scl_t": {
+        "direction": "O"
+      },
+      "iic_sda_t": {
         "direction": "O"
       }
     },
@@ -1326,6 +1337,88 @@
             "value": "1"
           }
         }
+      },
+      "ila_0": {
+        "vlnv": "xilinx.com:ip:ila:6.2",
+        "xci_name": "base_ila_0_0",
+        "xci_path": "ip/base_ila_0_0/base_ila_0_0.xci",
+        "inst_hier_path": "ila_0",
+        "parameters": {
+          "C_ADV_TRIGGER": {
+            "value": "false"
+          },
+          "C_DATA_DEPTH": {
+            "value": "8192"
+          },
+          "C_EN_STRG_QUAL": {
+            "value": "1"
+          },
+          "C_MONITOR_TYPE": {
+            "value": "Native"
+          },
+          "C_NUM_OF_PROBES": {
+            "value": "6"
+          }
+        }
+      },
+      "clk_wiz_1": {
+        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
+        "xci_name": "base_clk_wiz_1_0",
+        "xci_path": "ip/base_clk_wiz_1_0/base_clk_wiz_1_0.xci",
+        "inst_hier_path": "clk_wiz_1",
+        "parameters": {
+          "CLKIN1_JITTER_PS": {
+            "value": "40.0"
+          },
+          "CLKOUT1_JITTER": {
+            "value": "450.501"
+          },
+          "CLKOUT1_PHASE_ERROR": {
+            "value": "523.418"
+          },
+          "CLKOUT1_REQUESTED_OUT_FREQ": {
+            "value": "10"
+          },
+          "CLKOUT2_JITTER": {
+            "value": "134.506"
+          },
+          "CLKOUT2_PHASE_ERROR": {
+            "value": "154.678"
+          },
+          "CLKOUT2_USED": {
+            "value": "false"
+          },
+          "MMCM_CLKFBOUT_MULT_F": {
+            "value": "92.375"
+          },
+          "MMCM_CLKIN1_PERIOD": {
+            "value": "4.000"
+          },
+          "MMCM_CLKIN2_PERIOD": {
+            "value": "10.0"
+          },
+          "MMCM_CLKOUT0_DIVIDE_F": {
+            "value": "92.375"
+          },
+          "MMCM_CLKOUT1_DIVIDE": {
+            "value": "1"
+          },
+          "MMCM_DIVCLK_DIVIDE": {
+            "value": "25"
+          },
+          "NUM_OUT_CLKS": {
+            "value": "1"
+          },
+          "PRIM_IN_FREQ": {
+            "value": "250"
+          },
+          "USE_LOCKED": {
+            "value": "false"
+          },
+          "USE_RESET": {
+            "value": "false"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -1499,13 +1592,29 @@
       "axi_iic_0_scl_o": {
         "ports": [
           "axi_iic_0/scl_o",
-          "iic_scl_o"
+          "iic_scl_o",
+          "ila_0/probe0"
+        ]
+      },
+      "axi_iic_0_scl_t": {
+        "ports": [
+          "axi_iic_0/scl_t",
+          "iic_scl_t",
+          "ila_0/probe4"
         ]
       },
       "axi_iic_0_sda_o": {
         "ports": [
           "axi_iic_0/sda_o",
-          "iic_sda_o"
+          "iic_sda_o",
+          "ila_0/probe3"
+        ]
+      },
+      "axi_iic_0_sda_t": {
+        "ports": [
+          "axi_iic_0/sda_t",
+          "iic_sda_t",
+          "ila_0/probe5"
         ]
       },
       "clk_wiz_0_clk_out1": {
@@ -1520,6 +1629,12 @@
           "tb_clk_locked"
         ]
       },
+      "clk_wiz_1_clk_out1": {
+        "ports": [
+          "clk_wiz_1/clk_out1",
+          "ila_0/clk"
+        ]
+      },
       "ddr4_0_c0_ddr4_ui_clk": {
         "ports": [
           "ddr4_0/c0_ddr4_ui_clk",
@@ -1528,10 +1643,18 @@
           "smartconnect_1/aclk1"
         ]
       },
+      "iic_scl_i_1": {
+        "ports": [
+          "iic_scl_i",
+          "axi_iic_0/scl_i",
+          "ila_0/probe1"
+        ]
+      },
       "iic_sda_i_1": {
         "ports": [
           "iic_sda_i",
-          "axi_iic_0/sda_i"
+          "axi_iic_0/sda_i",
+          "ila_0/probe2"
         ]
       },
       "pcie_perst_1": {
@@ -1597,7 +1720,8 @@
           "axis_data_fifo_1/s_axis_aclk",
           "axi_dma_1/m_axi_mm2s_aclk",
           "axi_dma_0/m_axi_s2mm_aclk",
-          "axis_data_fifo_2/m_axis_aclk"
+          "axis_data_fifo_2/m_axis_aclk",
+          "clk_wiz_1/clk_in1"
         ]
       },
       "xdma_0_user_lnk_up": {
