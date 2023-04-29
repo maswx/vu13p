@@ -145,11 +145,11 @@ wire [15:0]data_in  = source_mm2s_tdata[15:0];
 wire [15:0]data_out;
 wire [63:0]testvec ;
 
-wire dut_sda_i = iic_sda_t ? iic_sda_o : 1'b1;
-wire dut_scl_i = iic_scl_t ? iic_scl_o : 1'b1;
+wire dut_sda_i = iic_sda_t ? dut_sda_o : iic_sda_o;
+wire dut_scl_i = iic_scl_t ? dut_scl_o : iic_scl_o;
 
-wire iic_sda_i = dut_sda_t ? dut_sda_o : 1'b1;
-wire iic_scl_i = dut_scl_t ? dut_scl_o : 1'b1;
+wire iic_sda_i = dut_sda_t ? iic_sda_o : dut_sda_o;
+wire iic_scl_i = dut_scl_t ? iic_scl_o : dut_scl_o;
 
 
 fir_top dut_top_inst(
