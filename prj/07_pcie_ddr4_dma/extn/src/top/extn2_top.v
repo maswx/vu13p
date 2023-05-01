@@ -137,6 +137,8 @@ base base_inst     (
 //--output                   testvec_s2mm_tready     ,//o
 //--input                    testvec_s2mm_tvalid      //i
 
+wire dut_sda_i;
+wire dut_scl_i;
 wire dut_scl_t;
 wire dut_sda_t;
 wire dut_scl_o;
@@ -145,11 +147,11 @@ wire [15:0]data_in  = source_mm2s_tdata[15:0];
 wire [15:0]data_out;
 wire [63:0]testvec ;
 
-wire dut_sda_i = iic_sda_t ? dut_sda_o : iic_sda_o;
-wire dut_scl_i = iic_scl_t ? dut_scl_o : iic_scl_o;
 
-wire iic_sda_i = dut_sda_t ? iic_sda_o : dut_sda_o;
-wire iic_scl_i = dut_scl_t ? iic_scl_o : dut_scl_o;
+assign dut_sda_i = dut_sda_o & iic_sda_t;
+assign dut_scl_i = dut_scl_o & iic_scl_t;
+assign iic_sda_i = dut_sda_o & iic_sda_t;
+assign iic_scl_i = dut_scl_o & iic_scl_t;
 
 
 fir_top dut_top_inst(
