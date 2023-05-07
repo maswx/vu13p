@@ -173,10 +173,15 @@ int main() {
         perror("mmap");
         exit(1);
     }
+    void *gpiox  = mmap(NULL, 0x10000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x00840000);
+    mem_write(gpiox, 0, 0x1);
+    sleep(0.001);
+    mem_write(gpiox, 0, 0x0);
+    sleep(0.001);
 
 	pcie_iic_init(mem);
-	pcie_iicreg_read(mem, 0, 0x0);
-	pcie_iicreg_read(mem, 0, 0x1);
+	//pcie_iicreg_read(mem, 0, 0x0);
+	//pcie_iicreg_read(mem, 0, 0x1);
 	pcie_iicreg_read(mem, 0, 0x2);
     // 解除内存映射
     munmap(mem, 0x1000);
@@ -190,12 +195,27 @@ int main() {
 uint32_t pcie_iic_init(void *mem)
 {
     // 复位掉整个IIC
-    mem_write(mem, 0x40, 0xa);
+    //--mem_write(mem, GPO,  0x01);
+    //--mem_write(mem, GPO,  0x00);
+    //--sleep(1);
+    //--printf("GPO = %08x\n", mem_read(mem, GPO));
+    mem_write(mem, SOFTR , 0xa);
+    mem_write(mem, SOFTR , 0x0);
+    mem_write(mem, IER   , 0xff);
+    mem_write(mem, IER   , 0x00);
+    mem_write(mem, GIE   , 0x80000000);
+    mem_write(mem, ISR   , 0xd0);
+    mem_write(mem, ISR   , 0x00);
     //复位掉 IIC  FIFO
-    mem_write(mem, 0x100, 0x2);
-    mem_write(mem, 0x100, 0x0);
+    //mem_write(mem, CR, 0x2);
+    //mem_write(mem, CR, 0x0);
     // 配置中断条件1:RX FIFO收到2个数据
-    mem_write(mem, 0x120, 0x1);
+    //mem_write(mem, RX_FIFO_PIRQ, 0x1);
+    printf("0.1 软复位   = %08x\n", mem_read(mem, SOFTR ));
+    printf("0.2 中断使能 = %08x\n", mem_read(mem, IER   ));
+    printf("0.3 全局中断 = %08x\n", mem_read(mem, GIE   ));
+    printf("0.4 中断状态 = %08x\n", mem_read(mem, ISR   ));
+    printf("\n");
     return 0;
 }
 
@@ -220,64 +240,94 @@ uint32_t pcie_iicreg_read(void *mem, uint32_t devaddr, uint32_t regaddr)
         11. 检查 TX_FIFO_Empty 标记，确认是否所有数据都已完成发射。
         12. 如果步骤 6 中未发现任何问题，则表示您可从从设备接收数据，请检查是否已建立通信 
 Read
+| 位字段 | 名称 | 默认值 | 访问类型 | 描述 |
+| ------ | ---- | ------ | -------- | ---- |
+| 6 | GC_EN | 0 | 读/写 | 通用调用使能。设置此位为高将允许AXI IIC响应通用调用地址。0 = 禁用通用调用 1 = 启用通用调用 |
+| 5 | RSTA | 0 | 读/写 | 重复起始。将此位写入1会在总线上生成一个重复的START条件，如果AXI IIC总线接口是当前总线主机。如果在错误的时间尝试重复启动（如果总线被另一个主机拥有），将导致仲裁丢失。此位在重复启动发生时复位。在将新地址写入TX_FIFO或DTR之前必须设置此位。 |
+| 4 | TXAK | 0 | 读/写 | 发送响应使能。此位指定在主机和从机接收器的确认周期中驱动到sda线上的值。0 = ACK位= 0 – 确认 1 = ACK位= 1 – 非确认由于主机接收器通过不确认传输的最后一个字节来指示数据接收的结束，因此该位用于结束主机接收器传输。作为从机，必须在接收字节之前设置此位，以发出非确认信号。 |
+| 3 | TX | 0 | 读/写 | 发送/接收模式选择。此位选择主/从传输的方向。0 = 选择AXI IIC接收；1 = 选择AXI IIC传输。此位不控制带地址的读/写位，带地址的读/写位必须是写入TX_FIFO的地址的最低位。|
+| 2 | MSMS0 | 0 | 读/写 | 主/从模式选择。当此位从0更改为1时，AXI IIC总线接口在主模式下生成START条件。当此位清除时，生成STOP条件，AXI IIC总线接口切换到从模式。当硬件清除此位时，因为总线的仲裁已经丢失，不会生成STOP条件（参见中断(0): 仲裁丢失）。|
+| 1 | TX_FIFO Reset | 0 | 读/写 | 发送FIFO重置。如果发生(a)仲裁丢失或(b)传输错误，则必须设置此位以刷新FIFO。0 = 发送FIFO正常操作；1 = 重置发送FIFO。|
+| 0 | EN | 0 | 读/写 | AXI IIC使能。在任何其他CR位产生任何影响之前，必须设置此位。0 = 重置并禁用AXI IIC控制器；1 = 启用AXI IIC控制器。|
 _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _         _ _ _ _ _ _ _ _   _   _ _ _ _ _ _ _     _ _ _ _ _ _ _ _         _ _ _ _ _ _ _ _ _   _
  |_|_|_|_|_|_|_|_| |_|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_|_| |_|_|_|_|_|_|_|_|___|_|_|_|_|_|_|_|_|_ ... _|_|_|_|_|_|_|_|_| |_|
 ST  Device Addr   W A   Address MSB   A         Address LSB   A  RS Device Addr   R A   Data byte 0   A         Data byte N   N  SP
         */
 	uint32_t sta;
     //# 0. init ,清除FIFO
-    mem_write(mem, 0x100, 0x2);//     清除FIFO
-    mem_write(mem, 0x100, 0xd);// 取消清除FIFO
-	printf("复位后 : 0x100 = %x\n", mem_read(mem, 0x100));
+    //mem_write(mem, CR, 0xf);// MSMS=1,TX = 1
+    //mem_write(mem, CR, 0x5);// MSMS=1,TX = 1
+	//printf("启动前: 控制寄存器 = %x\n", mem_read(mem, CR));
 
-    mem_write(mem, 0x108, (devaddr & 0xfe) | 0x100 | 0x01);// 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
-	printf("1. 0x108 = %08x\n", mem_read(mem, 0x108));
-    mem_write(mem, 0x108, ((regaddr>>8) & 0xff)        );// 2. 将从设备的子寄存器地址写入 TX FIFO
-	printf("2. 0x108 = %08x\n", mem_read(mem, 0x108));
-    mem_write(mem, 0x108, ((regaddr   ) & 0xff)        );// 2. 将从设备的子寄存器地址写入 TX FIFO
-	printf("3. 0x108 = %08x\n", mem_read(mem, 0x108));
+    mem_write(mem, TX_FIFO, (devaddr & 0xfe) | 0x100     );// 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
+    mem_write(mem, TX_FIFO, ((regaddr>>8) & 0xff)        );// 2. 将从设备的子寄存器地址写入 TX FIFO
+    mem_write(mem, TX_FIFO, ((regaddr   ) & 0xff)|0x200  );// 2. 将从设备的子寄存器地址写入 TX FIFO
+    //mem_write(mem, TX_FIFO, (devaddr & 0xfe) | 0x101     );// 3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
+    //mem_write(mem, TX_FIFO, 0x2              | 0x200     );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
+    mem_write(mem, CR, 0xd);// MSMS=1,TX = 1
 
-    mem_write(mem, 0x100, 0x0d);//生成重复启动
-	while(1)
-	{// # 等待接收完成
-        printf("3.1 contrl  addr   0x100 = %08x\n", mem_read(mem, 0x100));
-        printf("3.1 状态寄存器     0x104 = %08x\n", mem_read(mem, 0x104));
-        printf("3.1 发端FIFO个数   0x114 = %08x\n", mem_read(mem, 0x114));
-        printf("3.1 收端FIFO个数   0x118 = %08x\n", mem_read(mem, 0x118));
-        printf("3.1 中断状态寄存器 0x028 = %08x\n", mem_read(mem, 0x020));
-		printf("\n");
-		sta = mem_read(mem, 0x104);
+    while(1)
+    {
+//| 位字段 | 名称 | 默认值 | 访问类型 | 描述 |
+//| --- | --- | --- | --- | --- |
+//| 7 | TX_FIFO_EMPTY | 1 | R | 发送 FIFO 空。当发送 FIFO 为空时，此位被设置为高。注意：此位在 TX FIFO 变为空时立即变为高电平。此时，最后一个字节的数据可能仍在输出管道中或部分传输。 |
+//| 6 | RX_FIFO_EMPTY | 1 | R | 接收 FIFO 空。当接收 FIFO 为空时，此位被设置为高。 |
+//| 5 | RX_FIFO_Full | 0 | R | 接收 FIFO 满。当接收 FIFO 充满时，此位被设置为高。无论 RX_FIFO_PIRQ 寄存器的比较值字段如何，此位只有当 FIFO 中的所有 16 个位置都被占满时才会被设置。 |
+//| 4 | TX_FIFO_Full | 0 | R | 发送 FIFO 满。当发送 FIFO 充满时，此位被设置为高。 |
+//| 3 | SRW | 0 | R | 从机读/写。当 IIC 总线接口被作为从机寻址时（AAS 被设置），此位指示主机发送的读/写位的值。当完成一次传输且未启动其他传输时，此位才有效。0 = 指示主机写入从机，1 = 指示主机从从机读取。 |
+//| 2 | BB | 0 | R | 总线忙。此位指示 IIC 总线的状态。当检测到起始条件时，此位被设置，当检测到停止条件时，此位被清除。0 = 指示总线空闲，1 = 指示总线忙。 |
+//| 1 | AAS | 0 | R | 作为从机寻址。当 IIC 总线上的地址与地址寄存器（ADR）中的从机地址匹配时，IIC 总线接口被寻址为从机并切换到从机模式。如果选择了 10 位寻址，该设备仅在启用的情况下响应 10 位地址或广播地址。当检测到停止条件或重复起始条件时，此位被清除。0 = 指示没有被寻址为从机，1 = 指示被寻址为从机。 |
+//| 0 | ABGC | 0 | R | 被广播寻址。当另一个主机发出广播寻址并且广播寻址使能位已被设置为 1（CR(6) = 1）时，此位被设置为 1。 |
+		sta = mem_read(mem, SR);
+        printf("2.1 状态寄存器      = %08x\n", sta);
+		sta = mem_read(mem, TX_FIFO_OCY);
+        printf("2.1 发端FIFO个数    = %08x\n", sta );
+        if((sta == 0))
+            break;
+    }
+
+    mem_write(mem, RX_FIFO_PIRQ, 0x02);// 
+    mem_write(mem, TX_FIFO, (devaddr & 0xfe) | 0x101     );// 1. 使用写入操作将 START + 从设备地址一起写入 TX_FIFO
+    mem_write(mem, TX_FIFO, 0x202  );// 2. 将从设备的子寄存器地址写入 TX FIFO
+    mem_write(mem, CR, 0xd);// MSMS=1,TX = 0
+
+    //mem_write(mem, TX_FIFO, 0x2            | 0x200       );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
+
+    //mem_write(mem, CR, 0x05);// MSMS=1,TX = 0, RSTA = 1
+    //mem_write(mem, TX_FIFO, 0x2            | 0x200       );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
+
+    //mem_write(mem, TX_FIFO, (devaddr & 0xfe) | 0x100  |0   );// 3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
+	//printf("4. 0x108 = %08x\n", mem_read(mem, 0x108));
+    //mem_write(mem, TX_FIFO, 0x2            | 0x200       );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
+	//printf("5. 0x108 = %08x\n", mem_read(mem, 0x108));
+	
+    while(1)
+    {
+		sta = mem_read(mem, SR);
+        printf("5.1 状态寄存器      = %08x\n", sta);
+        printf("5.1 RX FIFO个数    = %08x\n", mem_read(mem, RX_FIFO_OCY    ));
         if((sta & 0x80))
             break;
-		else
-			sleep(1);
-	} 
-
-
-    mem_write(mem, 0x108, (devaddr & 0xfe) | 0x100       );// 3. 使用读取操作将 RE-START + 从设备地址一起写入 TX FIFO
-	printf("4. 0x108 = %08x\n", mem_read(mem, 0x108));
-    mem_write(mem, 0x108, 0x2            | 0x200       );// 4. 将 STOP + 要从从设备读取的字节数一起写入 TX FIFO
-	printf("5. 0x108 = %08x\n", mem_read(mem, 0x108));
-	
-    mem_write(mem, 0x100, 0x0d                         );// 5. 使用控制寄存器来启用控制器
+    }
+    mem_write(mem, CR , 0x0d                         );// 5. 使用控制寄存器来启用控制器
 
     //# 6. 轮询 RX_FIFO_EMPTY 的状态寄存器，以查看数据接收状态（如果 RX_FIFO = 0，则数据已进入接收 FIFO 内）
 	while(1)
 	{// # 等待接收完成
-        printf("5.1 contrl  addr   0x100 = %08x\n", mem_read(mem, 0x100));
-        printf("5.1 状态寄存器     0x104 = %08x\n", mem_read(mem, 0x104));
-        printf("5.1 发端FIFO个数   0x114 = %08x\n", mem_read(mem, 0x114));
-        printf("5.1 收端FIFO个数   0x118 = %08x\n", mem_read(mem, 0x118));
-        printf("5.1 中断状态寄存器 0x028 = %08x\n", mem_read(mem, 0x020));
+        printf("5.1 控制寄存器      = %08x\n", mem_read(mem, CR));
+        printf("5.1 状态寄存器      = %08x\n", mem_read(mem, SR ));
+        printf("5.1 发端FIFO个数    = %08x\n", mem_read(mem, TX_FIFO_OCY    ));
+        printf("5.1 收端FIFO个数    = %08x\n", mem_read(mem, RX_FIFO_OCY    ));
+        printf("5.1 中断状态寄存器  = %08x\n", mem_read(mem, ISR            ));
 		printf("\n");
-		sta = mem_read(mem, 0x104);
+		sta = mem_read(mem, SR);
         if((sta & 0x80))
             break;
 		else
 			sleep(1);
 	} 
-	uint32_t lsb = mem_read(mem, 0x28);
-	uint32_t msb = mem_read(mem, 0x28);
+	uint32_t lsb = mem_read(mem, RX_FIFO );
+	uint32_t msb = mem_read(mem, RX_FIFO );
 	msb = msb << 8 | lsb;
 
     printf("data: %x", msb);
