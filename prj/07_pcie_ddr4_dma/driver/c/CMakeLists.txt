@@ -9,12 +9,9 @@ include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLi
 include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLib/drivers/axidma_v9_15/src)
 include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLib/drivers/iic_v3_9/src    )
 include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLib/drivers/clk_wiz_v1_5/src)
-include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/microblaze/)
-include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/common/)
+#include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/microblaze/)
+#include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/common/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-#target_include_directories(MyProject PRIVATE /opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/common/xil_types.h)
-
 
 aux_source_directory(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLib/drivers/iic_v3_9/src IIC_LIB_SRC)
 
@@ -24,6 +21,4 @@ add_executable(MyProject
 			   ${IIC_LIB_SRC}
 	           )
 
-# 添加链接库
-#target_link_libraries(MyProject /opt/Xilinx/Vitis/2022.2/data/embeddedsw/XilinxProcessorIPLib/drivers/iic_v3_9/src/libxilffs.a)
 
