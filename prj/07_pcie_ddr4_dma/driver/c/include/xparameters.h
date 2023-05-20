@@ -19,6 +19,5 @@
 #define XPAR_IIC_1_TEN_BIT_ADR      FALSE      /* Supports 10 bit addresses */
 #define XPAR_IIC_1_GPO_WIDTH        1
 
-#define __MICROBLAZE__
 
 #endif

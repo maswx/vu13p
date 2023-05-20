@@ -15,3 +15,4 @@ cd build
 cmake ../
 make 
 cd -
+cp ./build/iic_test .

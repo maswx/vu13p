@@ -36,6 +36,7 @@
 
 /***************************** Include Files *********************************/
 
+#include<stdarg.h>
 #include "xparameters.h"
 #include "xiic_l.h"
 
