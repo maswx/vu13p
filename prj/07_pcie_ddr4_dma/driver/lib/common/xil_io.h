@@ -49,11 +49,13 @@ extern "C" {
 #include "xil_printf.h"
 #include "xstatus.h"
 
-#if defined (__MICROBLAZE__)
-#include "mb_interface.h"
-#else
-#include "xpseudo_asm.h"
-#endif
+//#if defined (__MICROBLAZE__)
+//#include "mb_interface.h"
+//#elif defined (__X86_XDMA__)
+//#include "x86xdma_interface.h"
+//#else
+//#include "xpseudo_asm.h"
+//#endif
 
 /************************** Function Prototypes ******************************/
 #ifdef ENABLE_SAFETY

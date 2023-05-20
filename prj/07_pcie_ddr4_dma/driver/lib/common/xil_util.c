@@ -86,7 +86,9 @@
 
 /****************************** Include Files *********************************/
 #include "xil_util.h"
-#include "sleep.h"
+#include <sleep.h>
+#include <stdarg.h>
+#include <string.h>
 
 /************************** Constant Definitions ****************************/
 #define MAX_NIBBLES			8U

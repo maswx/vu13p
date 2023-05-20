@@ -27,7 +27,7 @@
 
 /***************************** Include Files *********************************/
 #include "xil_io.h"
-#include "sleep.h"
+#include <sleep.h>
 
 /****************************  Constant Definitions  *************************/
 
@@ -44,19 +44,19 @@
 * @note             none
 *
 *****************************************************************************/
- void sleep(u32 seconds)
- {
-#if defined (ARMR5)
-	sleep_R5(seconds);
-#elif defined (__aarch64__) || defined (ARMA53_32)
-	sleep_A53(seconds);
-#elif defined (__MICROBLAZE__)
-	sleep_MB(seconds);
-#else
-	sleep_A9(seconds);
-#endif
-
- }
+// void sleep(u32 seconds)
+// {
+//#if defined (ARMR5)
+//	sleep_R5(seconds);
+//#elif defined (__aarch64__) || defined (ARMA53_32)
+//	sleep_A53(seconds);
+//#elif defined (__MICROBLAZE__)
+//	sleep_MB(seconds);
+//#else
+//	sleep_A9(seconds);
+//#endif
+//
+// }
 
 /****************************************************************************/
 /**
@@ -70,16 +70,16 @@
 * @note             none
 *
 *****************************************************************************/
- void usleep(ULONG useconds)
- {
-#if defined (ARMR5)
-	usleep_R5(useconds);
-#elif defined (__aarch64__) || defined (ARMA53_32)
-	usleep_A53(useconds);
-#elif defined (__MICROBLAZE__)
-	usleep_MB(useconds);
-#else
-	usleep_A9(useconds);
-#endif
-
- }
+// void usleep(ULONG useconds)
+// {
+//#if defined (ARMR5)
+//	usleep_R5(useconds);
+//#elif defined (__aarch64__) || defined (ARMA53_32)
+//	usleep_A53(useconds);
+//#elif defined (__MICROBLAZE__)
+//	usleep_MB(useconds);
+//#else
+//	usleep_A9(useconds);
+//#endif
+//
+// }
