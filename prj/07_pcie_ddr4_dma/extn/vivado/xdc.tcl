@@ -6,6 +6,7 @@ import_files {
     ../../../../xdc/vu13p_genbin.xdc
     ../../../../xdc/vu13p_pcie.xdc
     ../../../../xdc/vu13p_qsfp.xdc
+    ../../../../xdc/vu13p_iic.xdc
     ./xdc/tandem.xdc
 }
     #../../../../xdc/vu13p_clock.xdc
