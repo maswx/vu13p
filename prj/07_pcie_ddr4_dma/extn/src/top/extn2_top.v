@@ -25,6 +25,8 @@ inout              [ 8:0]c0_ddr4_dqs_c           ,//i
 inout              [ 8:0]c0_ddr4_dqs_t           ,//i
 output             [ 0:0]c0_ddr4_odt             ,//o
 output                   c0_ddr4_reset_n         ,//o
+inout                    main_iic_sda            ,//io
+inout                    main_iic_scl            ,//io
 input              [15:0]pcie_lane_rxn           ,//i
 input              [15:0]pcie_lane_rxp           ,//i
 output             [15:0]pcie_lane_txn           ,//o
@@ -137,6 +139,21 @@ base base_inst     (
 //--output                   testvec_s2mm_tready     ,//o
 //--input                    testvec_s2mm_tvalid      //i
 
+
+//---IOBUF IIC_scl_iobuf
+//---     (.I (iic_scl_o      ),
+//---      .IO(main_iic_scl),
+//---      .O (iic_scl_i      ),
+//---      .T (iic_scl_t      ));
+//---
+//---IOBUF IIC_sda_iobuf
+//---     (.I (iic_sda_o      ),
+//---      .IO(main_iic_sda),
+//---      .O (iic_sda_i      ),
+//---      .T (iic_sda_t      ));
+
+
+
 wire dut_sda_i;
 wire dut_scl_i;
 wire dut_scl_t;
@@ -148,10 +165,17 @@ wire [15:0]data_out;
 wire [63:0]testvec ;
 
 
-assign dut_sda_i = dut_sda_o & iic_sda_t;
-assign dut_scl_i = dut_scl_o & iic_scl_t;
-assign iic_sda_i = dut_sda_o & iic_sda_t;
-assign iic_scl_i = dut_scl_o & iic_scl_t;
+assign iic_scl_i    = main_iic_scl;
+assign dut_scl_i    = main_iic_scl;
+assign main_iic_scl = (dut_scl_o & iic_scl_t) ? 1'bz : 1'b0;
+assign iic_sda_i    = main_iic_sda;
+assign dut_sda_i    = main_iic_sda;
+assign main_iic_sda = (dut_sda_o & iic_sda_t) ? 1'bz : 1'b0;
+
+//assign dut_sda_i = dut_sda_o & iic_sda_t;
+//assign dut_scl_i = dut_scl_o & iic_scl_t;
+//assign iic_sda_i = dut_sda_o & iic_sda_t;
+//assign iic_scl_i = dut_scl_o & iic_scl_t;
 
 
 fir_top dut_top_inst(
