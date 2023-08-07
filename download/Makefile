@@ -9,3 +9,6 @@ run:
 bin:
 	vivado -mode batch -source ./downloadbin.tcl -tclargs $(binname)
 
+bit2bin:
+	vivado -mode batch -source ./convert_bit2bin.tcl -tclargs $(bitname)
+
