@@ -194,12 +194,6 @@ i2c_slave_wbm # (
 
 assign testvec_wbx = {
 	10'd0             ,
-    i2c_scl_i         ,
-    i2c_scl_o         ,
-    i2c_scl_t         ,
-    i2c_sda_i         ,
-    i2c_sda_o         ,
-    i2c_sda_t         ,
 	1'b0              ,
     wb_we             , //output wire                        WE_O write enable output
     wb_stb            , //output wire                        STB_O strobe output
@@ -209,10 +203,16 @@ assign testvec_wbx = {
     wb_sel     [ 1:0] , //output wire [WB_SELECT_WIDTH-1:0]  SEL_O() select output
     wb_adr     [ 7:0] , //output wire [WB_ADDR_WIDTH-1:0]    ADR_O() address
     wb_rd_dat  [15:0] , //input  wire [WB_DATA_WIDTH-1:0]    DAT_I() data in
-    wb_wr_dat  [15:0]   //output wire [WB_DATA_WIDTH-1:0]    DAT_O() data out
+    wb_wr_dat  [15:0] , //output wire [WB_DATA_WIDTH-1:0]    DAT_O() data out
+    i2c_scl_i         ,
+    i2c_scl_o         ,
+    i2c_scl_t         ,
+    i2c_sda_i         ,
+    i2c_sda_o         ,
+    i2c_sda_t         
 };
 
 
-assign testvec   = testvec_sel == 16'd0 ? testvec_fir : testvec_wbx;
+assign testvec   = testvec_sel != 16'd0 ? testvec_fir : testvec_wbx;
 
 endmodule

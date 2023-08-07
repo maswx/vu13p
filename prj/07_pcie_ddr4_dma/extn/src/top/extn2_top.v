@@ -57,6 +57,7 @@ wire            [ 7:0]testvec_s2mm_tkeep      ;//i
 wire                  testvec_s2mm_tlast      ;//i
 wire                  testvec_s2mm_tready     ;//o
 wire                  testvec_s2mm_tvalid     ;//i
+wire            [7:0] testx                ;
 
 wire iic_scl_i;
 wire iic_scl_o;
@@ -110,6 +111,7 @@ base base_inst     (
    .source_mm2s_tvalid   (source_mm2s_tvalid    ),
    .tb_clk               (tb_clk                ),
    .tb_clk_locked        (tb_clk_locked         ),
+   .testx                (testx),
    .testvec_s2mm_aclk    (testvec_s2mm_aclk     ),
    .testvec_s2mm_tdata   (testvec_s2mm_tdata    ),
    .testvec_s2mm_tkeep   (testvec_s2mm_tkeep    ),
@@ -140,19 +142,6 @@ base base_inst     (
 //--input                    testvec_s2mm_tvalid      //i
 
 
-//---IOBUF IIC_scl_iobuf
-//---     (.I (iic_scl_o      ),
-//---      .IO(main_iic_scl),
-//---      .O (iic_scl_i      ),
-//---      .T (iic_scl_t      ));
-//---
-//---IOBUF IIC_sda_iobuf
-//---     (.I (iic_sda_o      ),
-//---      .IO(main_iic_sda),
-//---      .O (iic_sda_i      ),
-//---      .T (iic_sda_t      ));
-
-
 
 wire dut_sda_i;
 wire dut_scl_i;
@@ -172,10 +161,20 @@ assign iic_sda_i    = main_iic_sda;
 assign dut_sda_i    = main_iic_sda;
 assign main_iic_sda = (dut_sda_o & iic_sda_t) ? 1'bz : 1'b0;
 
-//assign dut_sda_i = dut_sda_o & iic_sda_t;
-//assign dut_scl_i = dut_scl_o & iic_scl_t;
-//assign iic_sda_i = dut_sda_o & iic_sda_t;
-//assign iic_scl_i = dut_scl_o & iic_scl_t;
+assign testx        = {
+
+main_iic_scl ,
+main_iic_sda ,
+dut_sda_i,
+dut_scl_i,
+
+dut_scl_t,
+dut_sda_t,
+dut_scl_o,
+dut_sda_o 
+
+	};
+
 
 
 fir_top dut_top_inst(
