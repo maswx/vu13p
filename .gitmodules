@@ -1,0 +1,3 @@
+[submodule "driver/dma_ip_drivers"]
+	path = driver/dma_ip_drivers
+	url = git@github.com:Xilinx/dma_ip_drivers.git
