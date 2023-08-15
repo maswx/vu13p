@@ -7,6 +7,8 @@
 #include <stdarg.h>
 #include "xparameters.h"
 #include "xiic_l.h"
+#include "xiic.h"
+#include "xintc.h"
 
 // FIR 的系数初值:	coeff_00 <= 16'd54    ;
 // FIR 的系数初值:	coeff_01 <= 16'd159   ;
@@ -49,6 +51,43 @@ size_t mapping_size = 64 * 1024; // 映射的大小，64K
 int reset_fir_module(UINTPTR baseaddr);
 u32 wishbone_read(UINTPTR baseaddr, u32 addr);
 
+static int SetupInterrupSystem(XIic * iicinst)
+{
+
+
+
+}
+
+static int init_iic(XIic *iicinst, XIntc *iicintp, UINTPTR baseaddr_axiiic, UINTPTR baseaddr_interp)
+{
+	int status;
+	XIic_Config *ConfigPtr;	//包含 devid, baseaddress, has10bitAddr, GpOutWidth
+
+	//1. 初始化 ConfigPtr
+	ConfigPtr->DeviceId     = 0;
+	ConfigPtr->BaseAddress  = baseaddr_axiiic;
+	ConfigPtr->GpOutWidth   = 1;
+	ConfigPtr->Has10BitAddr = 0;
+
+	//2. 初始化 IIC 
+	status = XIic_CfgInitialize(iicinst, ConfigPtr, baseaddr_axiiic);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+	
+	//3. 初始化动态IIC 内核
+	status = XIic_DynamicInitialize(iicinst);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	//4. 初始化中断系统
+	status = SetupInterrupSystem(iicinst);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+
+}
+
+
+
 int main(void) {
     int axilte, interp;
 	int i;
@@ -56,6 +95,8 @@ int main(void) {
 	UINTPTR base_address;
 	u8 rxdata[16];
 	u8 txdata[16];
+	XIic  iicinst;//iic模块
+	XIntc iicintp;//中断
 
 	for(i = 0; i < 16; i++)
 	{
