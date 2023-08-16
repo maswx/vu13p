@@ -19,20 +19,16 @@ include_directories(../lib/iic)
 include_directories(../lib/common)
 include_directories(../lib/dma)
 include_directories(../lib/clock)
-include_directories(../lib/intc_v3_15)
-include_directories(/opt/Xilinx/Vitis/2022.2/data/embeddedsw/lib/bsp/standalone_v8_0/src/microblaze)
+#include_directories(../lib/intc_v3_15)
 
 aux_source_directory(../lib/iic/          IIC_LIB_SRC)
-aux_source_directory(../lib/intc_v3_15/   IIC_LIB_INTP)
 aux_source_directory(../lib/common/       IIC_LIB_COM)
 
 # 添加可执行文件
 add_executable(iic_test
-			   ./include/xil_exception.c
-	           #main.c
-	           lib_wbwr.c
+	           main.c
+			   ./xiic_wbwr.c
 			   ${IIC_LIB_SRC}
-			   ${IIC_LIB_INTP}
 			   ${IIC_LIB_COM}
 	           )
 
