@@ -1,13 +1,8 @@
 
 /***************************** Include Files *********************************/
 
-#include "xparameters.h"
-#include "xiic.h"
-#include "xil_io.h"
-#include "xil_printf.h"
+#include "xiic_wbwr.h"
 
-#define PAGE_SIZE	128
-typedef u8 AddressType;
 
 /*****************************************************************************/
 /**
