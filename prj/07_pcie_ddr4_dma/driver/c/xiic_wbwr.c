@@ -6,42 +6,14 @@
 #include "xil_io.h"
 #include "xil_printf.h"
 
-#define PAGE_SIZE	64
-#define EEPROM_TEST_START_ADDRESS	128
-
-
-/**************************** Type Definitions *******************************/
-
-/*
- * The AddressType for ML300/ML310/ML510 boards should be u16 as the address
- * pointer in the on board EEPROM is 2 bytes.
- * The AddressType for ML403/ML501/ML505/ML507/ML605/SP601/SP605 boards should
- * be u8 as the address pointer in the on board EEPROM is 1 bytes.
- */
+#define PAGE_SIZE	128
 typedef u8 AddressType;
-
-
-
-int IicLowLevelEeprom();
-
-int ReadWriteVerify(AddressType Address);
-
-unsigned EepromWriteByte(AddressType Address, u8 *BufferPtr, u16 ByteCount);
-
-unsigned EepromReadByte(AddressType Address, u8 *BufferPtr, u16 ByteCount);
-
-/************************** Variable Definitions **************************/
-
-
-
-u8 EepromIicAddr;		  /* Variable for storing Eeprom IIC address */
-
 
 /*****************************************************************************/
 /**
 * This function writes a buffer of bytes to the IIC serial EEPROM.
 *
-* @param	Address contains the address in the EEPROM to write to.
+* @param	wishboneAddr contains the address in the EEPROM to write to.
 * @param	BufferPtr contains the address of the data to write.
 * @param	ByteCount contains the number of bytes in the buffer to be written.
 *		Note that this should not exceed the page size of the EEPROM as
@@ -53,11 +25,11 @@ u8 EepromIicAddr;		  /* Variable for storing Eeprom IIC address */
 * @note		None.
 *
 ****************************************************************************/
-unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *BufferPtr, u16 ByteCount)
+unsigned WishboneWriteByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wishboneAddr, u8 *BufferPtr, u16 ByteCount)
 {
 	volatile unsigned SentByteCount;
 	volatile unsigned AckByteCount;
-	u8 WriteBuffer[sizeof(Address) + PAGE_SIZE];
+	u8 WriteBuffer[sizeof(wishboneAddr) + PAGE_SIZE];
 	int Index;
 	u32 CntlReg;
 
@@ -67,18 +39,17 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 	 * size of the address for the EEPROM.
 	 */
 	if (sizeof(AddressType) == 2) {
-		WriteBuffer[0] = (u8)(Address >> 8);
-		WriteBuffer[1] = (u8)(Address);
+		WriteBuffer[0] = (u8)(wishboneAddr >> 8);
+		WriteBuffer[1] = (u8)(wishboneAddr);
 	} else if (sizeof(AddressType) == 1) {
-		WriteBuffer[0] = (u8)(Address);
-		EepromIicAddr |= (EEPROM_TEST_START_ADDRESS >> 8) & 0x7;
+		WriteBuffer[0] = (u8)(wishboneAddr);
 	}
 
 	/*
 	 * Put the data in the write buffer following the address.
 	 */
 	for (Index = 0; Index < ByteCount; Index++) {
-		WriteBuffer[sizeof(Address) + Index] = BufferPtr[Index];
+		WriteBuffer[sizeof(wishboneAddr) + Index] = BufferPtr[Index];
 	}
 
 	/*
@@ -89,10 +60,10 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 	 */
 	do {
 		SentByteCount = XIic_Send(IIC_BASE_ADDRESS,
-					EepromIicAddr,
-					(u8 *)&Address, sizeof(Address),
+					IICAddr,
+					(u8 *)&wishboneAddr, sizeof(wishboneAddr),
 					XIIC_STOP);
-		if (SentByteCount != sizeof(Address)) {
+		if (SentByteCount != sizeof(wishboneAddr)) {
 
 			/* Send is aborted so reset Tx FIFO */
 			CntlReg = XIic_ReadReg(IIC_BASE_ADDRESS,
@@ -103,13 +74,13 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 					XIIC_CR_ENABLE_DEVICE_MASK);
 		}
 
-	} while (SentByteCount != sizeof(Address));
+	} while (SentByteCount != sizeof(wishboneAddr));
 
 	/*
 	 * Write a page of data at the specified address to the EEPROM.
 	 */
-	SentByteCount = XIic_Send(IIC_BASE_ADDRESS, EepromIicAddr,
-				  WriteBuffer, sizeof(Address) + PAGE_SIZE,
+	SentByteCount = XIic_Send(IIC_BASE_ADDRESS, IICAddr,
+				  WriteBuffer, sizeof(wishboneAddr) + PAGE_SIZE,
 				  XIIC_STOP);
 
 	/*
@@ -117,10 +88,10 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 	 * the device will not ack if the write is still active.
 	 */
 	do {
-		AckByteCount = XIic_Send(IIC_BASE_ADDRESS, EepromIicAddr,
-					(u8 *)&Address, sizeof(Address),
+		AckByteCount = XIic_Send(IIC_BASE_ADDRESS, IICAddr,
+					(u8 *)&wishboneAddr, sizeof(wishboneAddr),
 					XIIC_STOP);
-		if (AckByteCount != sizeof(Address)) {
+		if (AckByteCount != sizeof(wishboneAddr)) {
 
 			/* Send is aborted so reset Tx FIFO */
 			CntlReg = XIic_ReadReg(IIC_BASE_ADDRESS,
@@ -131,13 +102,13 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 					XIIC_CR_ENABLE_DEVICE_MASK);
 		}
 
-	} while (AckByteCount != sizeof(Address));
+	} while (AckByteCount != sizeof(wishboneAddr));
 
 
 	/*
 	 * Return the number of bytes written to the EEPROM
 	 */
-	return SentByteCount - sizeof(Address);
+	return SentByteCount - sizeof(wishboneAddr);
 }
 
 /*****************************************************************************/
@@ -145,7 +116,7 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 * This function reads a number of bytes from the IIC serial EEPROM into a
 * specified buffer.
 *
-* @param	Address contains the address in the EEPROM to read from.
+* @param	wishboneAddr contains the address in the EEPROM to read from.
 * @param	BufferPtr contains the address of the data buffer to be filled.
 * @param	ByteCount contains the number of bytes in the buffer to be read.
 *		This value is not constrained by the page size of the device
@@ -157,7 +128,7 @@ unsigned EepromWriteByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buff
 * @note		None.
 *
 ****************************************************************************/
-unsigned EepromReadByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *BufferPtr, u16 ByteCount)
+unsigned WishboneReadByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wishboneAddr, u8 *BufferPtr, u16 ByteCount)
 {
 	volatile unsigned ReceivedByteCount;
 	u16 StatusReg;
@@ -173,12 +144,12 @@ unsigned EepromReadByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buffe
 		StatusReg = XIic_ReadReg(IIC_BASE_ADDRESS, XIIC_SR_REG_OFFSET);
 		if(!(StatusReg & XIIC_SR_BUS_BUSY_MASK)) {
 			ReceivedByteCount = XIic_Send(IIC_BASE_ADDRESS,
-							EepromIicAddr,
-							(u8 *)&Address,
-							sizeof(Address),
+							IICAddr,
+							(u8 *)&wishboneAddr,
+							sizeof(wishboneAddr),
 							XIIC_STOP);
 
-			if (ReceivedByteCount != sizeof(Address)) {
+			if (ReceivedByteCount != sizeof(wishboneAddr)) {
 
 				/* Send is aborted so reset Tx FIFO */
 				CntlReg = XIic_ReadReg(IIC_BASE_ADDRESS,
@@ -191,16 +162,127 @@ unsigned EepromReadByte(UINTPTR IIC_BASE_ADDRESS, AddressType Address, u8 *Buffe
 			}
 		}
 
-	} while (ReceivedByteCount != sizeof(Address));
+	} while (ReceivedByteCount != sizeof(wishboneAddr));
 
 	/*
 	 * Read the number of bytes at the specified address from the EEPROM.
 	 */
-	ReceivedByteCount = XIic_Recv(IIC_BASE_ADDRESS, EepromIicAddr,
+	ReceivedByteCount = XIic_Recv(IIC_BASE_ADDRESS, IICAddr,
 					BufferPtr, ByteCount, XIIC_STOP);
 
 	/*
 	 * Return the number of bytes read from the EEPROM.
+	 */
+	return ReceivedByteCount;
+}
+/*****************************************************************************/
+/**
+* This function writes a buffer of bytes to the IIC serial EEPROM.
+*
+* @param	BufferPtr contains the address of the data to write.
+* @param	ByteCount contains the number of bytes in the buffer to be
+*		written. Note that this should not exceed the page size of the
+*		EEPROM as noted by the constant PAGE_SIZE.
+*
+* @return	The number of bytes written, a value less than that which was
+*		specified as an input indicates an error.
+*
+* @note		one.
+*
+******************************************************************************/
+u8 WishboneDynWriteByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wishboneAddr, u8 *BufferPtr, u8 ByteCount)
+{
+	u8 SentByteCount;
+	u8 WriteBuffer[sizeof(wishboneAddr) + PAGE_SIZE];
+	u8 Index;
+
+	/*
+	 * A temporary write buffer must be used which contains both the address
+	 * and the data to be written, put the address in first based upon the
+	 * size of the address for the EEPROM
+	 */
+	if (sizeof(AddressType) == 2) {
+		WriteBuffer[0] = (u8) (wishboneAddr >> 8);
+		WriteBuffer[1] = (u8) (wishboneAddr);
+	} else if (sizeof(AddressType) == 1) {
+		WriteBuffer[0] = (u8) (wishboneAddr);
+	}
+
+	/*
+	 * Put the data in the write buffer following the address.
+	 */
+	for (Index = 0; Index < ByteCount; Index++) {
+		WriteBuffer[sizeof(wishboneAddr) + Index] = BufferPtr[Index];
+	}
+
+	/*
+	 * Write a page of data at the specified address to the EEPROM.
+	 */
+	SentByteCount = XIic_DynSend(IIC_BASE_ADDRESS, IICAddr,
+				WriteBuffer, sizeof(wishboneAddr) + PAGE_SIZE,
+				XIIC_STOP);
+
+	/*
+	 * Return the number of bytes written to the EEPROM.
+	 */
+	return SentByteCount - sizeof(wishboneAddr);
+}
+
+/******************************************************************************
+/**
+*
+* This function reads a number of bytes from the IIC serial EEPROM into a
+* specified buffer.
+*
+* @param	BufferPtr contains the address of the data buffer to be filled.
+* @param	ByteCount contains the number of bytes in the buffer to be read.
+*		This value is constrained by the page size of the device such
+*		that up to 64K may be read in one call.
+*
+* @return	The number of bytes read. A value less than the specified input
+*		value indicates an error.
+*
+* @note		None.
+*
+******************************************************************************/
+u8 WishboneDynReadByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wishboneAddr,  u8 *BufferPtr, u8 ByteCount)
+{
+	u8 ReceivedByteCount;
+	u8 SentByteCount;
+	u16 StatusReg;
+
+	/*
+	 * Position the Read pointer to specific location in the EEPROM.
+	 */
+	do {
+		StatusReg = XIic_ReadReg(IIC_BASE_ADDRESS, XIIC_SR_REG_OFFSET);
+		if (!(StatusReg & XIIC_SR_BUS_BUSY_MASK)) {
+			SentByteCount = XIic_DynSend(IIC_BASE_ADDRESS,
+							IICAddr,
+							(u8 *) &wishboneAddr,
+							sizeof(wishboneAddr),
+							XIIC_STOP);
+		}
+
+	} while (SentByteCount != sizeof(wishboneAddr));
+
+	StatusReg = XIic_ReadReg(IIC_BASE_ADDRESS, XIIC_SR_REG_OFFSET);
+
+	while ((StatusReg & XIIC_SR_BUS_BUSY_MASK)) {
+		StatusReg = XIic_ReadReg(IIC_BASE_ADDRESS, XIIC_SR_REG_OFFSET);
+	}
+
+	do {
+		/*
+		 * Receive the data.
+		 */
+		ReceivedByteCount = XIic_DynRecv(IIC_BASE_ADDRESS,
+						 IICAddr, BufferPtr,
+						 ByteCount);
+	} while (ReceivedByteCount != ByteCount);
+
+	/*
+	 * Return the number of bytes received from the EEPROM.
 	 */
 	return ReceivedByteCount;
 }
