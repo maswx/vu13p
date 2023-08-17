@@ -49,6 +49,7 @@
 off_t base_offset = 0x00800000;  // 基地址的偏移量
 size_t mapping_size = 64 * 1024; // 映射的大小，64K
 
+int reset_fir_module(UINTPTR baseaddr);
 
 
 int main(void) {
