@@ -110,10 +110,9 @@ int main(void) {
 
 int reset_fir_module(UINTPTR baseaddr)
 {
-	usleep(10);
-	Xil_Out32(baseaddr + 0x00000124, 0x00000000);
-	usleep(100);
-	Xil_Out32(baseaddr + 0x00000124, 0x000000ff);
+	usleep(10); Xil_Out32(baseaddr + XIIC_GPO_REG_OFFSET , 0x00000000);//1. 通过IIC复位外设
+	usleep(10); Xil_Out32(baseaddr + XIIC_RESETR_OFFSET	 , 0x0000000a);//2. 复位掉整个IIC模块
+	usleep(10); Xil_Out32(baseaddr + XIIC_GPO_REG_OFFSET , 0x000000ff); //3. 开启IIC外设FIR 模块
 	return 0;
 }
 
