@@ -1,6 +1,6 @@
 
 /***************************** Include Files *********************************/
-
+#include <stdio.h>
 #include "xiic_wbwr.h"
 
 
@@ -128,22 +128,25 @@ unsigned WishboneReadByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wish
 	volatile unsigned ReceivedByteCount;
 	u16 StatusReg;
 	u32 CntlReg;
-
+	int i = 0;
 	/*
 	 * Set the address register to the specified address by writing
 	 * the address to the device, this must be tried until it succeeds
 	 * because a previous write to the device could be pending and it
 	 * will not ack until that write is complete.
 	 */
+		printf("IIC_BASE_ADDRESS = %lx\n", IIC_BASE_ADDRESS);
 	do {
+		//Xil_Out32(IIC_BASE_ADDRESS + XIIC_SR_REG_OFFSET, 0x00000000);
 		StatusReg = XIic_ReadReg(IIC_BASE_ADDRESS, XIIC_SR_REG_OFFSET);
+		printf("StatusReg = %x, asdfas%d\n",StatusReg , i++);
 		if(!(StatusReg & XIIC_SR_BUS_BUSY_MASK)) {
 			ReceivedByteCount = XIic_Send(IIC_BASE_ADDRESS,
 							IICAddr,
 							(u8 *)&wishboneAddr,
 							sizeof(wishboneAddr),
 							XIIC_STOP);
-
+			printf("asdfas%d\n", i++);
 			if (ReceivedByteCount != sizeof(wishboneAddr)) {
 
 				/* Send is aborted so reset Tx FIFO */

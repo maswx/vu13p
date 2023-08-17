@@ -91,7 +91,9 @@ int main(void) {
 	unsigned readbyte ;
 	AddressType wishboneAddr = 0x00;
 	u16 ByteCount = 2;
-	readbyte = WishboneReadByte(base_address, IIC_DEV_ADDR , wishboneAddr, rxdata, ByteCount);
+	printf("begin wishbone read\n");
+	//readbyte = WishboneReadByte(base_address, IIC_DEV_ADDR , wishboneAddr, rxdata, ByteCount);
+	readbyte = XIic_Recv(base_address, IIC_DEV_ADDR , rxdata, 2, XIIC_STOP);
 
 
 	printf("readbyte=%x\n", readbyte);
