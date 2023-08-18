@@ -1,6 +1,8 @@
 
 ## 国产vu13p 资料
 
+* 有任何问题，请在[issue](https://github.com/maswx/vu13p/issues)中编写，记录。
+
 ## 如何使用
 
 ### [01 tandem PCIe](./prj/01_mcap_led/readme.md)
