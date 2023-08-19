@@ -9,6 +9,7 @@
 #include "xiic_l.h"
 #include "xiic.h"
 #include "xiic_wbwr.h"
+#include "lib_wbwr.h"
 
 // FIR 的系数初值:	coeff_00 <= 16'd54    ;
 // FIR 的系数初值:	coeff_01 <= 16'd159   ;
@@ -59,6 +60,7 @@ int main(void) {
 	UINTPTR base_address;
 	u8 rxdata[16];
 	u8 txdata[16];
+	u16 readback[1];
 
 	for(i = 0; i < 16; i++)
 	{
@@ -92,15 +94,17 @@ int main(void) {
 	unsigned readbyte ;
 	AddressType wishboneAddr = 0x00;
 	u16 ByteCount = 2;
+	int status ;
+	u16 txdat;
 	printf("begin wishbone read\n");
-	//readbyte = WishboneReadByte(base_address, IIC_DEV_ADDR , wishboneAddr, rxdata, ByteCount);
-	readbyte = XIic_Recv(base_address, IIC_DEV_ADDR , rxdata, 2, XIIC_STOP);
-
-
-	printf("readbyte=%x\n", readbyte);
-	for(i = 0; i < 16; i++)
-		printf("rxdata[%d]=%x\n", i , rxdata[i]);
-
+	for(i = 0; i < 10; i++)
+	{
+		txdat = (u16) 1000;
+		printf("XIIC_CR_REG_OFFSET = %x\n", XIic_ReadReg(base_address,XIIC_CR_REG_OFFSET));
+		//status = wishbone_write(base_address, IIC_DEV_ADDR , i, &txdat);
+		status = wishbone_read(base_address, IIC_DEV_ADDR , i, readback);
+		printf("wishbone addr[%02d] = %04d with status = %d\n", i, readback[0], status);
+	}
     // 解除内存映射并关闭文件
     munmap(mapped_base, mapping_size);
     close(axilte);

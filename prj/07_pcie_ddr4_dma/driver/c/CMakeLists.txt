@@ -27,7 +27,7 @@ aux_source_directory(../lib/common/       IIC_LIB_COM)
 # 添加可执行文件
 add_executable(iic_test
 	           main.c
-			   ./xiic_wbwr.c
+			   ./lib_wbwr.c
 			   ${IIC_LIB_SRC}
 			   ${IIC_LIB_COM}
 	           )

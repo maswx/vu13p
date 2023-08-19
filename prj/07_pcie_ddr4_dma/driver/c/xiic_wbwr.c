@@ -146,7 +146,7 @@ unsigned WishboneReadByte(UINTPTR IIC_BASE_ADDRESS, u8 IICAddr, AddressType wish
 							(u8 *)&wishboneAddr,
 							sizeof(wishboneAddr),
 							XIIC_STOP);
-			printf("asdfas%d\n", i++);
+			printf("XIic_Send Done, ReceivedByteCount = %d\n", ReceivedByteCount );
 			if (ReceivedByteCount != sizeof(wishboneAddr)) {
 
 				/* Send is aborted so reset Tx FIFO */
