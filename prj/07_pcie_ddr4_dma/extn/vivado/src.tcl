@@ -2,12 +2,10 @@
 
 
 add_files "
-    [glob ../src/iic/i2c_slave.v]
-    [glob ../src/iic/i2c_slave_wbm.v]
-    [glob ../src/iic/axis_fifo.v]
+    [glob ../src/verilog-i2c/rtl/*.v]
     [glob ../src/fir/*.v]
     [glob ../src/lib/*.v]
-    [glob ../src/top/extn2_top.v]
+    [glob ../src/top/extn_top.v]
 "
 
 
