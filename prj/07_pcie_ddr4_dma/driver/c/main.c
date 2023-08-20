@@ -97,12 +97,14 @@ int main(void) {
 	int status ;
 	u16 txdat;
 	printf("begin wishbone read\n");
-	for(i = 0; i < 10; i++)
+	Initialization_IIC(base_address);
+	for(i = 0; i < 1; i++)
 	{
-		txdat = (u16) 1000;
-		printf("XIIC_CR_REG_OFFSET = %x\n", XIic_ReadReg(base_address,XIIC_CR_REG_OFFSET));
+		//txdat = (u16) 1000;
+		//printf("CR = %x\n", XIic_ReadReg(base_address,XIIC_CR_REG_OFFSET));
 		//status = wishbone_write(base_address, IIC_DEV_ADDR , i, &txdat);
 		status = wishbone_read(base_address, IIC_DEV_ADDR , i, readback);
+		//status = Single_Cell_Read(base_address, IIC_DEV_ADDR , i, readback);
 		printf("wishbone addr[%02d] = %04d with status = %d\n", i, readback[0], status);
 	}
     // 解除内存映射并关闭文件
