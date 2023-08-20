@@ -2,6 +2,6 @@
 	path = driver/dma_ip_drivers
 	url = git@github.com:Xilinx/dma_ip_drivers.git
 
-[submodule "prj/07_pcie_ddr4_dma/extn/src/iic"]
-	path = prj/07_pcie_ddr4_dma/extn/src/iic
-	url = git@github.com:maswx/verilog-i2c.git
+[submodule "prj/07_pcie_ddr4_dma/extn/src/verilog-i2c"]
+	path = prj/07_pcie_ddr4_dma/extn/src/verilog-i2c
+	url = https://github.com/maswx/verilog-i2c.git
