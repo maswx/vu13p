@@ -41,28 +41,13 @@
 // FIR 的系数初值:	coeff_31 <= 16'd159   ;
 // FIR 的系数初值:	coeff_32 <= 16'd54    ;
 
-#define IIC_DEV_ADDR 0x00
 
-off_t base_offset = 0x00800000;  // 基地址的偏移量
-size_t mapping_size = 64 * 1024; // 映射的大小，64K
-
-int reset_fir_module(UINTPTR baseaddr);
 
 
 int main(void) {
     int axilte;
-	int i;
-    void *mapped_base;
-	UINTPTR base_address;
-	u8 rxdata[16];
-	u8 txdata[16];
 	u16 readback[1];
 
-	for(i = 0; i < 16; i++)
-	{
-		rxdata[i] = 0;
-		txdata[i] = 0;
-	}
 
     // 打开设备文件
     axilte = open("/dev/xdma0_user", O_RDWR | O_SYNC);//axi lite设备
@@ -73,48 +58,27 @@ int main(void) {
     }
 
     // 映射设备文件到内存
-	mapped_base = mmap(NULL, mapping_size, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, base_offset);
-    if (mapped_base == MAP_FAILED) {
+	uintptr_t alex_iic = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00800000);
+    if (alex_iic == MAP_FAILED) {
         perror("Failed to map memory");
 		close(axilte);
         return -1;
     }
+	uintptr_t gpio     = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00840000);
+    if (gpio == MAP_FAILED) {
+        perror("Failed to map memory");
+		close(axilte);
+        return -1;
+    }
+	
 
-    // 将映射的地址转换为指定类型的指针
-    base_address = (UINTPTR)mapped_base;
-	// 复位模块
-	reset_fir_module(base_address);
-
-
-    //--// 使用 base_address 进行操作
-	//--unsigned readbyte ;
-	//--AddressType wishboneAddr = 0x00;
-	//--u16 ByteCount = 2;
-	//--int status ;
-	//--u16 txdat;
-	//--printf("begin wishbone read\n");
-	//--Initialization_IIC(base_address);
-	//--for(i = 0; i < 1; i++)
-	//--{
-	//--	//txdat = (u16) 1000;
-	//--	//printf("CR = %x\n", XIic_ReadReg(base_address,XIIC_CR_REG_OFFSET));
-	//--	//status = wishbone_write(base_address, IIC_DEV_ADDR , i, &txdat);
-	//--	status = wishbone_read(base_address, IIC_DEV_ADDR , i, readback);
-	//--	//status = Single_Cell_Read(base_address, IIC_DEV_ADDR , i, readback);
-	//--	printf("wishbone addr[%02d] = %04d with status = %d\n", i, readback[0], status);
-	//--}
-    //--// 解除内存映射并关闭文件
-    munmap(mapped_base, mapping_size);
+	// 尝试访问 
+	alex_iic_wb_read (alex_iic , 0x00, 0x00, readback);
+	printf("readback = %x\n", readback);
+	
+    munmap(alex_iic, 65536);
+    munmap(gpio    , 65536);
     close(axilte);
 
     return 0;
 }
-
-int reset_fir_module(UINTPTR baseaddr)
-{
-	usleep(10); Xil_Out32(baseaddr + XIIC_GPO_REG_OFFSET , 0x00000000);//1. 通过IIC复位外设
-	usleep(10); Xil_Out32(baseaddr + XIIC_RESETR_OFFSET	 , 0x0000000a);//2. 复位掉整个IIC模块
-	usleep(10); Xil_Out32(baseaddr + XIIC_GPO_REG_OFFSET , 0x000000ff); //3. 开启IIC外设FIR 模块
-	return 0;
-}
-
