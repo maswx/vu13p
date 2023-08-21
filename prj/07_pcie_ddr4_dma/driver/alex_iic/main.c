@@ -42,12 +42,14 @@
 // FIR 的系数初值:	coeff_32 <= 16'd54    ;
 
 
+u32 gpio_set_data(uintptr_t baseaddr, u32 data);
 
 
 int main(void) {
     int axilte;
 	u16 readback[1];
-
+	void *iic_t;
+	void *gpio_t;
 
     // 打开设备文件
     axilte = open("/dev/xdma0_user", O_RDWR | O_SYNC);//axi lite设备
@@ -58,27 +60,46 @@ int main(void) {
     }
 
     // 映射设备文件到内存
-	uintptr_t alex_iic = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00800000);
-    if (alex_iic == MAP_FAILED) {
+	iic_t = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00800000);
+    if (iic_t == MAP_FAILED) {
         perror("Failed to map memory");
 		close(axilte);
         return -1;
     }
-	uintptr_t gpio     = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00840000);
-    if (gpio == MAP_FAILED) {
+	uintptr_t alex_iic = (uintptr_t) iic_t;
+	gpio_t     = mmap(NULL, 65536, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, 0x00840000);
+    if (gpio_t  == MAP_FAILED) {
         perror("Failed to map memory");
 		close(axilte);
         return -1;
     }
+	uintptr_t gpio = (uintptr_t) gpio_t     ;
 	
-
+	gpio_set_data(gpio, 0x3);
+	gpio_set_data(gpio, 0x0);
+	
 	// 尝试访问 
-	alex_iic_wb_read (alex_iic , 0x00, 0x00, readback);
-	printf("readback = %x\n", readback);
+	for(int i = 0; i < 16; i++)
+	{
+		alex_iic_wb_read (alex_iic , 0x00, i, &readback[i]);
+		printf("readback = %d\n", readback[i]);
+	}
 	
-    munmap(alex_iic, 65536);
-    munmap(gpio    , 65536);
+    munmap(iic_t  , 65536);
+    munmap(gpio_t , 65536);
     close(axilte);
 
     return 0;
 }
+
+
+u32 gpio_set_data(uintptr_t baseaddr, u32 data)
+{
+    volatile u32 *LocalAddr = (volatile u32 *)(baseaddr);
+    *LocalAddr = data;
+	return 0;
+}
+
+
+
+
