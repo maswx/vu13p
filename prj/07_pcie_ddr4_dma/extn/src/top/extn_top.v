@@ -25,8 +25,8 @@ inout              [ 8:0]c0_ddr4_dqs_c           ,//i
 inout              [ 8:0]c0_ddr4_dqs_t           ,//i
 output             [ 0:0]c0_ddr4_odt             ,//o
 output                   c0_ddr4_reset_n         ,//o
-inout                    main_iic_sda            ,//io
-inout                    main_iic_scl            ,//io
+inout                    up_qsfp_i2c_sda            ,//io
+inout                    up_qsfp_i2c_scl            ,//io
 input              [15:0]pcie_lane_rxn           ,//i
 input              [15:0]pcie_lane_rxp           ,//i
 output             [15:0]pcie_lane_txn           ,//o
@@ -137,7 +137,7 @@ assign s_axil_rready    =  M01_AXI_IIC_rready      ;//i
 
 wire [15:0] probe0;
 wire        probe0_clk;
-assign interp = 4'd0;
+assign interp = GPO_tri_o[7:4];
 
 base base_inst     (
    .probe0               (probe0     ),
@@ -259,12 +259,12 @@ wire dut_scl_o;
 wire dut_sda_o;
 
 
-assign i2c_master_scl_i = main_iic_scl;
-assign        dut_scl_i = main_iic_scl;
-assign   main_iic_scl   = (dut_scl_o & i2c_master_scl_o) ? 1'bz : 1'b0;
-assign i2c_master_sda_i = main_iic_sda;
-assign        dut_sda_i = main_iic_sda;
-assign   main_iic_sda   = (dut_sda_o & i2c_master_sda_o) ? 1'bz : 1'b0;
+assign i2c_master_scl_i = up_qsfp_i2c_scl;
+assign        dut_scl_i = up_qsfp_i2c_scl;
+assign   up_qsfp_i2c_scl   = (dut_scl_o & i2c_master_scl_o) ? 1'bz : 1'b0;
+assign i2c_master_sda_i = up_qsfp_i2c_sda;
+assign        dut_sda_i = up_qsfp_i2c_sda;
+assign   up_qsfp_i2c_sda   = (dut_sda_o & i2c_master_sda_o) ? 1'bz : 1'b0;
 
 
 
@@ -284,8 +284,8 @@ i2c_master_scl_t,
 i2c_master_sda_i,
 i2c_master_sda_o,
 i2c_master_sda_t,
-main_iic_scl ,
-main_iic_sda ,
+up_qsfp_i2c_scl ,
+up_qsfp_i2c_sda ,
 dut_sda_i,
 dut_scl_i,
 dut_scl_t,
@@ -298,7 +298,7 @@ assign probe0 = testx;
 reg [7:0] cnt;
 assign probe0_clk = cnt[7];
 always @ (posedge tb_clk)
-if(~tb_clk_locked)
+if(~GPO_tri_o[2])
 	cnt <= 8'd0;
 else 
 	cnt <= cnt + 8'd1;
