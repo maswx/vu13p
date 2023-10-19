@@ -31,10 +31,6 @@ set_property  PACKAGE_PIN D11         [get_ports  up_qsfp_161p132_clk_p ]
 set_property  PACKAGE_PIN D10         [get_ports  up_qsfp_161p132_clk_n ]
 set_property  IOSTANDARD  DIFF_SSTL12 [get_ports  up_qsfp_161p132_clk_p ]
 set_property  IOSTANDARD  DIFF_SSTL12 [get_ports  up_qsfp_161p132_clk_n ]
-#set_property PACKAGE_PIN B11         [get_ports  up_qsfp_156p250_clk_p ]  ; # log by maswx : 未验证频率 
-#set_property PACKAGE_PIN B10         [get_ports  up_qsfp_156p250_clk_n ]  ; # log by maswx : 未验证频率
-#set_property IOSTANDARD  DIFF_SSTL12 [get_ports  up_qsfp_156p250_clk_p ]  ; # log by maswx : 未验证频率
-#set_property IOSTANDARD  DIFF_SSTL12 [get_ports  up_qsfp_156p250_clk_n ]  ; # log by maswx : 未验证频率
 set_property  PACKAGE_PIN BC12        [get_ports {up_qsfp_i2c_sda}      ]
 set_property  PACKAGE_PIN BD8         [get_ports {up_qsfp_i2c_scl}      ]
 set_property  IOSTANDARD  LVCMOS12    [get_ports {up_qsfp_i2c_sda}      ]
@@ -74,10 +70,6 @@ set_property  PACKAGE_PIN Y11         [get_ports  dn_qsfp_161p132_clk_p  ]
 set_property  PACKAGE_PIN Y10         [get_ports  dn_qsfp_161p132_clk_n  ]
 set_property  IOSTANDARD  DIFF_SSTL12 [get_ports  dn_qsfp_161p132_clk_p  ]
 set_property  IOSTANDARD  DIFF_SSTL12 [get_ports  dn_qsfp_161p132_clk_n  ]
-#set_property PACKAGE_PIN V11         [get_ports  dn_qsfp_156p250_clk_p  ] ; # log by maswx : 未验证频率 
-#set_property PACKAGE_PIN V10         [get_ports  dn_qsfp_156p250_clk_n  ] ; # log by maswx : 未验证频率
-#set_property IOSTANDARD  DIFF_SSTL12 [get_ports  dn_qsfp_156p250_clk_p  ] ; # log by maswx : 未验证频率
-#set_property IOSTANDARD  DIFF_SSTL12 [get_ports  dn_qsfp_156p250_clk_n  ] ; # log by maswx : 未验证频率
 set_property  PACKAGE_PIN BF12        [get_ports {dn_qsfp_i2c_sda}       ]
 set_property  PACKAGE_PIN BD9         [get_ports {dn_qsfp_i2c_scl}       ]
 set_property  IOSTANDARD  LVCMOS12    [get_ports {dn_qsfp_i2c_sda}       ]
