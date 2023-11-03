@@ -5,3 +5,18 @@
 [submodule "prj/07_pcie_ddr4_dma/extn/src/verilog-i2c"]
 	path = prj/07_pcie_ddr4_dma/extn/src/verilog-i2c
 	url = https://github.com/maswx/verilog-i2c.git
+[submodule "submodule/verilog-pcie"]
+	path = submodule/verilog-pcie
+	url = https://github.com/alexforencich/verilog-pcie.git
+[submodule "submodule/verilog-ethernet"]
+	path = submodule/verilog-ethernet
+	url = https://github.com/alexforencich/verilog-ethernet.git
+[submodule "submodule/verilog-axis"]
+	path = submodule/verilog-axis
+	url = https://github.com/alexforencich/verilog-axis.git
+[submodule "submodule/verilog-axi"]
+	path = submodule/verilog-axi
+	url = https://github.com/alexforencich/verilog-axi.git
+[submodule "submodule/corundum"]
+	path = submodule/corundum
+	url = https://github.com/corundum/corundum.git
