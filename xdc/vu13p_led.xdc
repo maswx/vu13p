@@ -1,21 +1,10 @@
 
+set_property -dict {LOC BB24 IOSTANDARD LVCMOS12} [get_ports {LED[7]}]
+set_property -dict {LOC BA24 IOSTANDARD LVCMOS12} [get_ports {LED[6]}]
+set_property -dict {LOC BC22 IOSTANDARD LVCMOS12} [get_ports {LED[5]}]
+set_property -dict {LOC BB22 IOSTANDARD LVCMOS12} [get_ports {LED[4]}]
+set_property -dict {LOC BC21 IOSTANDARD LVCMOS12} [get_ports {LED[3]}]
+set_property -dict {LOC BB21 IOSTANDARD LVCMOS12} [get_ports {LED[2]}]
+set_property -dict {LOC BB20 IOSTANDARD LVCMOS12} [get_ports {LED[1]}]
+set_property -dict {LOC BA20 IOSTANDARD LVCMOS12} [get_ports {LED[0]}]
 
-set_property PACKAGE_PIN BB24 [get_ports {led_tri_o[7]}]
-set_property PACKAGE_PIN BA24 [get_ports {led_tri_o[6]}]
-set_property PACKAGE_PIN BC22 [get_ports {led_tri_o[5]}]
-set_property PACKAGE_PIN BB22 [get_ports {led_tri_o[4]}]
-set_property PACKAGE_PIN BC21 [get_ports {led_tri_o[3]}]
-set_property PACKAGE_PIN BB21 [get_ports {led_tri_o[2]}]
-set_property PACKAGE_PIN BB20 [get_ports {led_tri_o[1]}]
-set_property PACKAGE_PIN BA20 [get_ports {led_tri_o[0]}]
-
-
-
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[7]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[6]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[5]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[4]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[3]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[2]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[1]}]
-set_property IOSTANDARD LVCMOS12 [get_ports {led_tri_o[0]}]
