@@ -9,8 +9,8 @@ set_property -dict {LOC AK10                    } [get_ports {pcie_ref_clk_n[0]}
 set_property -dict {LOC AK11                    } [get_ports {pcie_ref_clk_p[0]}] 
 create_clock -name pcie_sys_clk -period 10 [get_ports        {pcie_ref_clk_p[0]}]
 
-set_property -dict {LOC AR26 IOSTANDARD LVCMOS12} [get_ports pcie_perst]
-set_property -dict {LOC BD20 IOSTANDARD LVCMOS12} [get_ports pcie_lnk_up] ; # green LED
+set_property -dict {LOC AR26 IOSTANDARD LVCMOS12} [get_ports pcie_perst_n]
+set_property -dict {LOC BD20 IOSTANDARD LVCMOS12} [get_ports pcie_link_up] ; # green LED
 
 
 #=========================================================================
