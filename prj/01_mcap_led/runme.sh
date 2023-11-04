@@ -27,5 +27,5 @@ core_jobs=20
 # 以下语句可以单独执行
 vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl -tclargs  $fpga_top_name $output_path 
 vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl  -tclargs $fpga_top_name $output_path $core_jobs
-#vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl   -tclargs $fpga_top_name $output_path $core_jobs
-#vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit.tcl -tclargs $fpga_top_name $output_path $tag
+vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl   -tclargs $fpga_top_name $output_path $core_jobs
+vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit.tcl -tclargs $fpga_top_name $output_path $tag
