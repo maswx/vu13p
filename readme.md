@@ -1,40 +1,62 @@
 
-## 国产vu13p 资料
+### 国产vu13p 资料
 
 * 有任何问题，请在[issue](https://github.com/maswx/vu13p/issues)中编写，记录。
+* 有引用第三方仓库, vu13p.git下载后请更新第三方仓库 `git submodule update --init --recursive`
 
-## 如何使用
 
-### [01 tandem PCIe](./prj/01_mcap_led/readme.md)
+### 如何使用
+
+#### [00_pin_uart]
+
+* DDDD
+
+#### [01 tandem PCIe](./prj/01_mcap_led/docs/readme.md)
 
 * 介绍如何通过PCIE下载固件
-* 介绍如何使用dcp文件进行增量编译
-* 介绍如何将一部分pcie/ddr4逻辑固化到prom中，后续逻辑修改仅通过pcie下载
+* 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
+* 支持PCIe-XVC
 
-
-### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
-
+#### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
 
 * 测试板载4组DDR4内存
 * 介绍PCIE相关驱动
 
+#### [03_10/100/1000/2500 mg eth]
 
-### [07 PCIE DDR4 DMA](./prj/07_pcie_ddr4_dma/docs/readme.md)
-
-* 内存搬移相关
-* 驱动
-* 基于固定的dcp模块，外部编写一组FIR滤波器
-* 使用matlab提供激励， 并用simulink查看内部逻辑
+* 支持以太网+XFCP
 
 
+#### [04_10G/25G eth]
+
+* 10G/25G eth
+
+
+#### [05_100G eth]
+
+* 100G eth
+
+
+#### [06 UDP + Gnuradio]
+
+* TODO
+
+#### [07 PCIe + MATLAB]
+
+* TODO
+
+#### [08 QDMA + DPDK]
+
+* TODO
+
+#### [09 PCIe + DSLogic]
+
+* 长期计划
+* 不定期更新
 
 
 
-
-
-
-
-## 致谢
+### 致谢
 
 * 感谢  章鱼哥  提供部分 DDR4 约束
 * 感谢 冻结旋律 提供部分逆向资料
