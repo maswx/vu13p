@@ -110,3 +110,5 @@ always @ (posedge sys_clk or negedge rst_n)
 	end
 
 assign LED = led_reg;
+
+endmodule
