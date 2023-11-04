@@ -1,7 +1,7 @@
 set fpga_top_name [lindex $argv 0]
 set output_path   [lindex $argv 1]
 
-file mkdir -p ${output_path}
+file mkdir ${output_path}
 
 #1. 创建工程
 create_project -force -part xcvu13p-fhgb2104-2L-e ${output_path}/${fpga_top_name}
