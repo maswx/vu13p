@@ -7,9 +7,9 @@ add_files -fileset sources_1 {
 	./src/axil_interconnect_wrap_1x4.v
 }
 
-add_files {
+add_files "
 	[glob ../../submodule/verilog-axi/rtl/*.v      ]
 	[glob ../../submodule/verilog-axis/rtl/*.v     ]
 	[glob ../../submodule/verilog-ethernet/rtl/*.v ]
 	[glob ../../submodule/verilog-i2c/rtl/*.v      ]
-}
+"
