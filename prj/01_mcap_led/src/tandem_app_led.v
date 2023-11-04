@@ -36,6 +36,8 @@ input  wire                   s_axil_rready,
 
 output      [7:0]             LED
 );
+wire sys_clk = axi_aclk   ;
+wire rst_n   = axi_aresetn;
 
 wire [ADDR_WIDTH-1:0]  reg_wr_addr;
 wire [DATA_WIDTH-1:0]  reg_wr_data;
@@ -91,7 +93,7 @@ always @ (posedge sys_clk or negedge rst_n)
 	end
 	else if(reg_wr_en)
 	begin
-		case(reg_wr_addr[3:2],2'b00)
+		case({reg_wr_addr[3:2],2'b00})
 			4'h0: begin
 				if(reg_wr_strb[0]) 
 					led_reg <= reg_wr_data[7:0];
@@ -104,7 +106,7 @@ always @ (posedge sys_clk or negedge rst_n)
 		reg_rd_data <= 32'd0;
 	else if(reg_rd_en)
 	begin
-		case(reg_rd_addr[3:2],2'b00)
+		case({reg_rd_addr[3:2],2'b00})
 			4'h0: reg_rd_data <= {24'd0, led_reg};
 		endcase
 	end
