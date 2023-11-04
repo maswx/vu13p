@@ -281,11 +281,12 @@ wire [1:0]               m03_axil_rresp     ;
 wire                     m03_axil_rvalid    ;
 wire                     m03_axil_rready    ;
 
+localparam M_REGIONS = 1;
 axil_interconnect_wrap_1x4 # (
     .DATA_WIDTH           ( 32                  ),
-    .ADDR_WIDTH           ( 16                  ),
+    .ADDR_WIDTH           ( 20                  ),
     .STRB_WIDTH           ( (DATA_WIDTH/8)      ),
-    .M_REGIONS            ( 1                   ),
+    .M_REGIONS            ( M_REGIONS           ),
     .M00_BASE_ADDR        ( 0                   ),
     .M00_ADDR_WIDTH       ( {M_REGIONS{32'd19}} ),//512KB
     .M00_CONNECT_READ     ( 1'b1                ),
@@ -388,7 +389,7 @@ axil_interconnect_wrap_1x4 # (
     .m02_axil_rdata       (m02_axil_rdata       ),//input  wire [DATA_WIDTH-1:0]    m02_axil_rdata,
     .m02_axil_rresp       (m02_axil_rresp       ),//input  wire [1:0]               m02_axil_rresp,
     .m02_axil_rvalid      (m02_axil_rvalid      ),//input  wire                     m02_axil_rvalid,
-    .m02_axil_rready      (m02_axil_rready      ) //output wire                     m02_axil_rready
+    .m02_axil_rready      (m02_axil_rready      ),//output wire                     m02_axil_rready
                                                 
     .m03_axil_awaddr      (m03_axil_awaddr      ),//output wire [ADDR_WIDTH-1:0]    m03_axil_awaddr,
     .m03_axil_awprot      (m03_axil_awprot      ),//output wire [2:0]               m03_axil_awprot,
@@ -419,6 +420,7 @@ axil_interconnect_wrap_1x4 # (
 //3. fpga boot
 
 // reboot from QSPI flash, 仅仅适用于VU/VUP系列 
+wire reboot;
 fpga_reboot fpga_reboot_inst(
 	.sys_clk  (sys_clk  ),//i1,
 	.rst_n    (rst_n    ),//i1, 
@@ -570,17 +572,13 @@ axil_reg_if axil_reg_if_inst (
 );
 
 reg  fpga_reboot_reg;
-reg [7:0] led_reg ;
 //写入
 always @ (posedge sys_clk or negedge rst_n)
 	if(!rst_n)
-	begin
 		fpga_reboot_reg <= 1'd0;
-		led_reg         <= 8'd0;
-	end
 	else if(reg_wr_en)
 	begin
-		case(reg_wr_addr[3:2],2'b00)
+		case({reg_wr_addr[3:2],2'b00})
 			4'h0: begin
 				if(reg_wr_strb[0]) 
 					fpga_reboot_reg <= reg_wr_data[0];
@@ -593,12 +591,12 @@ always @ (posedge sys_clk or negedge rst_n)
 		reg_rd_data <= 32'd0;
 	else if(reg_rd_en)
 	begin
-		case(reg_rd_addr[3:2],2'b00)
+		case({reg_rd_addr[3:2],2'b00})
 			4'h0: reg_rd_data <= {31'd0, fpga_reboot_reg};
 		endcase
 	end
 
-
+assign reboot = fpga_reboot_reg;
 
 
 

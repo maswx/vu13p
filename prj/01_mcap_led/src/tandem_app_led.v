@@ -5,7 +5,7 @@
 //========================================================================
 //
 //
-module tandem_app_bram #(
+module tandem_app_led #(
 	parameter  DATA_WIDTH      = 32 ,
 	parameter  ADDR_WIDTH      = 16 ,
 	parameter  STRB_WIDTH      = 4  ,
@@ -32,7 +32,7 @@ output wire                   s_axil_arready,
 output wire [DATA_WIDTH-1:0]  s_axil_rdata,
 output wire [1:0]             s_axil_rresp,
 output wire                   s_axil_rvalid,
-input  wire                   s_axil_rready
+input  wire                   s_axil_rready,
 
 output      [7:0]             LED
 );
