@@ -17,8 +17,8 @@ module mcap_led_top(
 	output [15:0] pcie_lane_txn  ,
 	input         pcie_perst_n   ,
 	output        pcie_link_up   ,
-	inout         main_i2c_scl   ,
-	inout         main_i2c_sda   ,
+	inout         main_iic_scl   ,
+	inout         main_iic_sda   ,
 	output [ 7:0] LED 
 );
 //==========================================================================================================
@@ -183,13 +183,13 @@ xdma_mcap_qspi xdma_mcap_qspi_inst(
 IOBUF IOBUF_scl_inst (
 	.O (i2c_scl_i    ),
 	.I (i2c_scl_i    ),
-	.IO(main_i2c_scl ),
+	.IO(main_iic_scl ),
 	.T (i2c_scl_t    ) 
 );
 IOBUF IOBUF_sda_inst (
 	.O (i2c_sda_i    ),
 	.I (i2c_sda_i    ),
-	.IO(main_i2c_sda ),
+	.IO(main_iic_sda ),
 	.T (i2c_sda_t    )
 );
 
