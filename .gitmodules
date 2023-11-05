@@ -29,3 +29,6 @@
 [submodule "submodule/open-nic-shell"]
 	path = submodule/open-nic-shell
 	url = https://github.com/Xilinx/open-nic-shell.git
+[submodule "submodule/dma_ip_drivers"]
+	path = submodule/dma_ip_drivers
+	url = https://github.com/Xilinx/dma_ip_drivers
