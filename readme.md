@@ -2,7 +2,7 @@
 ### 国产vu13p 资料
 
 * 有任何问题，请在[issue](https://github.com/maswx/vu13p/issues)中编写，记录。
-* 有引用第三方仓库, vu13p.git下载后请更新第三方仓库 `git submodule update --init --recursive`
+* 有引用第三方仓库, 请使用命令` git clone --recurse-submodules https://github.com/maswx/vu13p.git ` 拉取全部仓库
 
 
 ### 如何使用
