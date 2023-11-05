@@ -9,14 +9,14 @@ include_directories(./include)
 include_directories(./src)
 
 aux_source_directory(./src/     LIB_SRC)
-aux_source_directory(./examples/xqspips_g128_flash_example.c     LIB_EXP)
+#aux_source_directory(./xqspips_g128_flash_example.c     LIB_EXP)
 aux_source_directory(./include/  LIB_COM)
 
 
 
 # 添加可执行文件
 add_executable(xqspips_g128_flash_example
-	           examples/xqspips_g128_flash_example.c
+	           xqspips_g128_flash_example.c
 			   ${LIB_SRC}
 			   ${LIB_EXP}
 			   ${LIB_COM}
