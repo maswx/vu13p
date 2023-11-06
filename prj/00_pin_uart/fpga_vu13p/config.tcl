@@ -53,7 +53,7 @@ set baud "115200"
 set group_count "32"
 
 # iostandard for all pins
-set iostandard "LVCMOS18"
+set iostandard "LVCMOS12"
 
 # pins to skip
 set skip_pins_by_index {}
