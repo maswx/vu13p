@@ -25,3 +25,6 @@
 [submodule "submodule/dma_ip_drivers"]
 	path = submodule/dma_ip_drivers
 	url = https://github.com/Xilinx/dma_ip_drivers
+[submodule "submodule/pin-uart"]
+	path = submodule/pin-uart
+	url = https://github.com/alexforencich/pin-uart.git

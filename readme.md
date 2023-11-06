@@ -7,9 +7,9 @@
 
 ### 如何使用
 
-#### [00_pin_uart]
+#### [00_pin_uart](./prj/00_pin_uart/README.md)
 
-* DDDD
+* 逆向工程，懂的都懂 DDDD
 
 #### [01 tandem PCIe](./prj/01_mcap_led/docs/readme.md)
 
@@ -22,34 +22,27 @@
 * 测试板载4组DDR4内存
 * 介绍PCIE相关驱动
 
-#### [03_10/100/1000/2500 mg eth]
+#### [03 100G CMAC]
 
-* 支持以太网+XFCP
-
+* 100G 以太网 + UDP
 
 #### [04_10G/25G eth]
 
 * 10G/25G eth
 
-
-#### [05_100G eth]
-
-* 100G eth
-
-
-#### [06 UDP + Gnuradio]
+#### [05 UDP + Gnuradio]
 
 * TODO
 
-#### [07 PCIe + MATLAB]
+#### [06 PCIe + MATLAB]
 
 * TODO
 
-#### [08 QDMA + DPDK]
+#### [07 QDMA + DPDK]
 
 * TODO
 
-#### [09 PCIe + DSLogic]
+#### [08 PCIe + DSLogic]
 
 * 长期计划
 * 不定期更新
