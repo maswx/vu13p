@@ -198,7 +198,7 @@ IOBUF IOBUF_sda_inst (
 //1. AXI BRAM
 axi_ram # (
     .DATA_WIDTH      ( 512 ), 
-    .ADDR_WIDTH      ( 16  ),
+    .ADDR_WIDTH      (  8  ),
     .STRB_WIDTH      ( 64  ),
     .ID_WIDTH        ( 8   ),
     .PIPELINE_OUTPUT ( 0   )
