@@ -1,10 +1,3 @@
-[submodule "driver/dma_ip_drivers"]
-	path = driver/dma_ip_drivers
-	url = git@github.com:Xilinx/dma_ip_drivers.git
-
-[submodule "prj/07_pcie_ddr4_dma/extn/src/verilog-i2c"]
-	path = prj/07_pcie_ddr4_dma/extn/src/verilog-i2c
-	url = https://github.com/maswx/verilog-i2c.git
 [submodule "submodule/verilog-pcie"]
 	path = submodule/verilog-pcie
 	url = https://github.com/alexforencich/verilog-pcie.git
