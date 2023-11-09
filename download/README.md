@@ -23,7 +23,7 @@ downloadbit.sh ./xxxxxxxxxxx.bit
 ## 2.下载 bin 文件
 
 ```bash
-downloadbit.sh -bin ./xxxxxxxxxxx.bit
+downloadbin.sh ./xxxxxxxxxxx.bit
 
 #NOTES: 内部会自动将bit文件转换成合适的bin文件，然后再下载bin;
 ```
