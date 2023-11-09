@@ -73,26 +73,6 @@ wire           axi_arlock  ;
 wire [  3 : 0] axi_arcache ;
 wire           axi_rready  ;
 
-wire [ 31 : 0] axil_awaddr ;
-wire [  2 : 0] axil_awprot ;
-wire           axil_awvalid;
-wire           axil_awready;
-wire [ 31 : 0] axil_wdata  ;
-wire [  3 : 0] axil_wstrb  ;
-wire           axil_wvalid ;
-wire           axil_wready ;
-wire           axil_bvalid ;
-wire [  1 : 0] axil_bresp  ;
-wire           axil_bready ;
-wire [ 31 : 0] axil_araddr ;
-wire [  2 : 0] axil_arprot ;
-wire           axil_arvalid;
-wire           axil_arready;
-wire [ 31 : 0] axil_rdata  ;
-wire [  1 : 0] axil_rresp  ;
-wire           axil_rvalid ;
-wire           axil_rready ;
-
 wire i2c_scl_i; 
 wire i2c_scl_o;
 wire i2c_scl_t;
@@ -152,25 +132,6 @@ xdma_mcap_qspi xdma_mcap_qspi_inst(
 	.m_axi_arlock   (  axi_arlock   ),//output wire           m_axi_arlock  ,
 	.m_axi_arcache  (  axi_arcache  ),//output wire [  3 : 0] m_axi_arcache ,
 	.m_axi_rready   (  axi_rready   ),//output wire           m_axi_rready  ,
-	.m_axil_awaddr  (  axil_awaddr  ),//output wire [ 31 : 0] m_axil_awaddr ,
-	.m_axil_awprot  (  axil_awprot  ),//output wire [  2 : 0] m_axil_awprot ,
-	.m_axil_awvalid (  axil_awvalid ),//output wire           m_axil_awvalid,
-	.m_axil_awready (  axil_awready ),//input  wire           m_axil_awready,
-	.m_axil_wdata   (  axil_wdata   ),//output wire [ 31 : 0] m_axil_wdata  ,
-	.m_axil_wstrb   (  axil_wstrb   ),//output wire [  3 : 0] m_axil_wstrb  ,
-	.m_axil_wvalid  (  axil_wvalid  ),//output wire           m_axil_wvalid ,
-	.m_axil_wready  (  axil_wready  ),//input  wire           m_axil_wready ,
-	.m_axil_bvalid  (  axil_bvalid  ),//input  wire           m_axil_bvalid ,
-	.m_axil_bresp   (  axil_bresp   ),//input  wire [  1 : 0] m_axil_bresp  ,
-	.m_axil_bready  (  axil_bready  ),//output wire           m_axil_bready ,
-	.m_axil_araddr  (  axil_araddr  ),//output wire [ 31 : 0] m_axil_araddr ,
-	.m_axil_arprot  (  axil_arprot  ),//output wire [  2 : 0] m_axil_arprot ,
-	.m_axil_arvalid (  axil_arvalid ),//output wire           m_axil_arvalid,
-	.m_axil_arready (  axil_arready ),//input  wire           m_axil_arready,
-	.m_axil_rdata   (  axil_rdata   ),//input  wire [ 31 : 0] m_axil_rdata  ,
-	.m_axil_rresp   (  axil_rresp   ),//input  wire [  1 : 0] m_axil_rresp  ,
-	.m_axil_rvalid  (  axil_rvalid  ),//input  wire           m_axil_rvalid ,
-	.m_axil_rready  (  axil_rready  ),//output wire           m_axil_rready 
 
     .i2c_scl_i      (  i2c_scl_i    ),//i1 
     .i2c_scl_o      (  i2c_scl_o    ),//o1
@@ -196,6 +157,7 @@ IOBUF IOBUF_sda_inst (
 
 //==========================================================================================================
 //1. AXI BRAM
+`define USE_ALEX_RAM
 `ifdef USE_ALEX_RAM
 axi_ram # (
     .DATA_WIDTH      ( 512 ), 
@@ -289,90 +251,6 @@ axi_bram_ctrl_0 axi_bram_ctrl_0_inst(
 
 `endif
 
-//==========================================================================================================
-//2. AXIL BRAM
-
-`ifdef USE_AXIL_RAM
-tandem_app_bram tandem_app_inst (
-    .axi_aclk        ( axi_aclk       ),
-    .axi_aresetn     ( axi_aresetn    ),
-
-    .s_axil_awaddr   (  axil_awaddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_awaddr,
-    .s_axil_awprot   (  axil_awprot   ),//input  wire [2:0]             s_axil_awprot,
-    .s_axil_awvalid  (  axil_awvalid  ),//input  wire                   s_axil_awvalid,
-    .s_axil_awready  (  axil_awready  ),//output wire                   s_axil_awready,
-    .s_axil_wdata    (  axil_wdata    ),//input  wire [DATA_WIDTH-1:0]  s_axil_wdata,
-    .s_axil_wstrb    (  axil_wstrb    ),//input  wire [STRB_WIDTH-1:0]  s_axil_wstrb,
-    .s_axil_wvalid   (  axil_wvalid   ),//input  wire                   s_axil_wvalid,
-    .s_axil_wready   (  axil_wready   ),//output wire                   s_axil_wready,
-    .s_axil_bresp    (  axil_bresp    ),//output wire [1:0]             s_axil_bresp,
-    .s_axil_bvalid   (  axil_bvalid   ),//output wire                   s_axil_bvalid,
-    .s_axil_bready   (  axil_bready   ),//input  wire                   s_axil_bready,
-    .s_axil_araddr   (  axil_araddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_araddr,
-    .s_axil_arprot   (  axil_arprot   ),//input  wire [2:0]             s_axil_arprot,
-    .s_axil_arvalid  (  axil_arvalid  ),//input  wire                   s_axil_arvalid,
-    .s_axil_arready  (  axil_arready  ),//output wire                   s_axil_arready,
-    .s_axil_rdata    (  axil_rdata    ),//output wire [DATA_WIDTH-1:0]  s_axil_rdata,
-    .s_axil_rresp    (  axil_rresp    ),//output wire [1:0]             s_axil_rresp,
-    .s_axil_rvalid   (  axil_rvalid   ),//output wire                   s_axil_rvalid,
-    .s_axil_rready   (  axil_rready   ),//input  wire                   s_axil_rready
-	.LED             (  LED           )
-);
-`elsif USE_AXIL_XVC
-tandem_app_axixvc tandem_app_inst (
-    .axi_aclk        ( axi_aclk       ),
-    .axi_aresetn     ( axi_aresetn    ),
-
-    .s_axil_awaddr   (  axil_awaddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_awaddr,
-    .s_axil_awprot   (  axil_awprot   ),//input  wire [2:0]             s_axil_awprot,
-    .s_axil_awvalid  (  axil_awvalid  ),//input  wire                   s_axil_awvalid,
-    .s_axil_awready  (  axil_awready  ),//output wire                   s_axil_awready,
-    .s_axil_wdata    (  axil_wdata    ),//input  wire [DATA_WIDTH-1:0]  s_axil_wdata,
-    .s_axil_wstrb    (  axil_wstrb    ),//input  wire [STRB_WIDTH-1:0]  s_axil_wstrb,
-    .s_axil_wvalid   (  axil_wvalid   ),//input  wire                   s_axil_wvalid,
-    .s_axil_wready   (  axil_wready   ),//output wire                   s_axil_wready,
-    .s_axil_bresp    (  axil_bresp    ),//output wire [1:0]             s_axil_bresp,
-    .s_axil_bvalid   (  axil_bvalid   ),//output wire                   s_axil_bvalid,
-    .s_axil_bready   (  axil_bready   ),//input  wire                   s_axil_bready,
-    .s_axil_araddr   (  axil_araddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_araddr,
-    .s_axil_arprot   (  axil_arprot   ),//input  wire [2:0]             s_axil_arprot,
-    .s_axil_arvalid  (  axil_arvalid  ),//input  wire                   s_axil_arvalid,
-    .s_axil_arready  (  axil_arready  ),//output wire                   s_axil_arready,
-    .s_axil_rdata    (  axil_rdata    ),//output wire [DATA_WIDTH-1:0]  s_axil_rdata,
-    .s_axil_rresp    (  axil_rresp    ),//output wire [1:0]             s_axil_rresp,
-    .s_axil_rvalid   (  axil_rvalid   ),//output wire                   s_axil_rvalid,
-    .s_axil_rready   (  axil_rready   ),//input  wire                   s_axil_rready
-	.LED             (  LED           )
-);
-
-`else
-tandem_app_led tandem_app_inst (
-    .axi_aclk        ( axi_aclk       ),
-    .axi_aresetn     ( axi_aresetn    ),
-
-    .s_axil_awaddr   (  axil_awaddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_awaddr,
-    .s_axil_awprot   (  axil_awprot   ),//input  wire [2:0]             s_axil_awprot,
-    .s_axil_awvalid  (  axil_awvalid  ),//input  wire                   s_axil_awvalid,
-    .s_axil_awready  (  axil_awready  ),//output wire                   s_axil_awready,
-    .s_axil_wdata    (  axil_wdata    ),//input  wire [DATA_WIDTH-1:0]  s_axil_wdata,
-    .s_axil_wstrb    (  axil_wstrb    ),//input  wire [STRB_WIDTH-1:0]  s_axil_wstrb,
-    .s_axil_wvalid   (  axil_wvalid   ),//input  wire                   s_axil_wvalid,
-    .s_axil_wready   (  axil_wready   ),//output wire                   s_axil_wready,
-    .s_axil_bresp    (  axil_bresp    ),//output wire [1:0]             s_axil_bresp,
-    .s_axil_bvalid   (  axil_bvalid   ),//output wire                   s_axil_bvalid,
-    .s_axil_bready   (  axil_bready   ),//input  wire                   s_axil_bready,
-    .s_axil_araddr   (  axil_araddr   ),//input  wire [ADDR_WIDTH-1:0]  s_axil_araddr,
-    .s_axil_arprot   (  axil_arprot   ),//input  wire [2:0]             s_axil_arprot,
-    .s_axil_arvalid  (  axil_arvalid  ),//input  wire                   s_axil_arvalid,
-    .s_axil_arready  (  axil_arready  ),//output wire                   s_axil_arready,
-    .s_axil_rdata    (  axil_rdata    ),//output wire [DATA_WIDTH-1:0]  s_axil_rdata,
-    .s_axil_rresp    (  axil_rresp    ),//output wire [1:0]             s_axil_rresp,
-    .s_axil_rvalid   (  axil_rvalid   ),//output wire                   s_axil_rvalid,
-    .s_axil_rready   (  axil_rready   ),//input  wire                   s_axil_rready
-	.LED             (  LED           )
-);
-
-`endif
 endmodule
 
 
