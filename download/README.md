@@ -1,32 +1,31 @@
 
 通过脚本下载bit文件
 
+## 添加路径
+
+```bash
+cd download
+echo "export PATH=\$PATH:`pwd`" >> ~/.zshrc  #如果你用zsh 就执行这句话; 强推使用ohmyzsh ! YYDS
+echo "export PATH=\$PATH:`pwd`" >> ~/.bashrc #如果你用bash就执行这句话
+```
+
+
+
 ## 下载 bit 文件
 
-```bash
-
-make bitname=~/work/pciex16_ddr4_x4.bit
+在你的bit文件路径处执行：
 
 ```
-
-或者 直接修改Makefile 文件里的bitname ,然后 
-
-```bash
-make
+downloadbit.sh ./xxxxxxxxxxx.bit
 ```
+
 
 ## 2.下载 bin 文件
 
 ```bash
-make binname=~/work/pciex16_ddr4_x4.bin
-# log by masw:  vivado有时候会报错，有空再解决
-```
+downloadbit.sh -bin ./xxxxxxxxxxx.bit
 
-## 3. 将bit文件转换为适合 vu13p下载的bin文件
-
-```bash
-make bit2bin bitname=~/work/pciex16_ddr4_x4.bit
-# 会在当前路径下生成一个同名的bin文件
+#NOTES: 内部会自动将bit文件转换成合适的bin文件，然后再下载bin;
 ```
 
 
