@@ -9,13 +9,14 @@
 
 #### [00_pin_uart](./prj/00_pin_uart/README.md)
 
+* 会自己说话, 作自我介绍的引脚！
 * 逆向工程，懂的都懂 DDDD
 
 #### [01 tandem PCIe](./prj/01_mcap_led/docs/readme.md)
 
 * 介绍如何通过PCIE下载固件
 * 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
-* 支持PCIe-XVC
+* 支持内部JTAG(PCIe-XVC)、支持 ICAP(PCIe更新bit)、 支持QSPI(PCIe更新Flash)、 支持IIC (PCIe访问板子IIC外设,PMBus等)
 
 #### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
 
