@@ -18,6 +18,8 @@ source ./tcl/ip_xdma.tcl
 source ./tcl/ip_qspi.tcl
 source ./tcl/ip_axixvc.tcl
 source ./tcl/ip_bram.tcl
+source ./tcl/ip_axil_bram.tcl
+source ./tcl/ip_hwicap.tcl
 
 #5. 修改全局配置
 source ./tcl/config.tcl

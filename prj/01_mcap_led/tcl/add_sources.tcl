@@ -9,7 +9,7 @@ add_files -fileset sources_1 {
 	./src/tandem_app_axixvc.v
 	./src/tandem_app_led.v
 	./src/xdma_mcap_qspi.v
-	./src/axil_interconnect_wrap_1x4.v
+	./src/axil_interconnect_wrap_1x5.v
 }
 
 add_files "

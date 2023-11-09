@@ -17,7 +17,8 @@ fi
 
 
 fpga_top_name=mcap_led_top
-prjcnt=0
+#fpga_top_name=xdma_bram
+prjcnt=5
 output_path=~/alivu13p/prjs/${fpga_top_name}_${prjcnt}
 echo $output_path
 core_jobs=20
@@ -25,8 +26,8 @@ core_jobs=20
 
 
 # 以下语句可以单独执行
-vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl -tclargs $fpga_top_name $output_path 
-vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl  -tclargs $fpga_top_name $output_path $core_jobs
+#vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl -tclargs $fpga_top_name $output_path 
+#vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl  -tclargs $fpga_top_name $output_path $core_jobs
 vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl   -tclargs $fpga_top_name $output_path $core_jobs
 vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit.tcl -tclargs $fpga_top_name $output_path $tag
 
