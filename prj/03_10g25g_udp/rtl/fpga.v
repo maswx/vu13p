@@ -35,14 +35,14 @@ module fpga (
     /*
      * Clock: 300MHz LVDS
      */
-	input [0:0]       clk_100M_p,
-	input [0:0]       clk_100M_n,
+	input wire [0:0]       clk_100M_p,
+	input wire [0:0]       clk_100M_n,
 
     /*
      * GPIO
      */
-	output [1:0] qsfp_led_y,
-	output [1:0] qsfp_led_g,
+	output wire [1:0] qsfp_led_y,
+	output wire [1:0] qsfp_led_g,
 
     /*
      * Ethernet: QSFP28
@@ -76,20 +76,20 @@ module fpga (
 (* keep *) wire       qsfp_1_mgt_refclk_p    ;
 (* keep *) wire       qsfp_1_mgt_refclk_n    ;
 
-assign up_qsfp_txp  =  qsfp_0_tx_p ; 
-assign up_qsfp_txn  =  qsfp_0_tx_n ;
-assign dn_qsfp_txp  =  qsfp_1_tx_p ;
-assign dn_qsfp_txn  =  qsfp_1_tx_n ;
+assign up_qsfp_txp  =  qsfp_1_tx_p ; 
+assign up_qsfp_txn  =  qsfp_1_tx_n ;
+assign dn_qsfp_txp  =  qsfp_0_tx_p ;
+assign dn_qsfp_txn  =  qsfp_0_tx_n ;
 
-assign qsfp_0_rx_p         = up_qsfp_rxp          ;
-assign qsfp_0_rx_n         = up_qsfp_rxn          ;
-assign qsfp_0_mgt_refclk_p = up_qsfp_161p132_clk_p;
-assign qsfp_0_mgt_refclk_n = up_qsfp_161p132_clk_n;
+assign qsfp_1_rx_p         = up_qsfp_rxp          ;
+assign qsfp_1_rx_n         = up_qsfp_rxn          ;
+assign qsfp_1_mgt_refclk_p = up_qsfp_161p132_clk_p;
+assign qsfp_1_mgt_refclk_n = up_qsfp_161p132_clk_n;
 
-assign qsfp_1_rx_p         = dn_qsfp_rxp          ;
-assign qsfp_1_rx_n         = dn_qsfp_rxn          ;
-assign qsfp_1_mgt_refclk_p = dn_qsfp_161p132_clk_p;
-assign qsfp_1_mgt_refclk_n = dn_qsfp_161p132_clk_n;
+assign qsfp_0_rx_p         = dn_qsfp_rxp          ;
+assign qsfp_0_rx_n         = dn_qsfp_rxn          ;
+assign qsfp_0_mgt_refclk_p = dn_qsfp_161p132_clk_p;
+assign qsfp_0_mgt_refclk_n = dn_qsfp_161p132_clk_n;
 
 
 wire       qsfp_0_modprs_l        ;
