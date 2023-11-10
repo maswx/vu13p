@@ -1,14 +1,13 @@
-# Verilog Ethernet ADM-PCIE-9V3 Example Design
+# 致敬Alex ! 
 
 ## Introduction
 
-This example design targets the Alpha Data ADM-PCIE-9V3 FPGA board.
 
 The design by default listens to UDP port 1234 at IP address 192.168.1.128 and
 will echo back any packets received.  The design will also respond correctly
 to ARP requests.  
 
-*  FPGA: xcvu3p-ffvc1517-2-i
+*  FPGA: xcvu13p-fhgb2104-2L-e
 *  PHY: 25G BASE-R PHY IP core and internal GTY transceiver
 
 ## How to build

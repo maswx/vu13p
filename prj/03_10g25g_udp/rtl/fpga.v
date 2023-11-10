@@ -35,45 +35,84 @@ module fpga (
     /*
      * Clock: 300MHz LVDS
      */
-    input  wire       clk_300mhz_p,
-    input  wire       clk_300mhz_n,
+	input [0:0]       clk_100M_p,
+	input [0:0]       clk_100M_n,
 
     /*
      * GPIO
      */
-    output wire [1:0] user_led_g,
-    output wire       user_led_r,
-    output wire [1:0] front_led,
-    input  wire [1:0] user_sw,
+	output [1:0] qsfp_led_y,
+	output [1:0] qsfp_led_g,
 
     /*
      * Ethernet: QSFP28
      */
-    output wire [3:0] qsfp_0_tx_p,
-    output wire [3:0] qsfp_0_tx_n,
-    input  wire [3:0] qsfp_0_rx_p,
-    input  wire [3:0] qsfp_0_rx_n,
-    input  wire       qsfp_0_mgt_refclk_p,
-    input  wire       qsfp_0_mgt_refclk_n,
-    input  wire       qsfp_0_modprs_l,
-    output wire       qsfp_0_sel_l,
+    output wire [3:0] up_qsfp_txp,
+    output wire [3:0] up_qsfp_txn,
+    input  wire [3:0] up_qsfp_rxp,
+    input  wire [3:0] up_qsfp_rxn,
+    input  wire       up_qsfp_161p132_clk_p,
+    input  wire       up_qsfp_161p132_clk_n,
 
-    output wire [3:0] qsfp_1_tx_p,
-    output wire [3:0] qsfp_1_tx_n,
-    input  wire [3:0] qsfp_1_rx_p,
-    input  wire [3:0] qsfp_1_rx_n,
-    input  wire       qsfp_1_mgt_refclk_p,
-    input  wire       qsfp_1_mgt_refclk_n,
-    input  wire       qsfp_1_modprs_l,
-    output wire       qsfp_1_sel_l,
+    output wire [3:0] dn_qsfp_txp,
+    output wire [3:0] dn_qsfp_txn,
+    input  wire [3:0] dn_qsfp_rxp,
+    input  wire [3:0] dn_qsfp_rxn,
+    input  wire       dn_qsfp_161p132_clk_p,
+    input  wire       dn_qsfp_161p132_clk_n
 
-    output wire       qsfp_reset_l,
-    input  wire       qsfp_int_l
 );
+
+(* keep *) wire [3:0] qsfp_0_tx_p            ;
+(* keep *) wire [3:0] qsfp_0_tx_n            ;
+(* keep *) wire [3:0] qsfp_0_rx_p            ;
+(* keep *) wire [3:0] qsfp_0_rx_n            ;
+(* keep *) wire       qsfp_0_mgt_refclk_p    ;
+(* keep *) wire       qsfp_0_mgt_refclk_n    ;
+(* keep *) wire [3:0] qsfp_1_tx_p            ;
+(* keep *) wire [3:0] qsfp_1_tx_n            ;
+(* keep *) wire [3:0] qsfp_1_rx_p            ;
+(* keep *) wire [3:0] qsfp_1_rx_n            ;
+(* keep *) wire       qsfp_1_mgt_refclk_p    ;
+(* keep *) wire       qsfp_1_mgt_refclk_n    ;
+
+assign up_qsfp_txp  =  qsfp_0_tx_p ; 
+assign up_qsfp_txn  =  qsfp_0_tx_n ;
+assign dn_qsfp_txp  =  qsfp_1_tx_p ;
+assign dn_qsfp_txn  =  qsfp_1_tx_n ;
+
+assign qsfp_0_rx_p         = up_qsfp_rxp          ;
+assign qsfp_0_rx_n         = up_qsfp_rxn          ;
+assign qsfp_0_mgt_refclk_p = up_qsfp_161p132_clk_p;
+assign qsfp_0_mgt_refclk_n = up_qsfp_161p132_clk_n;
+
+assign qsfp_1_rx_p         = dn_qsfp_rxp          ;
+assign qsfp_1_rx_n         = dn_qsfp_rxn          ;
+assign qsfp_1_mgt_refclk_p = dn_qsfp_161p132_clk_p;
+assign qsfp_1_mgt_refclk_n = dn_qsfp_161p132_clk_n;
+
+
+wire       qsfp_0_modprs_l        ;
+wire       qsfp_0_sel_l           ;
+wire       qsfp_1_modprs_l        ;
+wire       qsfp_1_sel_l           ;
+wire       qsfp_reset_l           ;
+wire       qsfp_int_l             ;
+
+
+
+//================================================================================================
+wire [1:0] user_led_g;
+wire       user_led_r;//log by masw@masw.tech: fpga_core.v 内部悬空了，没有意义assign user_led_r = 1'b1;
+wire [1:0] front_led ;//log by masw@masw.tech: fpga_core.v 内部悬空了，没有意义assign front_led = 2'b00;
+
+assign qsfp_led_g = user_led_g;
+assign qsfp_led_y = front_led ;
+
 
 // Clock and reset
 
-wire clk_300mhz_ibufg;
+wire clk_100mhz_ibufg;
 
 // Internal 125 MHz clock
 wire clk_125mhz_mmcm_out;
@@ -93,16 +132,16 @@ IBUFGDS #(
    .IBUF_LOW_PWR("FALSE")   
 )
 clk_300mhz_ibufg_inst (
-   .O   (clk_300mhz_ibufg),
-   .I   (clk_300mhz_p),
-   .IB  (clk_300mhz_n) 
+   .O   (clk_100mhz_ibufg),
+   .I   (clk_100M_p),
+   .IB  (clk_100M_n) 
 );
 
 // MMCM instance
-// 300 MHz in, 125 MHz out
+// 100 MHz in, 125 MHz out
 // PFD range: 10 MHz to 500 MHz
 // VCO range: 800 MHz to 1600 MHz
-// M = 10, D = 3 sets Fvco = 1000 MHz (in range)
+// M = 10, D = 1 sets Fvco = 1000 MHz (in range)
 // Divide by 8 to get output frequency of 125 MHz
 MMCME3_BASE #(
     .BANDWIDTH("OPTIMIZED"),
@@ -129,14 +168,14 @@ MMCME3_BASE #(
     .CLKOUT6_PHASE(0),
     .CLKFBOUT_MULT_F(10),
     .CLKFBOUT_PHASE(0),
-    .DIVCLK_DIVIDE(3),
+    .DIVCLK_DIVIDE(1),
     .REF_JITTER1(0.010),
-    .CLKIN1_PERIOD(3.333),
+    .CLKIN1_PERIOD(10),
     .STARTUP_WAIT("FALSE"),
     .CLKOUT4_CASCADE("FALSE")
 )
 clk_mmcm_inst (
-    .CLKIN1(clk_300mhz_ibufg),
+    .CLKIN1(clk_100mhz_ibufg),
     .CLKFBIN(mmcm_clkfb),
     .RST(mmcm_rst),
     .PWRDWN(1'b0),
@@ -172,6 +211,7 @@ sync_reset_125mhz_inst (
 );
 
 // GPIO
+wire [1:0] user_sw = 2'd0;
 wire [1:0] user_sw_int;
 
 debounce_switch #(

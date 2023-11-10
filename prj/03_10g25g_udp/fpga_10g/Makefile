@@ -51,7 +51,8 @@ SYN_FILES += lib/eth/lib/axis/rtl/axis_async_fifo_adapter.v
 SYN_FILES += lib/eth/lib/axis/rtl/sync_reset.v
 
 # XDC files
-XDC_FILES = fpga.xdc
+XDC_FILES = ../../xdc/vu13p_clock.xdc
+XDC_FILES += ../../xdc/vu13p_qsfp.xdc
 XDC_FILES += lib/eth/syn/vivado/eth_mac_fifo.tcl
 XDC_FILES += lib/eth/lib/axis/syn/vivado/axis_async_fifo.tcl
 XDC_FILES += lib/eth/lib/axis/syn/vivado/sync_reset.tcl
