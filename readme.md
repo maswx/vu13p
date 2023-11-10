@@ -23,13 +23,15 @@
 * 测试板载4组DDR4内存
 * 介绍PCIE相关驱动
 
-#### [03 100G CMAC]
+#### [03 10G/25G UDP](./prj/03_10g25g_udp/README.md)
 
-* 100G 以太网 + UDP
+* `make`编译工程!
+* 基于Alex的工作,  Alex YYDS!
+* UDP已通！
 
-#### [04_10G/25G eth]
+#### [04 100G CMAC]
 
-* 10G/25G eth
+* 起飞
 
 #### [05 UDP + Gnuradio]
 
