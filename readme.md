@@ -7,12 +7,12 @@
 
 ### 如何使用
 
-#### [00_pin_uart](./prj/00_pin_uart/README.md)
+#### [00 pin uart](./prj/00_pin_uart/README.md)
 
 * 会自己说话, 作自我介绍的引脚！
 * 逆向工程，懂的都懂 DDDD
 
-#### [01 tandem PCIe](./prj/01_mcap_led/docs/readme.md)
+#### [01 icap qspi](./prj/01_icap_led/docs/readme.md)
 
 * 介绍如何通过PCIE下载固件
 * 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
@@ -29,7 +29,7 @@
 * 基于Alex的工作,  Alex YYDS!
 * UDP已通！
 
-#### [04 100G CMAC]
+#### [04 100G Corundum](./prj/04_100G_corundum/readme.md)
 
 * 起飞
 
