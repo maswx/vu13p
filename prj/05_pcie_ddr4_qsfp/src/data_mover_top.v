@@ -35,7 +35,7 @@ module data_mover_top(
     input  wire [3:0] dn_qsfp_rxp,
     input  wire [3:0] dn_qsfp_rxn,
     input  wire       dn_qsfp_161p132_clk_p,
-    input  wire       dn_qsfp_161p132_clk_n
+    input  wire       dn_qsfp_161p132_clk_n,
 
 	//PCIE
 	//

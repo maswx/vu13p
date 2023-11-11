@@ -48,7 +48,7 @@ module data_mover_ctrl (
 	output wire  [31:0]S_AXI_LITE_rdata              , //wire [DATA_WIDTH-1:0]    s00_axil_rdata,
 	output wire  [ 1:0]S_AXI_LITE_rresp              , //wire [1:0]               s00_axil_rresp,
 	output wire        S_AXI_LITE_rvalid             , //wire                     s00_axil_rvalid,
-	input  wire        S_AXI_LITE_rready             , //wire                     s00_axil_rready,
+	input  wire        S_AXI_LITE_rready               //wire                     s00_axil_rready,
 );
 
 assign S_AXIS_MM2S_STS_tready = 1'b1; 
@@ -95,8 +95,6 @@ wire [71:0] S2MM_CMD = {
 	s2mm_incr   ,//传完后不做地址递增
 	s2mm_lenx    //一次传输65536个byte
 };
-    input              axi_aclk                      ,
-    input              axi_aresetn                   ,
 
 always @ (posedge axi_aclk or negedge axi_aresetn )
 	if(!axi_aresetn) begin
