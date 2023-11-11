@@ -348,22 +348,42 @@ data_mover_ctrl  data_mover_ctrl_inst(
     .axi_aclk                            (axi_aclk                        ),//o1
     .axi_aresetn                         (axi_aresetn                     ),//o1
 	//DATA mover的(STS/CMD)控制、状态信号，时钟域是 axi_aclk
-	.M_AXIS_MM2S_STS_tdata               (M_AXIS_MM2S_STS_tdata           ),
-    .M_AXIS_MM2S_STS_tkeep               (M_AXIS_MM2S_STS_tkeep           ),
-    .M_AXIS_MM2S_STS_tlast               (M_AXIS_MM2S_STS_tlast           ),
-    .M_AXIS_MM2S_STS_tready              (M_AXIS_MM2S_STS_tready          ),
-    .M_AXIS_MM2S_STS_tvalid              (M_AXIS_MM2S_STS_tvalid          ),
-    .M_AXIS_S2MM_STS_tdata               (M_AXIS_S2MM_STS_tdata           ),
-    .M_AXIS_S2MM_STS_tkeep               (M_AXIS_S2MM_STS_tkeep           ),
-    .M_AXIS_S2MM_STS_tlast               (M_AXIS_S2MM_STS_tlast           ),
-    .M_AXIS_S2MM_STS_tready              (M_AXIS_S2MM_STS_tready          ),
-    .M_AXIS_S2MM_STS_tvalid              (M_AXIS_S2MM_STS_tvalid          ),
-    .S_AXIS_MM2S_CMD_tdata               (S_AXIS_MM2S_CMD_tdata           ),
-    .S_AXIS_MM2S_CMD_tready              (S_AXIS_MM2S_CMD_tready          ),
-    .S_AXIS_MM2S_CMD_tvalid              (S_AXIS_MM2S_CMD_tvalid          ),
-    .S_AXIS_S2MM_CMD_tdata               (S_AXIS_S2MM_CMD_tdata           ),
-    .S_AXIS_S2MM_CMD_tready              (S_AXIS_S2MM_CMD_tready          ),
-    .S_AXIS_S2MM_CMD_tvalid              (S_AXIS_S2MM_CMD_tvalid          )
+	.S_AXIS_MM2S_STS_tdata               (M_AXIS_MM2S_STS_tdata           ),
+    .S_AXIS_MM2S_STS_tkeep               (M_AXIS_MM2S_STS_tkeep           ),
+    .S_AXIS_MM2S_STS_tlast               (M_AXIS_MM2S_STS_tlast           ),
+    .S_AXIS_MM2S_STS_tready              (M_AXIS_MM2S_STS_tready          ),
+    .S_AXIS_MM2S_STS_tvalid              (M_AXIS_MM2S_STS_tvalid          ),
+    .S_AXIS_S2MM_STS_tdata               (M_AXIS_S2MM_STS_tdata           ),
+    .S_AXIS_S2MM_STS_tkeep               (M_AXIS_S2MM_STS_tkeep           ),
+    .S_AXIS_S2MM_STS_tlast               (M_AXIS_S2MM_STS_tlast           ),
+    .S_AXIS_S2MM_STS_tready              (M_AXIS_S2MM_STS_tready          ),
+    .S_AXIS_S2MM_STS_tvalid              (M_AXIS_S2MM_STS_tvalid          ),
+    .M_AXIS_MM2S_CMD_tdata               (S_AXIS_MM2S_CMD_tdata           ),
+    .M_AXIS_MM2S_CMD_tready              (S_AXIS_MM2S_CMD_tready          ),
+    .M_AXIS_MM2S_CMD_tvalid              (S_AXIS_MM2S_CMD_tvalid          ),
+    .M_AXIS_S2MM_CMD_tdata               (S_AXIS_S2MM_CMD_tdata           ),
+    .M_AXIS_S2MM_CMD_tready              (S_AXIS_S2MM_CMD_tready          ),
+    .M_AXIS_S2MM_CMD_tvalid              (S_AXIS_S2MM_CMD_tvalid          ),
+
+    .S_AXI_LITE_araddr                   (M_AXI_LITE_araddr               ),
+    .S_AXI_LITE_arprot                   (M_AXI_LITE_arprot               ),
+    .S_AXI_LITE_arready                  (M_AXI_LITE_arready              ),
+    .S_AXI_LITE_arvalid                  (M_AXI_LITE_arvalid              ),
+    .S_AXI_LITE_awaddr                   (M_AXI_LITE_awaddr               ),
+    .S_AXI_LITE_awprot                   (M_AXI_LITE_awprot               ),
+    .S_AXI_LITE_awready                  (M_AXI_LITE_awready              ),
+    .S_AXI_LITE_awvalid                  (M_AXI_LITE_awvalid              ),
+    .S_AXI_LITE_bready                   (M_AXI_LITE_bready               ),
+    .S_AXI_LITE_bresp                    (M_AXI_LITE_bresp                ),
+    .S_AXI_LITE_bvalid                   (M_AXI_LITE_bvalid               ),
+    .S_AXI_LITE_rdata                    (M_AXI_LITE_rdata                ),
+    .S_AXI_LITE_rready                   (M_AXI_LITE_rready               ),
+    .S_AXI_LITE_rresp                    (M_AXI_LITE_rresp                ),
+    .S_AXI_LITE_rvalid                   (M_AXI_LITE_rvalid               ),
+    .S_AXI_LITE_wdata                    (M_AXI_LITE_wdata                ),
+    .S_AXI_LITE_wready                   (M_AXI_LITE_wready               ),
+    .S_AXI_LITE_wstrb                    (M_AXI_LITE_wstrb                ),
+    .S_AXI_LITE_wvalid                   (M_AXI_LITE_wvalid               )
 );
 
 
@@ -554,15 +574,6 @@ qsfp_0_phy_inst (
     .phy_4_cfg_tx_prbs31_enable       (1'b0                     ),//input  wire                   phy_4_cfg_tx_prbs31_enable,
     .phy_4_cfg_rx_prbs31_enable       (1'b0                     ) //input  wire                   phy_4_cfg_rx_prbs31_enable,
 );
-
-
-
-
-
-
-
-
-
 
 
 
