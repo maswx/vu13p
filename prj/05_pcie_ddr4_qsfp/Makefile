@@ -1,6 +1,6 @@
 tag=udp_gnuradio
 fpga_top_name=data_mover_top
-prjcnt=0
+prjcnt=1
 output_path=~/alivu13p/prjs/${fpga_top_name}_${prjcnt}
 core_jobs=20
 

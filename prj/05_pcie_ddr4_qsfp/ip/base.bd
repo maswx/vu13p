@@ -1,9 +1,9 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x31615271350AE980",
+      "boundary_crc": "0x31615271C3DA11B7",
       "device": "xcvu13p-fhgb2104-2L-e",
-      "gen_directory": "../../../../pcie_ddr4_dma_udp.gen/sources_1/bd/base",
+      "gen_directory": "./bd/base",
       "name": "base",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
@@ -1932,8 +1932,8 @@
       },
       "proc_sys_reset_1": {
         "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-        "xci_name": "base_proc_sys_reset_0_1",
-        "xci_path": "ip/base_proc_sys_reset_0_1/base_proc_sys_reset_0_1.xci",
+        "xci_name": "base_proc_sys_reset_1_0",
+        "xci_path": "ip/base_proc_sys_reset_1_0/base_proc_sys_reset_1_0.xci",
         "inst_hier_path": "proc_sys_reset_1"
       }
     },

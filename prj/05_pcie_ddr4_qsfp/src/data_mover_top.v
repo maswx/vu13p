@@ -14,11 +14,6 @@ module data_mover_top(
 	input wire [0:0]       clk_100M_p,
 	input wire [0:0]       clk_100M_n,
 
-    /*
-     * GPIO
-     */
-	output wire [1:0] qsfp_led_y,
-	output wire [1:0] qsfp_led_g,
 
     /*
      * Ethernet: QSFP28
@@ -310,16 +305,16 @@ base base_i (
     .ddr4_rtl_0_dqs_t                    (c0_ddr4_dqs_t                   ),
     .ddr4_rtl_0_odt                      (c0_ddr4_odt                     ),
     .ddr4_rtl_0_reset_n                  (c0_ddr4_reset_n                 ),
-    .diff_clock_rtl_0_clk_n              (c0_ddr4_clk_n                   ),
-    .diff_clock_rtl_0_clk_p              (c0_ddr4_clk_p                   ),
+    .ddr4_clk_clk_n              (c0_ddr4_clk_n                   ),
+    .ddr4_clk_clk_p              (c0_ddr4_clk_p                   ),
 	//PCIe Port
-    .diff_clock_rtl_1_clk_n              (pcie_ref_clk_n                  ),
-    .diff_clock_rtl_1_clk_p              (pcie_ref_clk_p                  ),
+    .pcie_clk_clk_n              (pcie_ref_clk_n                  ),
+    .pcie_clk_clk_p              (pcie_ref_clk_p                  ),
     .pcie_7x_mgt_rtl_0_rxn               (pcie_lane_rxn                   ),
     .pcie_7x_mgt_rtl_0_rxp               (pcie_lane_rxp                   ),
     .pcie_7x_mgt_rtl_0_txn               (pcie_lane_txn                   ),
     .pcie_7x_mgt_rtl_0_txp               (pcie_lane_txp                   ),
-    .reset_rtl_0                         (pcie_perst_n                    ),
+    .pcie_perst_n                        (pcie_perst_n                    ),
     .user_lnk_up                         (pcie_link_up                    ),
     .usr_irq_req                         (2'd0                            )
 );
@@ -373,7 +368,6 @@ data_mover_ctrl  data_mover_ctrl_inst(
 //  32bit@100MHz to 64bit@390.625MHz
 
 assign M_AXIS_aclk      =  clk_100mhz_int;
-assign M_AXIS_aresetn   = !rst_100mhz_int;
 wire            axis_tvalid; 
 wire            axis_tready;
 wire [63 : 0]   axis_tdata ; 

@@ -18,7 +18,7 @@ set_property -dict [list \
 ] [get_ips axis_data_fifo_0]
 
 
-
+source ../03_10g25g_udp/ip/eth_xcvr_gt.tcl
 
 
 
