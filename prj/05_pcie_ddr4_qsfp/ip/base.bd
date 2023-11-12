@@ -3,7 +3,7 @@
     "design_info": {
       "boundary_crc": "0x31615271C3DA11B7",
       "device": "xcvu13p-fhgb2104-2L-e",
-      "gen_directory": "./bd/base",
+      "gen_directory": "bd/base",
       "name": "base",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
