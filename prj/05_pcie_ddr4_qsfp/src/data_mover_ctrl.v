@@ -100,7 +100,7 @@ always @ (posedge axi_aclk or negedge axi_aresetn )
 	if(!axi_aresetn) begin
 		MM2S_CMD_tdata      <= 72'd0    ;
 		MM2S_CMD_tvalid     <=  1'd0;
-	end else begin
+	end else begin // //搬移内容的总长度，一次搬移1024个byte，自动递增，每一帧都是eof
 		MM2S_CMD_tdata      <= MM2S_CMD ;
 		MM2S_CMD_tvalid     <= !M_AXIS_MM2S_CMD_tready;
 	end
@@ -175,14 +175,14 @@ axil_reg_if axil_reg_if_inst (
 always @ (posedge axi_aclk or negedge axi_aresetn )
 	if(!axi_aresetn) begin
 		mm2s_saddr <= 32'd0;
-		mm2s_eof   <=  1'd0;
+		mm2s_eof   <=  1'd1;
 		mm2s_incr  <=  1'd0;
-		mm2s_lenx  <= 23'd1;
+		mm2s_lenx  <= 23'd1024;//搬移内容的总长度，一次搬移1024个byte，自动递增，每一帧都是eof
 		
 		s2mm_saddr <= 32'd0;
-		s2mm_eof   <=  1'd0;
+		s2mm_eof   <=  1'd1;
 		s2mm_incr  <=  1'd0;
-		s2mm_lenx  <= 23'd1;
+		s2mm_lenx  <= 23'd1024;
 	end
 	else if(reg_wr_en)
 	begin
