@@ -182,46 +182,11 @@ wire        tx_fifo_udp_payload_axis_tuser ;
 //===================================================================================
 //
 
-wire  [ 7:0]M_AXIS_MM2S_STS_tdata         ;
-wire  [ 0:0]M_AXIS_MM2S_STS_tkeep         ;
-wire        M_AXIS_MM2S_STS_tlast         ;
-wire        M_AXIS_MM2S_STS_tready        ;
-wire        M_AXIS_MM2S_STS_tvalid        ;
-wire  [ 7:0]M_AXIS_S2MM_STS_tdata         ;
-wire  [ 0:0]M_AXIS_S2MM_STS_tkeep         ;
-wire        M_AXIS_S2MM_STS_tlast         ;
-wire        M_AXIS_S2MM_STS_tready        ;
-wire        M_AXIS_S2MM_STS_tvalid        ;
 wire  [31:0]M_AXIS_tdata                  ;
 wire  [ 3:0]M_AXIS_tkeep                  ;
 wire        M_AXIS_tlast                  ;
 wire        M_AXIS_tready                 ;
 wire        M_AXIS_tvalid                 ;
-wire  [31:0]M_AXI_LITE_araddr             ;
-wire  [ 2:0]M_AXI_LITE_arprot             ;
-wire        M_AXI_LITE_arready            ;
-wire        M_AXI_LITE_arvalid            ;
-wire  [31:0]M_AXI_LITE_awaddr             ;
-wire  [ 2:0]M_AXI_LITE_awprot             ;
-wire        M_AXI_LITE_awready            ;
-wire        M_AXI_LITE_awvalid            ;
-wire        M_AXI_LITE_bready             ;
-wire  [ 1:0]M_AXI_LITE_bresp              ;
-wire        M_AXI_LITE_bvalid             ;
-wire  [31:0]M_AXI_LITE_rdata              ;
-wire        M_AXI_LITE_rready             ;
-wire  [ 1:0]M_AXI_LITE_rresp              ;
-wire        M_AXI_LITE_rvalid             ;
-wire  [31:0]M_AXI_LITE_wdata              ;
-wire        M_AXI_LITE_wready             ;
-wire  [ 3:0]M_AXI_LITE_wstrb              ;
-wire        M_AXI_LITE_wvalid             ;
-wire  [71:0]S_AXIS_MM2S_CMD_tdata         ;
-wire        S_AXIS_MM2S_CMD_tready        ;
-wire        S_AXIS_MM2S_CMD_tvalid        ;
-wire  [71:0]S_AXIS_S2MM_CMD_tdata         ;
-wire        S_AXIS_S2MM_CMD_tready        ;
-wire        S_AXIS_S2MM_CMD_tvalid        ;
 wire  [63:0]S_AXIS_tdata                  ;
 wire  [ 7:0]S_AXIS_tkeep                  ;
 wire        S_AXIS_tlast                  ;
@@ -234,62 +199,27 @@ wire        M_AXIS_aresetn                ;
 wire        S_AXIS_aclk                   ;
 wire        S_AXIS_aresetn                ;
 
+// ./ip/bd/base/hdl/base_wrapper.v
+
 base base_i (
     .axi_aclk                            (axi_aclk                        ),//o1
     .axi_aresetn                         (axi_aresetn                     ),//o1
-	//DATA mover的(STS/CMD)控制、状态信号，时钟域是 axi_aclk
-	.M_AXIS_MM2S_STS_tdata               (M_AXIS_MM2S_STS_tdata           ),
-    .M_AXIS_MM2S_STS_tkeep               (M_AXIS_MM2S_STS_tkeep           ),
-    .M_AXIS_MM2S_STS_tlast               (M_AXIS_MM2S_STS_tlast           ),
-    .M_AXIS_MM2S_STS_tready              (M_AXIS_MM2S_STS_tready          ),
-    .M_AXIS_MM2S_STS_tvalid              (M_AXIS_MM2S_STS_tvalid          ),
-    .M_AXIS_S2MM_STS_tdata               (M_AXIS_S2MM_STS_tdata           ),
-    .M_AXIS_S2MM_STS_tkeep               (M_AXIS_S2MM_STS_tkeep           ),
-    .M_AXIS_S2MM_STS_tlast               (M_AXIS_S2MM_STS_tlast           ),
-    .M_AXIS_S2MM_STS_tready              (M_AXIS_S2MM_STS_tready          ),
-    .M_AXIS_S2MM_STS_tvalid              (M_AXIS_S2MM_STS_tvalid          ),
-    .S_AXIS_MM2S_CMD_tdata               (S_AXIS_MM2S_CMD_tdata           ),
-    .S_AXIS_MM2S_CMD_tready              (S_AXIS_MM2S_CMD_tready          ),
-    .S_AXIS_MM2S_CMD_tvalid              (S_AXIS_MM2S_CMD_tvalid          ),
-    .S_AXIS_S2MM_CMD_tdata               (S_AXIS_S2MM_CMD_tdata           ),
-    .S_AXIS_S2MM_CMD_tready              (S_AXIS_S2MM_CMD_tready          ),
-    .S_AXIS_S2MM_CMD_tvalid              (S_AXIS_S2MM_CMD_tvalid          ),
-	// AXI LITE总线， 时钟域 axi_aclk
-    .M_AXI_LITE_araddr                   (M_AXI_LITE_araddr               ),
-    .M_AXI_LITE_arprot                   (M_AXI_LITE_arprot               ),
-    .M_AXI_LITE_arready                  (M_AXI_LITE_arready              ),
-    .M_AXI_LITE_arvalid                  (M_AXI_LITE_arvalid              ),
-    .M_AXI_LITE_awaddr                   (M_AXI_LITE_awaddr               ),
-    .M_AXI_LITE_awprot                   (M_AXI_LITE_awprot               ),
-    .M_AXI_LITE_awready                  (M_AXI_LITE_awready              ),
-    .M_AXI_LITE_awvalid                  (M_AXI_LITE_awvalid              ),
-    .M_AXI_LITE_bready                   (M_AXI_LITE_bready               ),
-    .M_AXI_LITE_bresp                    (M_AXI_LITE_bresp                ),
-    .M_AXI_LITE_bvalid                   (M_AXI_LITE_bvalid               ),
-    .M_AXI_LITE_rdata                    (M_AXI_LITE_rdata                ),
-    .M_AXI_LITE_rready                   (M_AXI_LITE_rready               ),
-    .M_AXI_LITE_rresp                    (M_AXI_LITE_rresp                ),
-    .M_AXI_LITE_rvalid                   (M_AXI_LITE_rvalid               ),
-    .M_AXI_LITE_wdata                    (M_AXI_LITE_wdata                ),
-    .M_AXI_LITE_wready                   (M_AXI_LITE_wready               ),
-    .M_AXI_LITE_wstrb                    (M_AXI_LITE_wstrb                ),
-    .M_AXI_LITE_wvalid                   (M_AXI_LITE_wvalid               ),
 	//数据流 Master通道为32bit, 主频100M, 独立时钟域
-    .m_axis_aclk                         (M_AXIS_aclk                     ),
-	.m_axis_aresetn                      (M_AXIS_aresetn                  ),
-    .M_AXIS_tdata                        (M_AXIS_tdata                    ),
-    .M_AXIS_tkeep                        (M_AXIS_tkeep                    ),
-    .M_AXIS_tlast                        (M_AXIS_tlast                    ),
-    .M_AXIS_tready                       (M_AXIS_tready                   ),
-    .M_AXIS_tvalid                       (M_AXIS_tvalid                   ),
+    .m_axis_aclk                         (M_AXIS_aclk                     ),//i1
+	.m_axis_aresetn                      (M_AXIS_aresetn                  ),//o1, 内部复位输出
+    .M_AXIS_tdata                        (M_AXIS_tdata                    ),//o32
+    .M_AXIS_tkeep                        (M_AXIS_tkeep                    ),//o4
+    .M_AXIS_tlast                        (M_AXIS_tlast                    ),//o1
+    .M_AXIS_tready                       (M_AXIS_tready                   ),//i1,
+    .M_AXIS_tvalid                       (M_AXIS_tvalid                   ),//o1
 	//数据流 Slave 通道为64bit, 仅仅用于将UDP数据流写入DDR4, 主频390.625M , 与UDP同时钟域
-    .s_axis_aclk                         ( qsfp_0_tx_clk_0_int            ),
-    .s_axis_aresetn                      (!qsfp_0_tx_rst_0_int            ),
-    .S_AXIS_tdata                        (rx_fifo_udp_payload_axis_tdata  ),
-    .S_AXIS_tkeep                        (rx_fifo_udp_payload_axis_tkeep  ),
-    .S_AXIS_tlast                        (rx_fifo_udp_payload_axis_tlast  ),
-    .S_AXIS_tready                       (rx_fifo_udp_payload_axis_tready ),
-    .S_AXIS_tvalid                       (rx_fifo_udp_payload_axis_tvalid ),
+    .s_axis_aclk                         ( qsfp_0_rx_clk_0_int            ),
+    .s_axis_aresetn                      (                                ),//o1, 内部复位输出
+    .S_AXIS_tdata                        (rx_fifo_udp_payload_axis_tdata  ),//i64
+    .S_AXIS_tkeep                        (rx_fifo_udp_payload_axis_tkeep  ),//i8
+    .S_AXIS_tlast                        (rx_fifo_udp_payload_axis_tlast  ),//i1
+    .S_AXIS_tready                       (rx_fifo_udp_payload_axis_tready ),//o1
+    .S_AXIS_tvalid                       (rx_fifo_udp_payload_axis_tvalid ),//i1
 	//DDR4                                                                  
     .ddr4_rtl_0_act_n                    (c0_ddr4_act_n                   ),
     .ddr4_rtl_0_adr                      (c0_ddr4_adr                     ),
@@ -305,61 +235,17 @@ base base_i (
     .ddr4_rtl_0_dqs_t                    (c0_ddr4_dqs_t                   ),
     .ddr4_rtl_0_odt                      (c0_ddr4_odt                     ),
     .ddr4_rtl_0_reset_n                  (c0_ddr4_reset_n                 ),
-    .ddr4_clk_clk_n              (c0_ddr4_clk_n                   ),
-    .ddr4_clk_clk_p              (c0_ddr4_clk_p                   ),
-	//PCIe Port
-    .pcie_clk_clk_n              (pcie_ref_clk_n                  ),
-    .pcie_clk_clk_p              (pcie_ref_clk_p                  ),
+    .ddr4_clk_clk_n                      (c0_ddr4_clk_n                   ),
+    .ddr4_clk_clk_p                      (c0_ddr4_clk_p                   ),
+	//PCIe Port                          
+    .pcie_clk_clk_n                      (pcie_ref_clk_n                  ),
+    .pcie_clk_clk_p                      (pcie_ref_clk_p                  ),
     .pcie_7x_mgt_rtl_0_rxn               (pcie_lane_rxn                   ),
     .pcie_7x_mgt_rtl_0_rxp               (pcie_lane_rxp                   ),
     .pcie_7x_mgt_rtl_0_txn               (pcie_lane_txn                   ),
     .pcie_7x_mgt_rtl_0_txp               (pcie_lane_txp                   ),
     .pcie_perst_n                        (pcie_perst_n                    ),
-    .user_lnk_up                         (pcie_link_up                    ),
-    .usr_irq_req                         (2'd0                            )
-);
-
-
-data_mover_ctrl  data_mover_ctrl_inst(
-    .axi_aclk                            (axi_aclk                        ),//o1
-    .axi_aresetn                         (axi_aresetn                     ),//o1
-	//DATA mover的(STS/CMD)控制、状态信号，时钟域是 axi_aclk
-	.S_AXIS_MM2S_STS_tdata               (M_AXIS_MM2S_STS_tdata           ),
-    .S_AXIS_MM2S_STS_tkeep               (M_AXIS_MM2S_STS_tkeep           ),
-    .S_AXIS_MM2S_STS_tlast               (M_AXIS_MM2S_STS_tlast           ),
-    .S_AXIS_MM2S_STS_tready              (M_AXIS_MM2S_STS_tready          ),
-    .S_AXIS_MM2S_STS_tvalid              (M_AXIS_MM2S_STS_tvalid          ),
-    .S_AXIS_S2MM_STS_tdata               (M_AXIS_S2MM_STS_tdata           ),
-    .S_AXIS_S2MM_STS_tkeep               (M_AXIS_S2MM_STS_tkeep           ),
-    .S_AXIS_S2MM_STS_tlast               (M_AXIS_S2MM_STS_tlast           ),
-    .S_AXIS_S2MM_STS_tready              (M_AXIS_S2MM_STS_tready          ),
-    .S_AXIS_S2MM_STS_tvalid              (M_AXIS_S2MM_STS_tvalid          ),
-    .M_AXIS_MM2S_CMD_tdata               (S_AXIS_MM2S_CMD_tdata           ),
-    .M_AXIS_MM2S_CMD_tready              (S_AXIS_MM2S_CMD_tready          ),
-    .M_AXIS_MM2S_CMD_tvalid              (S_AXIS_MM2S_CMD_tvalid          ),
-    .M_AXIS_S2MM_CMD_tdata               (S_AXIS_S2MM_CMD_tdata           ),
-    .M_AXIS_S2MM_CMD_tready              (S_AXIS_S2MM_CMD_tready          ),
-    .M_AXIS_S2MM_CMD_tvalid              (S_AXIS_S2MM_CMD_tvalid          ),
-
-    .S_AXI_LITE_araddr                   (M_AXI_LITE_araddr               ),
-    .S_AXI_LITE_arprot                   (M_AXI_LITE_arprot               ),
-    .S_AXI_LITE_arready                  (M_AXI_LITE_arready              ),
-    .S_AXI_LITE_arvalid                  (M_AXI_LITE_arvalid              ),
-    .S_AXI_LITE_awaddr                   (M_AXI_LITE_awaddr               ),
-    .S_AXI_LITE_awprot                   (M_AXI_LITE_awprot               ),
-    .S_AXI_LITE_awready                  (M_AXI_LITE_awready              ),
-    .S_AXI_LITE_awvalid                  (M_AXI_LITE_awvalid              ),
-    .S_AXI_LITE_bready                   (M_AXI_LITE_bready               ),
-    .S_AXI_LITE_bresp                    (M_AXI_LITE_bresp                ),
-    .S_AXI_LITE_bvalid                   (M_AXI_LITE_bvalid               ),
-    .S_AXI_LITE_rdata                    (M_AXI_LITE_rdata                ),
-    .S_AXI_LITE_rready                   (M_AXI_LITE_rready               ),
-    .S_AXI_LITE_rresp                    (M_AXI_LITE_rresp                ),
-    .S_AXI_LITE_rvalid                   (M_AXI_LITE_rvalid               ),
-    .S_AXI_LITE_wdata                    (M_AXI_LITE_wdata                ),
-    .S_AXI_LITE_wready                   (M_AXI_LITE_wready               ),
-    .S_AXI_LITE_wstrb                    (M_AXI_LITE_wstrb                ),
-    .S_AXI_LITE_wvalid                   (M_AXI_LITE_wvalid               )
+    .user_lnk_up                         (pcie_link_up                    )
 );
 
 
@@ -390,8 +276,8 @@ axis_dwidth_converter_0 axis_dwidth_converter_0_inst(
 
 // 64bit@100M to 64bit@390.625MHz
 axis_data_fifo_0 axis_data_fifo_0_inst(
-  .s_axis_aresetn(M_AXIS_aresetn                  ),// input wire s_axis_aresetn
   .s_axis_aclk   (M_AXIS_aclk                     ),// input wire s_axis_aclk
+  .s_axis_aresetn(M_AXIS_aresetn                  ),// input wire s_axis_aresetn
   .s_axis_tvalid (  axis_tvalid                   ),// input wire s_axis_tvalid
   .s_axis_tready (  axis_tready                   ),// output wire s_axis_tready
   .s_axis_tdata  (  axis_tdata                    ),// input wire [63 : 0] s_axis_tdata
@@ -437,6 +323,26 @@ udp64_sfp_top udp64_sfp_top_inst(
 	.tx_fifo_udp_payload_axis_tuser    (tx_fifo_udp_payload_axis_tuser ) //input  wire        tx_fifo_udp_payload_axis_tuser  
 
 );
+
+ila_udp your_instance_name (
+	.clk(qsfp_0_tx_clk_0_int), // input wire clk
+
+
+	.probe0 (rx_fifo_udp_payload_axis_tdata ), // input wire [63:0]  probe0  
+	.probe1 (rx_fifo_udp_payload_axis_tkeep ), // input wire [7:0]  probe1 
+	.probe2 (rx_fifo_udp_payload_axis_tvalid), // input wire [0:0]  probe2 
+	.probe3 (rx_fifo_udp_payload_axis_tready), // input wire [0:0]  probe3 
+	.probe4 (rx_fifo_udp_payload_axis_tlast ), // input wire [0:0]  probe4 
+	.probe5 (rx_fifo_udp_payload_axis_tuser ), // input wire [0:0]  probe5 
+	.probe6 (tx_fifo_udp_payload_axis_tdata ), // input wire [63:0]  probe6 
+	.probe7 (tx_fifo_udp_payload_axis_tkeep ), // input wire [7:0]  probe7 
+	.probe8 (tx_fifo_udp_payload_axis_tvalid), // input wire [0:0]  probe8 
+	.probe9 (tx_fifo_udp_payload_axis_tready), // input wire [0:0]  probe9 
+	.probe10(tx_fifo_udp_payload_axis_tlast ), // input wire [0:0]  probe10 
+	.probe11(tx_fifo_udp_payload_axis_tuser ) // input wire [0:0]  probe11
+);
+
+
 
 //=======================================================================================================
 //=======================================================================================================
