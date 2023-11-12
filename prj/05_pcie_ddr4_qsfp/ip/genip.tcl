@@ -20,7 +20,22 @@ set_property -dict [list \
 
 source ../03_10g25g_udp/ip/eth_xcvr_gt.tcl
 
-
+create_ip -name ila -vendor xilinx.com -library ip -version 6.2 -module_name ila_udp 
+set_property -dict [list \
+  CONFIG.C_DATA_DEPTH {4096} \
+  CONFIG.C_MONITOR_TYPE {Native} \
+  CONFIG.C_NUM_OF_PROBES {12} \
+  CONFIG.C_PROBE0_WIDTH {64} \
+  CONFIG.C_PROBE1_WIDTH {8} \
+  CONFIG.C_PROBE6_WIDTH {64} \
+  CONFIG.C_PROBE7_WIDTH {8} \
+  CONFIG.C_SLOT_0_AXIS_TDATA_WIDTH {64} \
+  CONFIG.C_SLOT_0_AXIS_TDEST_WIDTH {0} \
+  CONFIG.C_SLOT_0_AXIS_TID_WIDTH {0} \
+  CONFIG.C_SLOT_0_AXIS_TUSER_WIDTH {0} \
+  CONFIG.C_SLOT_0_AXI_PROTOCOL {AXI4S} \
+  CONFIG.Component_Name {ila_udp} \
+] [get_ips ila_udp]
 
 
 #--## DDR4
