@@ -1,7 +1,6 @@
 set_property -dict {LOC J26  IOSTANDARD DIFF_SSTL12    } [get_ports c1_ddr4_clk_p]
 set_property -dict {LOC H26  IOSTANDARD DIFF_SSTL12    } [get_ports c1_ddr4_clk_n]
 
-set_property -dict {LOC K26  IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c1_ddr4_ck_t[0]}]
 set_property -dict {LOC B29  IOSTANDARD LVCMOS12       } [get_ports c1_ddr4_reset_n]
 set_property -dict {LOC A28  IOSTANDARD SSTL12_DCI     } [get_ports c1_ddr4_act_n]
 set_property -dict {LOC G27  IOSTANDARD SSTL12_DCI     } [get_ports {c1_ddr4_adr[0]}]
@@ -105,14 +104,14 @@ set_property -dict {LOC P34  IOSTANDARD POD12_DCI      } [get_ports {c1_ddr4_dq[
                                                                                      
                                                                                      
                                                          
-set_property -dict {LOC E40  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[0]}]
-set_property -dict {LOC C36  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[1]}]
-set_property -dict {LOC M31  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[2]}]
-set_property -dict {LOC B34  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[3]}]
-set_property -dict {LOC H37  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[4]}]
-set_property -dict {LOC G30  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[5]}]
-set_property -dict {LOC U34  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[6]}]
-set_property -dict {LOC R30  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dm_n[7]}]
+set_property -dict {LOC E40  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[0]}]
+set_property -dict {LOC C36  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[1]}]
+set_property -dict {LOC M31  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[2]}]
+set_property -dict {LOC B34  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[3]}]
+set_property -dict {LOC H37  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[4]}]
+set_property -dict {LOC G30  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[5]}]
+set_property -dict {LOC U34  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[6]}]
+set_property -dict {LOC R30  IOSTANDARD POD12_DCI } [get_ports {c1_ddr4_dm_n[7]}]
 
                                                          
 set_property -dict {LOC B39  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dqs_t[0]}]
@@ -135,4 +134,5 @@ set_property -dict {LOC V33  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dqs
 set_property -dict {LOC L34  IOSTANDARD DIFF_POD12_DCI } [get_ports {c1_ddr4_dqs_c[7]}]
 
 
-set_property -dict {LOC K27  IOSTANDARD DIFF_SSTL12    } [get_ports {c1_ddr4_ck_c[0]}]
+set_property -dict {LOC K27  IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c1_ddr4_ck_c[0]}]
+set_property -dict {LOC K26  IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c1_ddr4_ck_t[0]}]

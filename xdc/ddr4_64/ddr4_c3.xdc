@@ -1,7 +1,6 @@
 set_property -dict {LOC AW14 IOSTANDARD DIFF_SSTL12    } [get_ports c3_ddr4_clk_p]
 set_property -dict {LOC AW13 IOSTANDARD DIFF_SSTL12    } [get_ports c3_ddr4_clk_n]
                                                           
-set_property -dict {LOC BB15 IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c3_ddr4_ck_t[0]}]
 set_property -dict {LOC AL15 IOSTANDARD LVCMOS12       } [get_ports c3_ddr4_reset_n]
 set_property -dict {LOC AR13 IOSTANDARD SSTL12_DCI     } [get_ports c3_ddr4_act_n]
 set_property -dict {LOC AV14 IOSTANDARD SSTL12_DCI     } [get_ports {c3_ddr4_adr[0]}]
@@ -105,14 +104,14 @@ set_property -dict {LOC BF19 IOSTANDARD POD12_DCI      } [get_ports {c3_ddr4_dq[
                                                                                      
                                                                                      
                                                           
-set_property -dict {LOC BA25 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[0]}]
-set_property -dict {LOC AN18 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[1]}]
-set_property -dict {LOC BF28 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[2]}]
-set_property -dict {LOC AY17 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[3]}]
-set_property -dict {LOC BF14 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[4]}]
-set_property -dict {LOC AV26 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[5]}]
-set_property -dict {LOC AT19 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[6]}]
-set_property -dict {LOC BE17 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dm_n[7]}]
+set_property -dict {LOC BA25 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[0]}]
+set_property -dict {LOC AN18 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[1]}]
+set_property -dict {LOC BF28 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[2]}]
+set_property -dict {LOC AY17 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[3]}]
+set_property -dict {LOC BF14 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[4]}]
+set_property -dict {LOC AV26 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[5]}]
+set_property -dict {LOC AT19 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[6]}]
+set_property -dict {LOC BE17 IOSTANDARD POD12_DCI } [get_ports {c3_ddr4_dm_n[7]}]
 
                                                           
 set_property -dict {LOC AW25 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dqs_t[0]}]
@@ -135,4 +134,5 @@ set_property -dict {LOC AT17 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dqs
 set_property -dict {LOC BD19 IOSTANDARD DIFF_POD12_DCI } [get_ports {c3_ddr4_dqs_c[7]}]
 
                                                           
-set_property -dict {LOC BB14 IOSTANDARD DIFF_SSTL12    } [get_ports {c3_ddr4_ck_c[0]}]
+set_property -dict {LOC BB14 IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c3_ddr4_ck_c[0]}]
+set_property -dict {LOC BB15 IOSTANDARD DIFF_SSTL12_DCI} [get_ports {c3_ddr4_ck_t[0]}]
