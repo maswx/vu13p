@@ -211,7 +211,6 @@ int XQspiPs_CfgInitialize(XQspiPs *InstancePtr, XQspiPs_Config *ConfigPtr,
 	 */
 	InstancePtr->IsBusy = FALSE;
 
-	InstancePtr->Config.BaseAddress = EffectiveAddr;
 	InstancePtr->StatusHandler = StubStatusHandler;
 
 	InstancePtr->SendBufferPtr = NULL;
@@ -307,16 +306,16 @@ void XQspiPs_Abort(XQspiPs *InstancePtr)
 	/*
 	 * QSPI Software Reset
 	 */
-	IsLock = XQspiPs_ReadReg(XPAR_XSLCR_0_BASEADDR, SLCR_LOCKSTA);
+	IsLock = XQspiPs_ReadReg(InstancePtr->Config.BaseAddress + XPAR_XSLCR_0_BASEADDR, SLCR_LOCKSTA);
 	if (IsLock) {
-		XQspiPs_WriteReg(XPAR_XSLCR_0_BASEADDR, SLCR_UNLOCK,
+		XQspiPs_WriteReg(InstancePtr->Config.BaseAddress + XPAR_XSLCR_0_BASEADDR, SLCR_UNLOCK,
 				SLCR_UNLOCK_MASK);
 	}
-	XQspiPs_WriteReg(XPAR_XSLCR_0_BASEADDR, LQSPI_RST_CTRL,
+	XQspiPs_WriteReg(InstancePtr->Config.BaseAddress + XPAR_XSLCR_0_BASEADDR, LQSPI_RST_CTRL,
 			LQSPI_RST_CTRL_MASK);
-	XQspiPs_WriteReg(XPAR_XSLCR_0_BASEADDR, LQSPI_RST_CTRL, 0x0);
+	XQspiPs_WriteReg(InstancePtr->Config.BaseAddress + XPAR_XSLCR_0_BASEADDR, LQSPI_RST_CTRL, 0x0);
 	if (IsLock) {
-		XQspiPs_WriteReg(XPAR_XSLCR_0_BASEADDR, SLCR_LOCK,
+		XQspiPs_WriteReg(InstancePtr->Config.BaseAddress + XPAR_XSLCR_0_BASEADDR, SLCR_LOCK,
 				SLCR_LOCK_MASK);
 	}
 

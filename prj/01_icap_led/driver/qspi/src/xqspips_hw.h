@@ -341,8 +341,8 @@ extern "C" {
 
 /***************** Macros (Inline Functions) Definitions *********************/
 
-#define XQspiPs_In32 Xil_In32
-#define XQspiPs_Out32 Xil_Out32
+#define XQspiPs_In32 Xil_In64
+#define XQspiPs_Out32 Xil_Out64
 #define XQSPIPS_DUMMY_TX_DATA   0xFFFFFFFF
 
 /****************************************************************************/

@@ -286,6 +286,7 @@ extern "C" {
 #include "xstatus.h"
 #include "xqspips_hw.h"
 #include <string.h>
+#include <stdint.h>
 
 /************************** Constant Definitions *****************************/
 
@@ -485,7 +486,7 @@ typedef void (*XQspiPs_StatusHandler) (void *CallBackRef, u32 StatusEvent,
  */
 typedef struct {
 	u16 DeviceId;		/**< Unique ID  of device */
-	u32 BaseAddress;	/**< Base address of the device */
+	uintptr_t BaseAddress;	/**< Base address of the device */
 	u32 InputClockHz;	/**< Input clock frequency */
 	u8  ConnectionMode; /**< Single, Stacked and Parallel mode */
 } XQspiPs_Config;

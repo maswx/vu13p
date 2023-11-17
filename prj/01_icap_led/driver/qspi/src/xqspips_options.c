@@ -351,6 +351,7 @@ int XQspiPs_SetDelays(XQspiPs *InstancePtr, u8 DelayNss, u8 DelayBtwn,
 	DelayRegister |= (u32) DelayAfter << XQSPIPS_DR_AFTER_SHIFT;
 	DelayRegister |= (u32) DelayInit;
 
+	// log by masw@masw.tech 往0x18寄存器写数据。后面会读回确认一致性。
 	XQspiPs_WriteReg(InstancePtr->Config.BaseAddress,
 			  XQSPIPS_DR_OFFSET, DelayRegister);
 
