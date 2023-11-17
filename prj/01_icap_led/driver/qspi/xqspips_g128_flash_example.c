@@ -54,7 +54,6 @@
 
 #include "xparameters.h"	/* SDK generated parameters */
 #include "xqspips.h"		/* QSPI device driver */
-#include "xil_printf.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -438,7 +437,7 @@ int main(void)
 {
 	int Status;
 
-	xil_printf("QSPI Greater than 128Mb Flash Example Test \r\n");
+	printf("QSPI Greater than 128Mb Flash Example Test \r\n");
 
 	//==================================================================================
 	//============================add by masw@masw.tech=================================
@@ -446,7 +445,6 @@ int main(void)
 	//
     int axilte;
     void *mapped_base;
-	UINTPTR base_address;
 	off_t  base_offset  = 0x00020000;  // 基地址的偏移量, 512kB, 前一大段是给 BRAM 的
 	size_t mapping_size = 64 * 1024; // 映射的大小，64K
     // 打开设备文件
@@ -464,10 +462,9 @@ int main(void)
         return -1;
     }
     // 将映射的地址转换为指定类型的指针
-    base_address = (UINTPTR)mapped_base;
 
 	QspiInstance.Config.DeviceId       = 0;
-	QspiInstance.Config.BaseAddress    = base_address ;	
+	QspiInstance.Config.BaseAddress    = (uintptr_t)mapped_base;	
 	QspiInstance.Config.InputClockHz   = 50000000;	
 	QspiInstance.Config.ConnectionMode = 0; 
 
@@ -476,11 +473,11 @@ int main(void)
 	 */
 	Status = QspiG128FlashExample_v2(&QspiInstance, QSPI_DEVICE_ID);
 	if (Status != XST_SUCCESS) {
-		xil_printf("QSPI Greater than 128Mb Flash Example Test Failed\r\n");
+		printf("QSPI Greater than 128Mb Flash Example Test Failed\r\n");
 		return XST_FAILURE;
 	}
 
-	xil_printf("Successfully ran QSPI Greater than 128Mb Flash Ex Test\r\n");
+	printf("Successfully ran QSPI Greater than 128Mb Flash Ex Test\r\n");
 	return XST_SUCCESS;
 }
 int QspiG128FlashExample_v2(XQspiPs *QspiInstancePtr, u16 QspiDeviceId)
@@ -499,8 +496,7 @@ int QspiG128FlashExample_v2(XQspiPs *QspiInstancePtr, u16 QspiDeviceId)
 		return XST_FAILURE;
 	}
 
-	Status = XQspiPs_CfgInitialize(QspiInstancePtr, QspiConfig,
-					QspiConfig->BaseAddress);
+	Status = XQspiPs_CfgInitialize(QspiInstancePtr, QspiConfig,QspiInstancePtr->Config.BaseAddress);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -1285,7 +1281,7 @@ int FlashReadID(XQspiPs *QspiPtr, u8 *WriteBfrPtr, u8 *ReadBfrPtr)
 		}
 	}
 
-	xil_printf("FlashID=0x%x 0x%x 0x%x\n\r", ReadBfrPtr[1], ReadBfrPtr[2],
+	printf("FlashID=0x%x 0x%x 0x%x\n\r", ReadBfrPtr[1], ReadBfrPtr[2],
 		   ReadBfrPtr[3]);
 
 	return XST_SUCCESS;

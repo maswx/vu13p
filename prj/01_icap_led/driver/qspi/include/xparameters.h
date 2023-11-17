@@ -8,7 +8,7 @@
 #define __XPARAMETERS_H__
 
 #define XPAR_XQSPIPS_0_DEVICE_ID 0
-#define XPAR_XQSPIPS_NUM_INSTANCES               0
+#define XPAR_XQSPIPS_NUM_INSTANCES               1
 #define XPAR_XQSPIPS_0_BASEADDR                  0
 #define XPAR_XSLCR_0_BASEADDR                    0
 #define XPAR_XQSPIPS_0_QSPI_CLK_FREQ_HZ        50000000
