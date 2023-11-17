@@ -447,7 +447,7 @@ int main(void)
     int axilte;
     void *mapped_base;
 	UINTPTR base_address;
-	off_t  base_offset  = 0x00080000;  // 基地址的偏移量, 512kB, 前一大段是给 BRAM 的
+	off_t  base_offset  = 0x00020000;  // 基地址的偏移量, 512kB, 前一大段是给 BRAM 的
 	size_t mapping_size = 64 * 1024; // 映射的大小，64K
     // 打开设备文件
     axilte = open("/dev/xdma0_user", O_RDWR | O_SYNC);//axi lite设备
@@ -474,7 +474,7 @@ int main(void)
 	/*
 	 * Run the Qspi Interrupt example.
 	 */
-	Status = QspiG128FlashExample(&QspiInstance, QSPI_DEVICE_ID);
+	Status = QspiG128FlashExample_v2(&QspiInstance, QSPI_DEVICE_ID);
 	if (Status != XST_SUCCESS) {
 		xil_printf("QSPI Greater than 128Mb Flash Example Test Failed\r\n");
 		return XST_FAILURE;
@@ -513,6 +513,45 @@ int QspiG128FlashExample_v2(XQspiPs *QspiInstancePtr, u16 QspiDeviceId)
 		return XST_FAILURE;
 	}
 	return 0;
+	/*
+	 * Set the pre-scaler for QSPI clock
+	 */
+	XQspiPs_SetClkPrescaler(QspiInstancePtr, XQSPIPS_CLK_PRESCALE_8);
+
+	/*
+	 * Set Manual Start and Manual Chip select options and drive the
+	 * HOLD_B high.
+	 */
+	XQspiPs_SetOptions(QspiInstancePtr, XQSPIPS_FORCE_SSELECT_OPTION |
+					     XQSPIPS_MANUAL_START_OPTION |
+					     XQSPIPS_HOLD_B_DRIVE_OPTION);
+	if(QspiConfig->ConnectionMode == XQSPIPS_CONNECTION_MODE_STACKED) {
+		/*
+		 * Enable two flash memories, Shared bus (NOT separate bus),
+		 * L_PAGE selected by default
+		 */
+		XQspiPs_SetLqspiConfigReg(QspiInstancePtr, DUAL_STACK_CONFIG_WRITE);
+	}
+
+	if(QspiConfig->ConnectionMode == XQSPIPS_CONNECTION_MODE_PARALLEL) {
+		/*
+		 * Enable two flash memories on separate buses
+		 */
+		XQspiPs_SetLqspiConfigReg(QspiInstancePtr, DUAL_QSPI_CONFIG_WRITE);
+	}
+
+	/*
+	 * Assert the Flash chip select.
+	 */
+	XQspiPs_SetSlaveSelect(QspiInstancePtr);
+
+	/*
+	 * Read flash ID and obtain all flash related information
+	 * It is important to call the read id function before
+	 * performing proceeding to any operation, including
+	 * preparing the WriteBuffer
+	 */
+	FlashReadID(QspiInstancePtr, WriteBuffer, ReadBuffer);
 }
 /*****************************************************************************/
 /**

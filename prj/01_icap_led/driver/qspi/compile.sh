@@ -12,7 +12,6 @@ if [ ! -d build ]; then
 fi
 
 cd build
-cmake ../
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 make 
 cd -
-cp ./build/xqspips_g128_flash_example .
