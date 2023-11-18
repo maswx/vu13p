@@ -1,13 +1,13 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xE6B010E4C3A7847B",
+      "boundary_crc": "0xE6B010E446CB069C",
       "device": "xcvu13p-fhgb2104-2L-e",
-      "gen_directory": "./src/xdma_ddr4x4_bd/xdma_ddr4x4",
+      "gen_directory": "src/xdma_ddr4x4_bd/xdma_ddr4x4",
       "name": "xdma_ddr4x4",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2023.2",
+      "tool_version": "2022.2",
       "validated": "true"
     },
     "design_tree": {
@@ -805,7 +805,6 @@
     "components": {
       "xdma_0": {
         "vlnv": "xilinx.com:ip:xdma:4.1",
-        "ip_revision": "26",
         "xci_name": "xdma_ddr4x4_xdma_0_0",
         "xci_path": "ip/xdma_ddr4x4_xdma_0_0/xdma_ddr4x4_xdma_0_0.xci",
         "inst_hier_path": "xdma_0",
@@ -857,7 +856,6 @@
       },
       "util_ds_buf_0": {
         "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-        "ip_revision": "31",
         "xci_name": "xdma_ddr4x4_util_ds_buf_0_0",
         "xci_path": "ip/xdma_ddr4x4_util_ds_buf_0_0/xdma_ddr4x4_util_ds_buf_0_0.xci",
         "inst_hier_path": "util_ds_buf_0",
@@ -926,9 +924,8 @@
         "components": {
           "ddr4_1": {
             "vlnv": "xilinx.com:ip:ddr4:2.2",
-            "ip_revision": "20",
-            "xci_name": "xdma_ddr4x4_ddr4_0_1",
-            "xci_path": "ip/xdma_ddr4x4_ddr4_0_1/xdma_ddr4x4_ddr4_0_1.xci",
+            "xci_name": "xdma_ddr4x4_ddr4_1_0",
+            "xci_path": "ip/xdma_ddr4x4_ddr4_1_0/xdma_ddr4x4_ddr4_1_0.xci",
             "inst_hier_path": "DDR4x4/ddr4_1",
             "parameters": {
               "C0.DDR4_AxiArbitrationScheme": {
@@ -1006,9 +1003,8 @@
           },
           "ddr4_2": {
             "vlnv": "xilinx.com:ip:ddr4:2.2",
-            "ip_revision": "20",
-            "xci_name": "xdma_ddr4x4_ddr4_0_2",
-            "xci_path": "ip/xdma_ddr4x4_ddr4_0_2/xdma_ddr4x4_ddr4_0_2.xci",
+            "xci_name": "xdma_ddr4x4_ddr4_2_0",
+            "xci_path": "ip/xdma_ddr4x4_ddr4_2_0/xdma_ddr4x4_ddr4_2_0.xci",
             "inst_hier_path": "DDR4x4/ddr4_2",
             "parameters": {
               "C0.DDR4_AxiArbitrationScheme": {
@@ -1086,9 +1082,8 @@
           },
           "ddr4_3": {
             "vlnv": "xilinx.com:ip:ddr4:2.2",
-            "ip_revision": "20",
-            "xci_name": "xdma_ddr4x4_ddr4_0_3",
-            "xci_path": "ip/xdma_ddr4x4_ddr4_0_3/xdma_ddr4x4_ddr4_0_3.xci",
+            "xci_name": "xdma_ddr4x4_ddr4_3_0",
+            "xci_path": "ip/xdma_ddr4x4_ddr4_3_0/xdma_ddr4x4_ddr4_3_0.xci",
             "inst_hier_path": "DDR4x4/ddr4_3",
             "parameters": {
               "C0.DDR4_AxiArbitrationScheme": {
@@ -1166,7 +1161,6 @@
           },
           "ddr4_0": {
             "vlnv": "xilinx.com:ip:ddr4:2.2",
-            "ip_revision": "20",
             "xci_name": "xdma_ddr4x4_ddr4_0_0",
             "xci_path": "ip/xdma_ddr4x4_ddr4_0_0/xdma_ddr4x4_ddr4_0_0.xci",
             "inst_hier_path": "DDR4x4/ddr4_0",
@@ -1379,7 +1373,6 @@
             "components": {
               "xbar": {
                 "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
-                "ip_revision": "30",
                 "xci_name": "xdma_ddr4x4_xbar_0",
                 "xci_path": "ip/xdma_ddr4x4_xbar_0/xdma_ddr4x4_xbar_0.xci",
                 "inst_hier_path": "DDR4x4/axi_interconnect_0/xbar",
@@ -1457,7 +1450,6 @@
                 "components": {
                   "auto_cc": {
                     "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
-                    "ip_revision": "28",
                     "xci_name": "xdma_ddr4x4_auto_cc_3",
                     "xci_path": "ip/xdma_ddr4x4_auto_cc_3/xdma_ddr4x4_auto_cc_3.xci",
                     "inst_hier_path": "DDR4x4/axi_interconnect_0/s00_couplers/auto_cc",
@@ -1619,7 +1611,6 @@
                 "components": {
                   "auto_cc": {
                     "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
-                    "ip_revision": "28",
                     "xci_name": "xdma_ddr4x4_auto_cc_0",
                     "xci_path": "ip/xdma_ddr4x4_auto_cc_0/xdma_ddr4x4_auto_cc_0.xci",
                     "inst_hier_path": "DDR4x4/axi_interconnect_0/m01_couplers/auto_cc",
@@ -1725,7 +1716,6 @@
                 "components": {
                   "auto_cc": {
                     "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
-                    "ip_revision": "28",
                     "xci_name": "xdma_ddr4x4_auto_cc_1",
                     "xci_path": "ip/xdma_ddr4x4_auto_cc_1/xdma_ddr4x4_auto_cc_1.xci",
                     "inst_hier_path": "DDR4x4/axi_interconnect_0/m02_couplers/auto_cc",
@@ -1831,7 +1821,6 @@
                 "components": {
                   "auto_cc": {
                     "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
-                    "ip_revision": "28",
                     "xci_name": "xdma_ddr4x4_auto_cc_2",
                     "xci_path": "ip/xdma_ddr4x4_auto_cc_2/xdma_ddr4x4_auto_cc_2.xci",
                     "inst_hier_path": "DDR4x4/axi_interconnect_0/m03_couplers/auto_cc",
@@ -1897,26 +1886,26 @@
               },
               "m00_couplers_to_axi_interconnect_0": {
                 "interface_ports": [
-                  "m00_couplers/M_AXI",
-                  "M00_AXI"
+                  "M00_AXI",
+                  "m00_couplers/M_AXI"
                 ]
               },
               "m01_couplers_to_axi_interconnect_0": {
                 "interface_ports": [
-                  "m01_couplers/M_AXI",
-                  "M01_AXI"
+                  "M01_AXI",
+                  "m01_couplers/M_AXI"
                 ]
               },
               "m02_couplers_to_axi_interconnect_0": {
                 "interface_ports": [
-                  "m02_couplers/M_AXI",
-                  "M02_AXI"
+                  "M02_AXI",
+                  "m02_couplers/M_AXI"
                 ]
               },
               "m03_couplers_to_axi_interconnect_0": {
                 "interface_ports": [
-                  "m03_couplers/M_AXI",
-                  "M03_AXI"
+                  "M03_AXI",
+                  "m03_couplers/M_AXI"
                 ]
               },
               "s00_couplers_to_xbar": {
@@ -2037,7 +2026,6 @@
           },
           "util_vector_logic_0": {
             "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-            "ip_revision": "3",
             "xci_name": "xdma_ddr4x4_util_vector_logic_0_0",
             "xci_path": "ip/xdma_ddr4x4_util_vector_logic_0_0/xdma_ddr4x4_util_vector_logic_0_0.xci",
             "inst_hier_path": "DDR4x4/util_vector_logic_0",
@@ -2052,16 +2040,14 @@
           },
           "proc_sys_reset_0": {
             "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-            "ip_revision": "14",
             "xci_name": "xdma_ddr4x4_proc_sys_reset_0_0",
             "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_0_0/xdma_ddr4x4_proc_sys_reset_0_0.xci",
             "inst_hier_path": "DDR4x4/proc_sys_reset_0"
           },
           "util_vector_logic_1": {
             "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-            "ip_revision": "3",
-            "xci_name": "xdma_ddr4x4_util_vector_logic_0_1",
-            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_0_1/xdma_ddr4x4_util_vector_logic_0_1.xci",
+            "xci_name": "xdma_ddr4x4_util_vector_logic_1_0",
+            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_1_0/xdma_ddr4x4_util_vector_logic_1_0.xci",
             "inst_hier_path": "DDR4x4/util_vector_logic_1",
             "parameters": {
               "C_OPERATION": {
@@ -2074,9 +2060,8 @@
           },
           "util_vector_logic_2": {
             "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-            "ip_revision": "3",
-            "xci_name": "xdma_ddr4x4_util_vector_logic_1_0",
-            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_1_0/xdma_ddr4x4_util_vector_logic_1_0.xci",
+            "xci_name": "xdma_ddr4x4_util_vector_logic_2_0",
+            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_2_0/xdma_ddr4x4_util_vector_logic_2_0.xci",
             "inst_hier_path": "DDR4x4/util_vector_logic_2",
             "parameters": {
               "C_OPERATION": {
@@ -2089,9 +2074,8 @@
           },
           "util_vector_logic_3": {
             "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-            "ip_revision": "3",
-            "xci_name": "xdma_ddr4x4_util_vector_logic_2_0",
-            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_2_0/xdma_ddr4x4_util_vector_logic_2_0.xci",
+            "xci_name": "xdma_ddr4x4_util_vector_logic_3_0",
+            "xci_path": "ip/xdma_ddr4x4_util_vector_logic_3_0/xdma_ddr4x4_util_vector_logic_3_0.xci",
             "inst_hier_path": "DDR4x4/util_vector_logic_3",
             "parameters": {
               "C_OPERATION": {
@@ -2104,23 +2088,20 @@
           },
           "proc_sys_reset_1": {
             "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-            "ip_revision": "14",
-            "xci_name": "xdma_ddr4x4_proc_sys_reset_0_1",
-            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_0_1/xdma_ddr4x4_proc_sys_reset_0_1.xci",
+            "xci_name": "xdma_ddr4x4_proc_sys_reset_1_0",
+            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_1_0/xdma_ddr4x4_proc_sys_reset_1_0.xci",
             "inst_hier_path": "DDR4x4/proc_sys_reset_1"
           },
           "proc_sys_reset_2": {
             "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-            "ip_revision": "14",
-            "xci_name": "xdma_ddr4x4_proc_sys_reset_1_0",
-            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_1_0/xdma_ddr4x4_proc_sys_reset_1_0.xci",
+            "xci_name": "xdma_ddr4x4_proc_sys_reset_2_0",
+            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_2_0/xdma_ddr4x4_proc_sys_reset_2_0.xci",
             "inst_hier_path": "DDR4x4/proc_sys_reset_2"
           },
           "proc_sys_reset_3": {
             "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-            "ip_revision": "14",
-            "xci_name": "xdma_ddr4x4_proc_sys_reset_1_1",
-            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_1_1/xdma_ddr4x4_proc_sys_reset_1_1.xci",
+            "xci_name": "xdma_ddr4x4_proc_sys_reset_3_0",
+            "xci_path": "ip/xdma_ddr4x4_proc_sys_reset_3_0/xdma_ddr4x4_proc_sys_reset_3_0.xci",
             "inst_hier_path": "DDR4x4/proc_sys_reset_3"
           }
         },
@@ -2351,7 +2332,6 @@
       },
       "axi_gpio_0": {
         "vlnv": "xilinx.com:ip:axi_gpio:2.0",
-        "ip_revision": "31",
         "xci_name": "xdma_ddr4x4_axi_gpio_0_0",
         "xci_path": "ip/xdma_ddr4x4_axi_gpio_0_0/xdma_ddr4x4_axi_gpio_0_0.xci",
         "inst_hier_path": "axi_gpio_0",
@@ -2368,56 +2348,56 @@
     "interface_nets": {
       "DDR4x4_c0_ddr4": {
         "interface_ports": [
-          "DDR4x4/c0_ddr4",
-          "c0_ddr4"
+          "c0_ddr4",
+          "DDR4x4/c0_ddr4"
         ]
       },
       "DDR4x4_c1_ddr4": {
         "interface_ports": [
-          "DDR4x4/c1_ddr4",
-          "c1_ddr4"
+          "c1_ddr4",
+          "DDR4x4/c1_ddr4"
         ]
       },
       "DDR4x4_c2_ddr4": {
         "interface_ports": [
-          "DDR4x4/c2_ddr4",
-          "c2_ddr4"
+          "c2_ddr4",
+          "DDR4x4/c2_ddr4"
         ]
       },
       "DDR4x4_c3_ddr4": {
         "interface_ports": [
-          "DDR4x4/c3_ddr4",
-          "c3_ddr4"
+          "c3_ddr4",
+          "DDR4x4/c3_ddr4"
         ]
       },
       "c0_ddr4_clk_1": {
         "interface_ports": [
-          "DDR4x4/c0_ddr4_clk",
-          "c0_ddr4_clk"
+          "c0_ddr4_clk",
+          "DDR4x4/c0_ddr4_clk"
         ]
       },
       "c1_ddr4_clk_1": {
         "interface_ports": [
-          "DDR4x4/c1_ddr4_clk",
-          "c1_ddr4_clk"
+          "c1_ddr4_clk",
+          "DDR4x4/c1_ddr4_clk"
         ]
       },
       "c2_ddr4_clk_1": {
         "interface_ports": [
-          "DDR4x4/c2_ddr4_clk",
-          "c2_ddr4_clk"
+          "c2_ddr4_clk",
+          "DDR4x4/c2_ddr4_clk"
         ]
       },
       "c3_ddr4_clk_1": {
         "interface_ports": [
-          "DDR4x4/c3_ddr4_clk",
-          "c3_ddr4_clk"
+          "c3_ddr4_clk",
+          "DDR4x4/c3_ddr4_clk"
         ]
       },
       "pcie_ref_1": {
         "interface_ports": [
-          "util_ds_buf_0/CLK_IN_D",
-          "pcie_ref"
+          "pcie_ref",
+          "util_ds_buf_0/CLK_IN_D"
         ]
       },
       "xdma_0_M_AXI": {
@@ -2434,8 +2414,8 @@
       },
       "xdma_0_pcie_mgt": {
         "interface_ports": [
-          "xdma_0/pcie_mgt",
-          "pcie_lane"
+          "pcie_lane",
+          "xdma_0/pcie_mgt"
         ]
       }
     },
