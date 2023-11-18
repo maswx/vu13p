@@ -2,72 +2,63 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/mman.h>
-#include <sys/mman.h>
 #include <time.h>
-#include <stdint.h>
 
-#define DEVICE_READ "/dev/xdma0_c2h_0"
-#define DEVICE_WRITE "/dev/xdma0_h2c_0"
-#define SIZE 0x3FFFFFFFF
+#define SIZE 0x40000000 // 1GB
+#define TOTAL_SIZE 0x400000000 // 16GB
 
 int main() {
-    int fd_read = open(DEVICE_READ, O_RDWR | O_SYNC);
-    if (fd_read < 0) {
-        perror("Failed to open the read device");
+    int fd_read = open("/dev/xdma0_c2h_0", O_RDONLY);
+    int fd_write = open("/dev/xdma0_h2c_0", O_WRONLY);
+
+    if (fd_read < 0 || fd_write < 0) {
+        perror("Failed to open the device");
         return EXIT_FAILURE;
     }
 
-    int fd_write = open(DEVICE_WRITE, O_RDWR | O_SYNC);
-    if (fd_write < 0) {
-        close(fd_read);
-        perror("Failed to open the write device");
+    unsigned int *buffer = malloc(SIZE);
+    if (buffer == NULL) {
+        perror("Failed to allocate buffer");
         return EXIT_FAILURE;
     }
 
-    uintptr_t *map_base_read = mmap(0, SIZE, PROT_READ, MAP_SHARED, fd_read, 0);
-    if (map_base_read == MAP_FAILED) {
-        close(fd_read);
-        close(fd_write);
-        perror("Failed to map the read device");
-        return EXIT_FAILURE;
+    // Fill the buffer with test data.
+    for (unsigned long i = 0; i < SIZE / sizeof(unsigned int); i++) {
+        buffer[i] = i;
     }
 
-    uintptr_t *map_base_write = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, fd_write, 0);
-    if (map_base_write == MAP_FAILED) {
-        munmap(map_base_read, SIZE);
-        close(fd_read);
-        close(fd_write);
-        perror("Failed to map the write device");
-        return EXIT_FAILURE;
-    }
-
-    // Test the memory.
+    // Write the buffer to the device memory.
     time_t start_time = time(NULL);
-    for (unsigned long i = 0; i < SIZE; i += 4) {
-        *((uint64_t *)(map_base_write + i)) = i;
+    for (unsigned long i = 0; i < TOTAL_SIZE; i += SIZE) {
+        write(fd_write, buffer, SIZE);
     }
     time_t end_time = time(NULL);
-    double timxx = (double)SIZE / (end_time - start_time);
-    printf("写入16GB内存的速度为: %f MB/s\n", timxx);
+    double write_speed = (double)TOTAL_SIZE / (end_time - start_time)/1e9;
+    printf("写入16GB内存的速度为: %f GB/s\n", write_speed);
 
+    // Read the device memory and verify the data.
     start_time = time(NULL);
-    for (unsigned long i = 0; i < SIZE; i += 4) {
-        if (*((uint64_t *)(map_base_read + i)) != i) {
-            printf("Memory test failed at offset 0x%lx\n", i);
-            break;
-        }
+    for (unsigned long i = 0; i < TOTAL_SIZE; i += SIZE) {
+        read(fd_read, buffer, SIZE);
     }
     end_time = time(NULL);
-    printf("读出并比对16GB内存的时间为: %f s\n",  (end_time - start_time));
+    double read_speed = (double)TOTAL_SIZE / (end_time - start_time)/1e9;
+    printf("读出16GB内存的速度为: %f GB/s\n",  read_speed);
 
-    if (munmap(map_base_read, SIZE) == -1 || munmap(map_base_write, SIZE) == -1) {
-        close(fd_read);
-        close(fd_write);
-        perror("Failed to unmap the devices");
-        return EXIT_FAILURE;
+
+    // Step 3: Read the device memory and verify the data.
+    for (unsigned long i = 0; i < TOTAL_SIZE; i += SIZE) {
+        printf("正在比对0x%09lx ~ 0x%09lx中的内容, ", i, i + SIZE);
+        read(fd_read, buffer, SIZE);
+        for (unsigned long j = 0; j < SIZE / sizeof(unsigned int); j++) {
+            if (buffer[j] != j) {
+                printf("Memory test failed at offset 0x%lx\n", i + j * sizeof(unsigned int));
+                break;
+            }
+        }
+        printf("比对完成\n");
     }
-
+    free(buffer);
     close(fd_read);
     close(fd_write);
     return EXIT_SUCCESS;
