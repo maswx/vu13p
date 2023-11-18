@@ -107,6 +107,7 @@ wire sys_clk = axi_aclk   ;
 wire rst_n   = axi_aresetn;
 wire qspi_clk    ;
 wire eos         ;
+wire qspi_intp   ;
 //==========================================================================================================
 //1. xdma core
 wire [ 31 : 0] axil_awaddr ;//output wire [ 31 : 0] m_axil_awaddr ,
@@ -153,7 +154,7 @@ xdma_0 xdma_0_inst(
 
 	.axi_aclk             (axi_aclk             ),// output wire axi_aclk
 	.axi_aresetn          (axi_aresetn          ),// output wire axi_aresetn
-	.usr_irq_req          (usr_irq_req          ),// input  wire [7 : 0] usr_irq_req
+	.usr_irq_req          (qspi_intp            ),// input  wire [7 : 0] usr_irq_req
 	.usr_irq_ack          (                     ),// output wire [7 : 0] usr_irq_ack
 	.msi_enable           (                     ),// output wire msi_enable
 	.msi_vector_width     (                     ),// output wire [2 : 0] msi_vector_width
@@ -480,7 +481,6 @@ axil_interconnect_wrap_1x5 # (
     .m04_axil_rvalid      (m04_axil_rvalid      ),//input  wire                     m04_axil_rvalid,
     .m04_axil_rready      (m04_axil_rready      ) //output wire                     m04_axil_rready
 );
-
 debug_bridge_0 debug_bridge_0_inst(
   .s_axi_aclk      (  axi_aclk         ),// input  wire s_axi_aclk
   .s_axi_aresetn   (  axi_aresetn      ),// input  wire s_axi_aresetn
@@ -504,8 +504,6 @@ debug_bridge_0 debug_bridge_0_inst(
   .S_AXI_wstrb     (m00_axil_wstrb     ),// input  wire [3 : 0] S_AXI_wstrb
   .S_AXI_wvalid    (m00_axil_wvalid    ) // input  wire S_AXI_wvalid
 );
-
-
 axi_hwicap_0 axi_hwicap_0_inst(
   .icap_clk         (qspi_clk           ),// input  wire icap_clk
   .eos_in           (eos                ),// input  wire eos_in
@@ -579,8 +577,9 @@ axi_quad_spi_0 axi_quad_spi_0_inst(
     .usrcclkts           (1'b0                 ), // input  wire usrcclkts
     .usrdoneo            (1'b0                 ), // input  wire usrdoneo
     .usrdonets           (1'b1                 ), // input  wire usrdonets
-    .ip2intc_irpt        (                     )  // output wire ip2intc_irpt
+    .ip2intc_irpt        (qspi_intp                     )  // output wire ip2intc_irpt
 );
+
 
 
 //==========================================================================================================
