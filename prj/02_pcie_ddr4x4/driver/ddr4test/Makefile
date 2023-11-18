@@ -9,9 +9,9 @@ TARGET_NAME := main# FILL: target name
 
 # path macros
 SRC_PATH := src
-BIN_PATH := .compile/bin
-OBJ_PATH := .compile/obj
-DBG_PATH := .compile/debug
+BIN_PATH := compile/bin
+OBJ_PATH := compile/obj
+DBG_PATH := compile/debug
 
 # compile macros
 ifeq ($(OS),Windows_NT)
