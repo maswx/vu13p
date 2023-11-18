@@ -36,18 +36,29 @@
 *
 ******************************************************************************/
 
+// add by masw@masw.tech
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <stdint.h>
+#include <stdarg.h>
+
+#include <pthread.h>
+#include <fcntl.h>
+#include <poll.h>
+
+//#define SDT
+#define XPAR_XSPI_NUM_INSTANCES 1
+#define XIL_INTERRUPT
+
+// add by masw@masw.tech end ====================================================
+
 /***************************** Include Files *********************************/
 
-#include "xparameters.h"	/* EDK generated parameters */
-#ifndef SDT
-#include "xintc.h"		/* Interrupt controller device driver */
-#endif
+
 #include "xspi.h"		/* SPI device driver */
-#include "xil_exception.h"
-#include "xil_printf.h"
-#ifdef SDT
-#include "xinterrupt_wrap.h"
-#endif
 
 /************************** Constant Definitions *****************************/
 
@@ -56,11 +67,6 @@
  * xparameters.h file. They are defined here such that a user can easily
  * change all the needed parameters in one place.
  */
-#ifndef SDT
-#define SPI_DEVICE_ID			XPAR_SPI_0_DEVICE_ID
-#define INTC_DEVICE_ID			XPAR_INTC_0_DEVICE_ID
-#define SPI_INTR_ID			XPAR_INTC_0_SPI_0_VEC_ID
-#endif
 
 /*
  * The following constant defines the slave select signal that is used to
@@ -155,6 +161,7 @@ int SpiFlashSectorErase(XSpi *SpiPtr, u32 Addr);
 int SpiFlashGetStatus(XSpi *SpiPtr);
 int SpiFlashQuadEnable(XSpi *SpiPtr);
 int SpiFlashEnableHPM(XSpi *SpiPtr);
+void* monitor_device(void* InstancePtr) ;
 static int SpiFlashWaitForFlashReady(void);
 void SpiHandler(void *CallBackRef, u32 StatusEvent, unsigned int ByteCount);
 #ifndef SDT
@@ -168,9 +175,9 @@ static int SetupInterruptSystem(XSpi *SpiPtr);
  * are initialized to zero each time the program runs. They could be local
  * but should at least be static so they are zeroed.
  */
-#ifndef SDT
-static XIntc InterruptController;
-#endif
+//--#ifndef SDT
+//--static XIntc InterruptController;
+//--#endif
 static XSpi Spi;
 
 /*
@@ -217,40 +224,56 @@ int main(void)
 	u32 Address;
 	XSpi_Config *ConfigPtr;	/* Pointer to Configuration data */
 
-	/*
-	 * Initialize the SPI driver so that it's ready to use,
-	 * specify the device ID that is generated in xparameters.h.
-	 */
-#ifndef SDT
-	ConfigPtr = XSpi_LookupConfig(SPI_DEVICE_ID);
-#else
-	ConfigPtr = XSpi_LookupConfig(XPAR_XSPI_0_BASEADDR);
-#endif
-	if (ConfigPtr == NULL) {
-		return XST_DEVICE_NOT_FOUND;
-	}
+	
+    printf("QSPI Greater than 128Mb Flash Example Test \r\n");
 
-	Status = XSpi_CfgInitialize(&Spi, ConfigPtr,
-				    ConfigPtr->BaseAddress);
+    //==================================================================================
+    //============================add by masw@masw.tech=================================
+    //==================================================================================
+    //
+    int axilte, Intrp;
+    void *mapped_base;
+    off_t  base_offset  = 0x00020000;  // 基地址的偏移量, 512kB, 前一大段是给 BRAM 的
+    size_t mapping_size = 64 * 1024; // 映射的大小，64K
+    // 打开设备文件
+    axilte = open("/dev/xdma0_user", O_RDWR | O_SYNC);//axi lite设备
+    if (axilte == -1) {
+        perror("Failed to open device");
+        close(axilte);
+        return -1;
+    }
+    // 映射设备文件到内存
+    mapped_base = mmap(NULL, mapping_size, PROT_READ | PROT_WRITE, MAP_SHARED, axilte, base_offset);
+    if (mapped_base == MAP_FAILED) {
+        perror("Failed to map memory");
+        close(axilte);
+        return -1;
+    }
+
+    // 将映射的地址转换为指定类型的指针
+
+	ConfigPtr->BaseAddress        = (uintptr_t)mapped_base;
+	ConfigPtr->HasFifos           = 1;		//配置IP的时候配了16的深度
+	ConfigPtr->SlaveOnly          = 0;		/**< Is the device slave only? */
+	ConfigPtr->NumSlaveBits       = 1;   	//IP 配的1/**< Num of slave select bits on the device */
+	ConfigPtr->DataWidth          = 8;		/**< Data transfer Width */
+	ConfigPtr->SpiMode            = 2;		/**< Standard/Dual/Quad mode */
+	ConfigPtr->AxiInterface       = 0;	/**< AXI-Lite/AXI Full Interface */
+	ConfigPtr->AxiFullBaseAddress = 0x00020000;	/**< AXI Full Interface Base address of the device */
+	ConfigPtr->XipMode            = 0;             /**< 0 if Non-XIP, 1 if XIP Mode */
+	ConfigPtr->Use_Startup        = 1;		/**< 1 if Starup block is used in h/w */
+	ConfigPtr->FifosDepth         = 16;		/**< TX and RX FIFO Depth */
+
+
+	Status = XSpi_CfgInitialize(&Spi, ConfigPtr, ConfigPtr->BaseAddress);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Connect the SPI driver to the interrupt subsystem such that
-	 * interrupts can occur. This function is application specific.
-	 */
-#ifndef SDT
-	Status = SetupInterruptSystem(&Spi);
-#else
-	Status = XSetupInterruptSystem(&Spi, &XSpi_InterruptHandler,
-				       ConfigPtr->IntrId,
-				       ConfigPtr->IntrParent,
-				       XINTERRUPT_DEFAULT_PRIORITY);
-#endif
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
+	//创建中断处理函数
+	pthread_t thread;
+	pthread_create(&thread, NULL, &monitor_device , &Spi);
+
 
 	/*
 	 * Setup the handler for the SPI that will be called from the interrupt
@@ -526,7 +549,7 @@ int main(void)
 		}
 	}
 
-	xil_printf("Successfully ran Spi winbond flash quad Example\r\n");
+	printf("Successfully ran Spi winbond flash quad Example\r\n");
 	return XST_SUCCESS;
 }
 
@@ -1129,68 +1152,99 @@ void SpiHandler(void *CallBackRef, u32 StatusEvent, unsigned int ByteCount)
 * @note		None
 *
 ******************************************************************************/
-#ifndef SDT
-static int SetupInterruptSystem(XSpi *SpiPtr)
-{
+//----#ifndef SDT
+//----static int SetupInterruptSystem(XSpi *SpiPtr)
+//----{
+//----
+//----	int Status;
+//----
+//----	/*
+//----	 * Initialize the interrupt controller driver so that
+//----	 * it's ready to use, specify the device ID that is generated in
+//----	 * xparameters.h
+//----	 */
+//----	Status = XIntc_Initialize(&InterruptController, 0);
+//----	if (Status != XST_SUCCESS) {
+//----		return XST_FAILURE;
+//----	}
+//----
+//----	/*
+//----	 * Connect a device driver handler that will be called when an interrupt
+//----	 * for the device occurs, the device driver handler performs the
+//----	 * specific interrupt processing for the device
+//----	 */
+//----	Status = XIntc_Connect(&InterruptController,
+//----			       0,
+//----			       (XInterruptHandler)XSpi_InterruptHandler,
+//----			       (void *)SpiPtr);
+//----	if (Status != XST_SUCCESS) {
+//----		return XST_FAILURE;
+//----	}
+//----
+//----	/*
+//----	 * Start the interrupt controller such that interrupts are enabled for
+//----	 * all devices that cause interrupts, specific real mode so that
+//----	 * the SPI can cause interrupts through the interrupt controller.
+//----	 */
+//----	Status = XIntc_Start(&InterruptController, XIN_REAL_MODE);
+//----	if (Status != XST_SUCCESS) {
+//----		return XST_FAILURE;
+//----	}
+//----
+//----	/*
+//----	 * Enable the interrupt for the SPI.
+//----	 */
+//----	XIntc_Enable(&InterruptController, 0);
+//----
+//----
+//----	/*
+//----	 * Initialize the exception table.
+//----	 */
+//----	Xil_ExceptionInit();
+//----
+//----	/*
+//----	 * Register the interrupt controller handler with the exception table.
+//----	 */
+//----	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+//----				     (Xil_ExceptionHandler)XIntc_InterruptHandler,
+//----				     &InterruptController);
+//----
+//----	/*
+//----	 * Enable non-critical exceptions.
+//----	 */
+//----	Xil_ExceptionEnable();
+//----
+//----	return XST_SUCCESS;
+//----}
+//----#endif
 
-	int Status;
 
-	/*
-	 * Initialize the interrupt controller driver so that
-	 * it's ready to use, specify the device ID that is generated in
-	 * xparameters.h
-	 */
-	Status = XIntc_Initialize(&InterruptController, INTC_DEVICE_ID);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
+// 定义线程函数
+void* monitor_device(void* InstancePtr) {
+	XSpi *SpiPtr = (XSpi *)InstancePtr;
+    struct pollfd fds[1];
+    int fd = open("/dev/xdma0_events_0", O_RDONLY);
+    if (fd < 0) {
+        perror("open");
+        return NULL;
+    }
 
-	/*
-	 * Connect a device driver handler that will be called when an interrupt
-	 * for the device occurs, the device driver handler performs the
-	 * specific interrupt processing for the device
-	 */
-	Status = XIntc_Connect(&InterruptController,
-			       SPI_INTR_ID,
-			       (XInterruptHandler)XSpi_InterruptHandler,
-			       (void *)SpiPtr);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
+    fds[0].fd = fd;
+    fds[0].events = POLLIN;
 
-	/*
-	 * Start the interrupt controller such that interrupts are enabled for
-	 * all devices that cause interrupts, specific real mode so that
-	 * the SPI can cause interrupts through the interrupt controller.
-	 */
-	Status = XIntc_Start(&InterruptController, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
+    while (1) {
+        int ret = poll(fds, 1, -1);
+        if (ret < 0) {
+            perror("poll");
+            close(fd);
+            return NULL;
+        }
 
-	/*
-	 * Enable the interrupt for the SPI.
-	 */
-	XIntc_Enable(&InterruptController, SPI_INTR_ID);
+        if (fds[0].revents & POLLIN) {
+            XSpi_InterruptHandler(SpiPtr);
+        }
+    }
 
-
-	/*
-	 * Initialize the exception table.
-	 */
-	Xil_ExceptionInit();
-
-	/*
-	 * Register the interrupt controller handler with the exception table.
-	 */
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-				     (Xil_ExceptionHandler)XIntc_InterruptHandler,
-				     &InterruptController);
-
-	/*
-	 * Enable non-critical exceptions.
-	 */
-	Xil_ExceptionEnable();
-
-	return XST_SUCCESS;
+    close(fd);
+    return NULL;
 }
-#endif

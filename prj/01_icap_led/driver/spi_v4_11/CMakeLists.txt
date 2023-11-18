@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(MyProject)
+project(xspi_winbond_flash_quad_example)
 
 
 # 添加头文件搜索路径
@@ -13,7 +13,6 @@ aux_source_directory(./src/     LIB_SRC)
 aux_source_directory(./include/  LIB_COM)
 
 
-
 # 添加可执行文件
 add_executable(xspi_winbond_flash_quad_example
 	           xspi_winbond_flash_quad_example.c
@@ -21,5 +20,6 @@ add_executable(xspi_winbond_flash_quad_example
 			   ${LIB_EXP}
 			   ${LIB_COM}
 	           )
+target_link_libraries(xspi_winbond_flash_quad_example pthread)
 
 

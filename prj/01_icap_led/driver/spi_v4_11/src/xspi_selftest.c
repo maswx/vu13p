@@ -38,7 +38,7 @@
 /***************************** Include Files *********************************/
 
 #include "xspi.h"
-#include "xspi_i.h"
+//#include "xspi_i.h"
 
 /************************** Constant Definitions *****************************/
 
