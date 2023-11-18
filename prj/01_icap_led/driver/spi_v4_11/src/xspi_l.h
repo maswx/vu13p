@@ -55,8 +55,8 @@ extern "C" {
 
 /***************** Macros (Inline Functions) Definitions *********************/
 
-#define XSpi_In32	Xil_In32
-#define XSpi_Out32	Xil_Out32
+//#define XSpi_In32	Xil_In32
+//#define XSpi_Out32	Xil_Out32
 
 /****************************************************************************/
 /**
@@ -74,7 +74,7 @@ extern "C" {
 *
 ******************************************************************************/
 #define XSpi_ReadReg(BaseAddress, RegOffset) \
-	XSpi_In32((BaseAddress) + (RegOffset))
+	Xil_In64((BaseAddress) + (RegOffset))
 
 /***************************************************************************/
 /**
@@ -93,7 +93,7 @@ extern "C" {
 *					u32 RegisterValue);
 ******************************************************************************/
 #define XSpi_WriteReg(BaseAddress, RegOffset, RegisterValue) \
-	XSpi_Out32((BaseAddress) + (RegOffset), (RegisterValue))
+	Xil_Out64((BaseAddress) + (RegOffset), (RegisterValue))
 
 /************************** Function Prototypes ******************************/
 
