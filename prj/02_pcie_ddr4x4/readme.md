@@ -1,48 +1,32 @@
 
 
 
-* 编译工程
-
-请确保你已经正常安装了vivado, 查看vivado路径
-
-```shell
-which -a vivado 
-
-```
-
-如果没有，则需要source 一下
-
-```shell
-source /opt/Xilinx/Vivado/2022.2/settings64.sh
-```
-
-如果你像我一样使用zsh , 那只能添加路径到 ~/.zshrc
-```shell
-export  PATH=/opt/Xilinx/Vivado/2022.2/bin/:$PATH
-```
-
-
-编译工程。
+## 编译工程。
 
 ```shell
 make
 ```
 
-如果你的机器支持多核CPU，诸如线程撕裂者，可以修改 `./compile.tcl`中 `launch_runs synth_1 -jobs 8` 的jobs的个数，比如我通常会修改为12以加快编译速度
+工程文件默认位置位于
+
+```
+~/alivu13p/prjs/xdma_ddr4x4_top 
+```
 
 
-### 02_pcie_ddr4x4
+## 02_pcie_ddr4x4
 
 * 总体结构
-![](./images/pciex16_4xddr4_bram.png)
+
+![](./images/ddr4x4_v2.png)
 
 * 地址分配
-![](./images/pciex16_4xddr4_bram_addr.png)
+
+ddrc0 : 0x0_0000_0000
+ddrc1 : 0x1_0000_0000
+ddrc2 : 0x2_0000_0000
+ddrc3 : 0x3_0000_0000
 	
 * MIG OK
+
 ![](./images/pciex16_4xddr4_bram_ok.png)
-
-* C OK
-![](./images/pciex16_4xddr4_bram_testOK.png)
-
-
