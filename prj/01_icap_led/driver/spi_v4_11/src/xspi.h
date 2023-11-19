@@ -503,6 +503,7 @@ typedef struct {
 *		int XSpi_IsIntrGlobalEnabled(XSpi *InstancePtr);
 *
 ******************************************************************************/
+// log by masw: 在64位系统下，这里是个bug
 #define XSpi_IsIntrGlobalEnabled(InstancePtr)				\
 	(XSpi_ReadReg(((InstancePtr)->BaseAddr), XSP_DGIER_OFFSET) ==  \
 	 XSP_GINTR_ENABLE_MASK)

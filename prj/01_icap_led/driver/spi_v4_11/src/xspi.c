@@ -322,8 +322,7 @@ int XSpi_Start(XSpi *InstancePtr)
 	 * enable the Global Interrupt Enable.
 	 */
 	ControlReg = XSpi_GetControlReg(InstancePtr);
-	ControlReg |= XSP_CR_TXFIFO_RESET_MASK | XSP_CR_RXFIFO_RESET_MASK |
-			XSP_CR_ENABLE_MASK;
+	ControlReg |= XSP_CR_TXFIFO_RESET_MASK | XSP_CR_RXFIFO_RESET_MASK | XSP_CR_ENABLE_MASK;
 	XSpi_SetControlReg(InstancePtr, ControlReg);
 
 	/*
@@ -562,7 +561,12 @@ int XSpi_Transfer(XSpi *InstancePtr, u8 *SendBufPtr,
 	/*
 	 * Save the Global Interrupt Enable Register.
 	 */
-	GlobalIntrReg = XSpi_IsIntrGlobalEnabled(InstancePtr);
+	//--printf("中断使能寄存器内容为0x%x； 如果是0x80000000则意味着已经开启了中断\n", *(volatile uint64_t*) (uintptr_t)(InstancePtr->BaseAddr + 0x1c));
+	//--printf("\n %x \n", (XSpi_ReadReg(((InstancePtr)->BaseAddr), XSP_DGIER_OFFSET)                           ));
+	//--printf("\n %x \n",                                                                 XSP_GINTR_ENABLE_MASK );
+	//--printf("\n %x \n", (XSpi_ReadReg(((InstancePtr)->BaseAddr), XSP_DGIER_OFFSET) ==   XSP_GINTR_ENABLE_MASK));
+	uint32_t ige = *(volatile uint64_t*) (uintptr_t)(InstancePtr->BaseAddr + 0x1c);
+	GlobalIntrReg = ige == 0x80000000;
 
 	/*
 	 * Enter a critical section from here to the end of the function since
