@@ -223,7 +223,12 @@ int main(void)
 	u32 Index;
 	u32 Address;
 	int TestPass = FALSE;
-	XSpi_Config *ConfigPtr;	/* Pointer to Configuration data */
+
+	XSpi_Config *ConfigPtr = malloc(sizeof(XSpi_Config));
+	if (ConfigPtr == NULL) {
+		printf("内存分配失败\n");
+		return XST_FAILURE;
+	}
 
 	
     printf("QSPI Greater than 128Mb Flash Example Test \r\n");
@@ -521,6 +526,8 @@ int main(void)
 		printf("高性能4bit IO 读 测试失败\n");
 
 	printf("Successfully ran Spi winbond flash quad Example\r\n");
+    close(axilte);
+    close(Intrp);
 	return XST_SUCCESS;
 }
 
