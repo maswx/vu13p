@@ -222,6 +222,7 @@ int main(void)
 	int Status;
 	u32 Index;
 	u32 Address;
+	int TestPass = FALSE;
 	XSpi_Config *ConfigPtr;	/* Pointer to Configuration data */
 
 	
@@ -273,7 +274,7 @@ int main(void)
 	//创建中断处理函数
 	pthread_t thread;
 	pthread_create(&thread, NULL, &monitor_device , &Spi);
-
+	// 使能中断
 
 	/*
 	 * Setup the handler for the SPI that will be called from the interrupt
@@ -288,8 +289,7 @@ int main(void)
 	 * that the slave select signal does not toggle for every byte of a
 	 * transfer, this must be done before the slave select is set.
 	 */
-	Status = XSpi_SetOptions(&Spi, XSP_MASTER_OPTION |
-				 XSP_MANUAL_SSELECT_OPTION);
+	Status = XSpi_SetOptions(&Spi, XSP_MASTER_OPTION | XSP_MANUAL_SSELECT_OPTION);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -313,111 +313,95 @@ int main(void)
 	 * operations.
 	 */
 	Address = FLASH_TEST_ADDRESS;
-
-	/*
-	 * Perform the Write Enable operation.
-	 */
+//=============================================================================================
+	// 开始测试 Flash
+	// 使能 Flash 写
 	Status = SpiFlashWriteEnable(&Spi);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Perform the Sector Erase operation.
-	 */
+	// 擦除 扇区
 	Status = SpiFlashSectorErase(&Spi, Address);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Set the Quad Enable (QE) bit in the flash device, so that Quad
-	 * operations can be performed on the flash.
-	 */
+	// 使能4bit QE模式
 	Status = SpiFlashQuadEnable(&Spi);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Perform the Write Enable operation.
-	 */
+	// 使能 Flash 写
 	Status = SpiFlashWriteEnable(&Spi);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Write the data to the Page using Page Program command.
-	 */
+	//写入Flash
 	Status = SpiFlashWrite(&Spi, Address, PAGE_SIZE, COMMAND_PAGE_PROGRAM);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Clear the read Buffer.
-	 */
+	//清除读回Buffer
 	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Random Read command.
-	 */
+	// 从扇区读回数据
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_RANDOM_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//将读取的数据与写入的数据进行比较。
+	TestPass = TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES] != (u8)(Index + TestByte)) { 
+			TestPass = FALSE;
+			break;
 		}
 	}
+	if(TestPass)
+		printf("4bit QE模式 + 页编程命令 COMMAND_PAGE_PROGRAM写入Flash 并读回比对一致性 测试成功 \n");
+	else
+		printf("4bit QE模式 + 页编程命令 COMMAND_PAGE_PROGRAM写入Flash 并读回比对一致性 测试失败 \n");
 
-	/*
-	 * Clear the Read Buffer.
-	 */
+	//清除读回Buffer
 	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES +
 	     DUAL_READ_DUMMY_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Dual Output Fast Read command.
-	 */
+	//使用双输出快速读取命令从页面读取数据
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_DUAL_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//将读取的数据与写入的数据进行比较。
+	TestPass = TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES +
-				     DUAL_READ_DUMMY_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES + DUAL_READ_DUMMY_BYTES] != (u8)(Index + TestByte)) {
+			TestPass = FALSE;
+			break;
 		}
 	}
+	if(TestPass)
+		printf("4bit QE模式 + 双输出命令 COMMAND_DUAL_READ 写入Flash 并读回比对一致性 测试成功 \n");
+	else
+		printf("4bit QE模式 + 双输出命令 COMMAND_DUAL_READ 写入Flash 并读回比对一致性 测试失败 \n");
 
-	/*
-	 * Perform the Write Enable operation.
-	 */
+//===========================================================================================
+	//执行写使能操作
 	Status = SpiFlashWriteEnable(&Spi);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Write the data to the next Page using Quad Fast Write command.
-	 */
+	//使用 Quad Fast Write 命令将数据写入下一页
 	TestByte = 0x09;
 	Address += PAGE_SIZE;
 	Status = SpiFlashWrite(&Spi, Address, PAGE_SIZE, COMMAND_QUAD_WRITE);
@@ -425,129 +409,116 @@ int main(void)
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Wait while the Flash is busy.
-	 */
+	//等待写完
 	Status = SpiFlashWaitForFlashReady();
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Clear the read Buffer.
-	 */
-	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES;
-	     Index++) {
+	// 清除读buffer
+	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Normal Read command.
-	 */
+	//将数据读回buffer
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_RANDOM_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//比较
+	TestPass=TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES] != (u8)(Index + TestByte)) {
+			TestPass = FALSE;
+			break;
 		}
 	}
+	if(TestPass)
+		printf("使用4bit写入命令 COMMAND_QUAD_WRITE 写入Flash 并读回比对一致性 测试成功 \n");
+	else
+		printf("使用4bit写入命令 COMMAND_QUAD_WRITE 写入Flash 并读回比对一致性 测试失败 \n");
 
-	/*
-	 * Clear the read Buffer.
-	 */
-	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES +
-	     QUAD_READ_DUMMY_BYTES; Index++) {
+	// 清除读buffer
+	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES + QUAD_READ_DUMMY_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Quad Output Fast Read command.
-	 */
+	//使用四路输出快速读取命令从页面读取数据。
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_QUAD_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//比较数据
+	TestPass=TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES +
-				     QUAD_READ_DUMMY_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES + QUAD_READ_DUMMY_BYTES] != (u8)(Index + TestByte)) {
+			TestPass=FALSE;
+			break;
 		}
 	}
-
-	/*
-	 * Enable High Performance Mode so that data can be read from the flash
-	 * using DIO and QIO read commands.
-	 */
+	
+	if(TestPass)
+		printf("使用4bit读命令 COMMAND_QUAD_READ 读回比对一致性 测试成功 \n");
+	else
+		printf("使用4bit读命令 COMMAND_QUAD_READ 读回比对一致性 测试失败 \n");
+//========================================================================================================
+	printf("正在启动高性能模式 , 以便可以使用 DIO 和 QIO 读取命令从闪存中读取数据。\n");
+	// 启用高性能模式，以便可以使用 DIO 和 QIO 读取命令从闪存中读取数据。
 	Status = SpiFlashEnableHPM(&Spi);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Clear the read Buffer.
-	 */
-	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES +
-	     DUAL_IO_READ_DUMMY_BYTES; Index++) {
+	// 清除buffer
+	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES + DUAL_IO_READ_DUMMY_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Dual IO Fast Read command.
-	 */
+	// 使用双 IO 快速读取命令从页面读取数据。
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_DUAL_IO_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//比较
+	TestPass=TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES +
-				     DUAL_IO_READ_DUMMY_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES + DUAL_IO_READ_DUMMY_BYTES] != (u8)(Index + TestByte)) {
+			TestPass = FALSE;
+			break;
 		}
 	}
+	if(TestPass)
+		printf("高性能2bit IO 读 测试通过\n");
+	else
+		printf("高性能2bit IO 读 测试失败\n");
 
-	/*
-	 * Clear the read Buffer.
-	 */
+	// 清除buffer
 	for (Index = 0; Index < PAGE_SIZE + READ_WRITE_EXTRA_BYTES +
 	     QUAD_IO_READ_DUMMY_BYTES; Index++) {
 		ReadBuffer[Index] = 0x0;
 	}
 
-	/*
-	 * Read the data from the Page using Quad IO Fast Read command.
-	 */
+	//使用 Quad IO 快速读取命令从 Page 读取数据。
 	Status = SpiFlashRead(&Spi, Address, PAGE_SIZE, COMMAND_QUAD_IO_READ);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	/*
-	 * Compare the data read against the data written.
-	 */
+	//比较
+	TestPass=TRUE;
 	for (Index = 0; Index < PAGE_SIZE; Index++) {
-		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES +
-				     QUAD_IO_READ_DUMMY_BYTES] !=
-		    (u8)(Index + TestByte)) {
-			return XST_FAILURE;
+		if (ReadBuffer[Index + READ_WRITE_EXTRA_BYTES + QUAD_IO_READ_DUMMY_BYTES] != (u8)(Index + TestByte)) {
+			TestPass = FALSE;
+			break;
 		}
 	}
+	if(TestPass)
+		printf("高性能4bit IO 读 测试通过\n");
+	else
+		printf("高性能4bit IO 读 测试失败\n");
 
 	printf("Successfully ran Spi winbond flash quad Example\r\n");
 	return XST_SUCCESS;
@@ -879,12 +850,13 @@ int SpiFlashGetStatus(XSpi *SpiPtr)
 	 * Initiate the Transfer.
 	 */
 	TransferInProgress = TRUE;
-	Status = XSpi_Transfer(SpiPtr, WriteBuffer, ReadBuffer,
-			       STATUS_READ_BYTES);
+	Status = XSpi_Transfer(SpiPtr, WriteBuffer, ReadBuffer, STATUS_READ_BYTES);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
-
+	//debug by masw
+	// 中断地址为base+ 0x1c bit31 读回看看数值
+	//printf("GIER = %x \r\n", *(volatile u64 *) (SpiPtr->BaseAddr+0x1c)); //
 	/*
 	 * Wait till the Transfer is complete and check if there are any errors
 	 * in the transaction..
@@ -1231,16 +1203,17 @@ void* monitor_device(void* InstancePtr) {
 
     fds[0].fd = fd;
     fds[0].events = POLLIN;
+	uint32_t events_user;
+	int ret;
 
     while (1) {
-        int ret = poll(fds, 1, -1);
+        ret = poll(fds, 1, 0);
         if (ret < 0) {
             perror("poll");
             close(fd);
             return NULL;
-        }
-
-        if (fds[0].revents & POLLIN) {
+        } else if(fds[0].revents & POLLIN) {
+			pread(fd, &events_user, sizeof(events_user), 0);
             XSpi_InterruptHandler(SpiPtr);
         }
     }
