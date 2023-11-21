@@ -15,7 +15,7 @@ aux_source_directory(./include/  LIB_COM)
 
 # 添加可执行文件
 add_executable(xspi_winbond_flash_quad_example
-	           xspi_winbond_flash_quad_example.c
+	           downloadbin.c
 			   ${LIB_SRC}
 			   ${LIB_EXP}
 			   ${LIB_COM}
