@@ -11,31 +11,39 @@
 
 * 会自己说话, 作自我介绍的引脚！
 * 逆向工程，懂的都懂 DDDD
+* 已验证 ✔
 
 #### [01 icap qspi](./prj/01_icap_led/docs/readme.md)
 
 * 介绍如何通过PCIE下载固件
 * 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
-* 支持内部JTAG(PCIe-XVC)、支持 ICAP(PCIe更新bit)、 支持QSPI(PCIe更新Flash)、 支持IIC (PCIe访问板子IIC外设,PMBus等)
+  * 支持内部JTAG(PCIe-XVC)(已验证 ✔)
+  * 支持 ICAP(PCIe更新bit)(Debug中)
+  * 支持QSPI(PCIe更新Flash)(Debug中)
+  * 支持IIC (PCIe访问板子IIC外设,PMBus等)(Debug中) 
 
 #### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
 
 * 测试板载4组DDR4内存
 * 介绍PCIE相关驱动
+  * 支持16GB DDR4 读写/测速度[例程](./prj/02_pcie_ddr4x4/driver/ddr4test/src/main.c) (已验证 ✔)
+  * 一个简单的上位机中断[example](./prj/02_pcie_ddr4x4/driver/intptest/src/xdma0_events_0_example.c) (已验证 ✔)
 
 #### [03 10G/25G UDP](./prj/03_10g25g_udp/README.md)
 
 * `make`编译工程!
 * 基于Alex的工作,  Alex YYDS!
 * UDP已通！
+* 项目已验证 ✔
 
 #### [04 100G Corundum](./prj/04_100G_corundum/readme.md)
 
 * 起飞
+* 项目已验证 ✔
 
 #### [05 UDP + Gnuradio]
 
-* TODO
+* 开发中
 
 #### [06 PCIe + MATLAB]
 
