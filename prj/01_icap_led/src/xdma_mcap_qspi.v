@@ -484,25 +484,25 @@ axil_interconnect_wrap_1x5 # (
 debug_bridge_0 debug_bridge_0_inst(
   .s_axi_aclk      (  axi_aclk         ),// input  wire s_axi_aclk
   .s_axi_aresetn   (  axi_aresetn      ),// input  wire s_axi_aresetn
-  .S_AXI_araddr    (m00_axil_araddr    ),// input  wire [4 : 0] S_AXI_araddr
-  .S_AXI_arprot    (m00_axil_arprot    ),// input  wire [2 : 0] S_AXI_arprot
-  .S_AXI_arready   (m00_axil_arready   ),// output wire S_AXI_arready
-  .S_AXI_arvalid   (m00_axil_arvalid   ),// input  wire S_AXI_arvalid
-  .S_AXI_awaddr    (m00_axil_awaddr    ),// input  wire [4 : 0] S_AXI_awaddr
-  .S_AXI_awprot    (m00_axil_awprot    ),// input  wire [2 : 0] S_AXI_awprot
-  .S_AXI_awready   (m00_axil_awready   ),// output wire S_AXI_awready
-  .S_AXI_awvalid   (m00_axil_awvalid   ),// input  wire S_AXI_awvalid
-  .S_AXI_bready    (m00_axil_bready    ),// input  wire S_AXI_bready
-  .S_AXI_bresp     (m00_axil_bresp     ),// output wire [1 : 0] S_AXI_bresp
-  .S_AXI_bvalid    (m00_axil_bvalid    ),// output wire S_AXI_bvalid
-  .S_AXI_rdata     (m00_axil_rdata     ),// output wire [31 : 0] S_AXI_rdata
-  .S_AXI_rready    (m00_axil_rready    ),// input  wire S_AXI_rready
-  .S_AXI_rresp     (m00_axil_rresp     ),// output wire [1 : 0] S_AXI_rresp
-  .S_AXI_rvalid    (m00_axil_rvalid    ),// output wire S_AXI_rvalid
-  .S_AXI_wdata     (m00_axil_wdata     ),// input  wire [31 : 0] S_AXI_wdata
-  .S_AXI_wready    (m00_axil_wready    ),// output wire S_AXI_wready
-  .S_AXI_wstrb     (m00_axil_wstrb     ),// input  wire [3 : 0] S_AXI_wstrb
-  .S_AXI_wvalid    (m00_axil_wvalid    ) // input  wire S_AXI_wvalid
+  .S_AXI_araddr    (m04_axil_araddr    ),// input  wire [4 : 0] S_AXI_araddr
+  .S_AXI_arprot    (m04_axil_arprot    ),// input  wire [2 : 0] S_AXI_arprot
+  .S_AXI_arready   (m04_axil_arready   ),// output wire S_AXI_arready
+  .S_AXI_arvalid   (m04_axil_arvalid   ),// input  wire S_AXI_arvalid
+  .S_AXI_awaddr    (m04_axil_awaddr    ),// input  wire [4 : 0] S_AXI_awaddr
+  .S_AXI_awprot    (m04_axil_awprot    ),// input  wire [2 : 0] S_AXI_awprot
+  .S_AXI_awready   (m04_axil_awready   ),// output wire S_AXI_awready
+  .S_AXI_awvalid   (m04_axil_awvalid   ),// input  wire S_AXI_awvalid
+  .S_AXI_bready    (m04_axil_bready    ),// input  wire S_AXI_bready
+  .S_AXI_bresp     (m04_axil_bresp     ),// output wire [1 : 0] S_AXI_bresp
+  .S_AXI_bvalid    (m04_axil_bvalid    ),// output wire S_AXI_bvalid
+  .S_AXI_rdata     (m04_axil_rdata     ),// output wire [31 : 0] S_AXI_rdata
+  .S_AXI_rready    (m04_axil_rready    ),// input  wire S_AXI_rready
+  .S_AXI_rresp     (m04_axil_rresp     ),// output wire [1 : 0] S_AXI_rresp
+  .S_AXI_rvalid    (m04_axil_rvalid    ),// output wire S_AXI_rvalid
+  .S_AXI_wdata     (m04_axil_wdata     ),// input  wire [31 : 0] S_AXI_wdata
+  .S_AXI_wready    (m04_axil_wready    ),// output wire S_AXI_wready
+  .S_AXI_wstrb     (m04_axil_wstrb     ),// input  wire [3 : 0] S_AXI_wstrb
+  .S_AXI_wvalid    (m04_axil_wvalid    ) // input  wire S_AXI_wvalid
 );
 axi_hwicap_0 axi_hwicap_0_inst(
   .icap_clk         (qspi_clk           ),// input  wire icap_clk
@@ -652,25 +652,25 @@ axil_reg_if axil_reg_if_inst (
     .clk              ( axi_aclk          ),
     .rst              (~axi_aresetn       ),
 
-    .s_axil_awaddr    (m04_axil_awaddr    ),//output wire [ADDR_WIDTH-1:0]    m04_axil_awaddr,   <--> input  wire [ADDR_WIDTH-1:0]  s_axil_awaddr,
-    .s_axil_awprot    (m04_axil_awprot    ),//output wire [2:0]               m04_axil_awprot,   <--> input  wire [2:0]             s_axil_awprot,
-    .s_axil_awvalid   (m04_axil_awvalid   ),//output wire                     m04_axil_awvalid,  <--> input  wire                   s_axil_awvalid,
-    .s_axil_awready   (m04_axil_awready   ),//input  wire                     m04_axil_awready,  <--> output wire                   s_axil_awready,
-    .s_axil_wdata     (m04_axil_wdata     ),//output wire [DATA_WIDTH-1:0]    m04_axil_wdata,    <--> input  wire [DATA_WIDTH-1:0]  s_axil_wdata,
-    .s_axil_wstrb     (m04_axil_wstrb     ),//output wire [STRB_WIDTH-1:0]    m04_axil_wstrb,    <--> input  wire [STRB_WIDTH-1:0]  s_axil_wstrb,
-    .s_axil_wvalid    (m04_axil_wvalid    ),//output wire                     m04_axil_wvalid,   <--> input  wire                   s_axil_wvalid,
-    .s_axil_wready    (m04_axil_wready    ),//input  wire                     m04_axil_wready,   <--> output wire                   s_axil_wready,
-    .s_axil_bresp     (m04_axil_bresp     ),//input  wire [1:0]               m04_axil_bresp,    <--> output wire [1:0]             s_axil_bresp,
-    .s_axil_bvalid    (m04_axil_bvalid    ),//input  wire                     m04_axil_bvalid,   <--> output wire                   s_axil_bvalid,
-    .s_axil_bready    (m04_axil_bready    ),//output wire                     m04_axil_bready,   <--> input  wire                   s_axil_bready,
-    .s_axil_araddr    (m04_axil_araddr    ),//output wire [ADDR_WIDTH-1:0]    m04_axil_araddr,   <--> input  wire [ADDR_WIDTH-1:0]  s_axil_araddr,
-    .s_axil_arprot    (m04_axil_arprot    ),//output wire [2:0]               m04_axil_arprot,   <--> input  wire [2:0]             s_axil_arprot,
-    .s_axil_arvalid   (m04_axil_arvalid   ),//output wire                     m04_axil_arvalid,  <--> input  wire                   s_axil_arvalid,
-    .s_axil_arready   (m04_axil_arready   ),//input  wire                     m04_axil_arready,  <--> output wire                   s_axil_arready,
-    .s_axil_rdata     (m04_axil_rdata     ),//input  wire [DATA_WIDTH-1:0]    m04_axil_rdata,    <--> output wire [DATA_WIDTH-1:0]  s_axil_rdata,
-    .s_axil_rresp     (m04_axil_rresp     ),//input  wire [1:0]               m04_axil_rresp,    <--> output wire [1:0]             s_axil_rresp,
-    .s_axil_rvalid    (m04_axil_rvalid    ),//input  wire                     m04_axil_rvalid,   <--> output wire                   s_axil_rvalid,
-    .s_axil_rready    (m04_axil_rready    ),//output wire                     m04_axil_rready    <--> input  wire                   s_axil_rready,
+    .s_axil_awaddr    (m00_axil_awaddr    ),//output wire [ADDR_WIDTH-1:0]    m00_axil_awaddr,   <--> input  wire [ADDR_WIDTH-1:0]  s_axil_awaddr,
+    .s_axil_awprot    (m00_axil_awprot    ),//output wire [2:0]               m00_axil_awprot,   <--> input  wire [2:0]             s_axil_awprot,
+    .s_axil_awvalid   (m00_axil_awvalid   ),//output wire                     m00_axil_awvalid,  <--> input  wire                   s_axil_awvalid,
+    .s_axil_awready   (m00_axil_awready   ),//input  wire                     m00_axil_awready,  <--> output wire                   s_axil_awready,
+    .s_axil_wdata     (m00_axil_wdata     ),//output wire [DATA_WIDTH-1:0]    m00_axil_wdata,    <--> input  wire [DATA_WIDTH-1:0]  s_axil_wdata,
+    .s_axil_wstrb     (m00_axil_wstrb     ),//output wire [STRB_WIDTH-1:0]    m00_axil_wstrb,    <--> input  wire [STRB_WIDTH-1:0]  s_axil_wstrb,
+    .s_axil_wvalid    (m00_axil_wvalid    ),//output wire                     m00_axil_wvalid,   <--> input  wire                   s_axil_wvalid,
+    .s_axil_wready    (m00_axil_wready    ),//input  wire                     m00_axil_wready,   <--> output wire                   s_axil_wready,
+    .s_axil_bresp     (m00_axil_bresp     ),//input  wire [1:0]               m00_axil_bresp,    <--> output wire [1:0]             s_axil_bresp,
+    .s_axil_bvalid    (m00_axil_bvalid    ),//input  wire                     m00_axil_bvalid,   <--> output wire                   s_axil_bvalid,
+    .s_axil_bready    (m00_axil_bready    ),//output wire                     m00_axil_bready,   <--> input  wire                   s_axil_bready,
+    .s_axil_araddr    (m00_axil_araddr    ),//output wire [ADDR_WIDTH-1:0]    m00_axil_araddr,   <--> input  wire [ADDR_WIDTH-1:0]  s_axil_araddr,
+    .s_axil_arprot    (m00_axil_arprot    ),//output wire [2:0]               m00_axil_arprot,   <--> input  wire [2:0]             s_axil_arprot,
+    .s_axil_arvalid   (m00_axil_arvalid   ),//output wire                     m00_axil_arvalid,  <--> input  wire                   s_axil_arvalid,
+    .s_axil_arready   (m00_axil_arready   ),//input  wire                     m00_axil_arready,  <--> output wire                   s_axil_arready,
+    .s_axil_rdata     (m00_axil_rdata     ),//input  wire [DATA_WIDTH-1:0]    m00_axil_rdata,    <--> output wire [DATA_WIDTH-1:0]  s_axil_rdata,
+    .s_axil_rresp     (m00_axil_rresp     ),//input  wire [1:0]               m00_axil_rresp,    <--> output wire [1:0]             s_axil_rresp,
+    .s_axil_rvalid    (m00_axil_rvalid    ),//input  wire                     m00_axil_rvalid,   <--> output wire                   s_axil_rvalid,
+    .s_axil_rready    (m00_axil_rready    ),//output wire                     m00_axil_rready    <--> input  wire                   s_axil_rready,
 
     .reg_wr_addr      (reg_wr_addr        ),//output wire [ADDR_WIDTH-1:0]  reg_wr_addr,
     .reg_wr_data      (reg_wr_data        ),//output wire [DATA_WIDTH-1:0]  reg_wr_data,
