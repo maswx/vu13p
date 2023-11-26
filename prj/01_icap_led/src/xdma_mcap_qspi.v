@@ -108,6 +108,7 @@ wire rst_n   = axi_aresetn;
 wire qspi_clk    ;
 wire eos         ;
 wire qspi_intp   ;
+wire hwicap_intp ;
 //==========================================================================================================
 //1. xdma core
 wire [ 31 : 0] axil_awaddr ;//output wire [ 31 : 0] m_axil_awaddr ,
@@ -154,7 +155,7 @@ xdma_0 xdma_0_inst(
 
 	.axi_aclk             (axi_aclk             ),// output wire axi_aclk
 	.axi_aresetn          (axi_aresetn          ),// output wire axi_aresetn
-	.usr_irq_req          (qspi_intp            ),// input  wire [7 : 0] usr_irq_req
+	.usr_irq_req          ({hwicap_intp,qspi_intp}),// input  wire [7 : 0] usr_irq_req
 	.usr_irq_ack          (                     ),// output wire [7 : 0] usr_irq_ack
 	.msi_enable           (                     ),// output wire msi_enable
 	.msi_vector_width     (                     ),// output wire [2 : 0] msi_vector_width
@@ -526,7 +527,7 @@ axi_hwicap_0 axi_hwicap_0_inst(
   .s_axi_rresp      (m01_axil_rresp     ),// output wire [1 : 0] s_axi_rresp
   .s_axi_rvalid     (m01_axil_rvalid    ),// output wire s_axi_rvalid
   .s_axi_rready     (m01_axil_rready    ),// input  wire s_axi_rready
-  .ip2intc_irpt     (                   ) // output wire ip2intc_irpt
+  .ip2intc_irpt     (hwicap_intp        ) // output wire ip2intc_irpt
 );
 
 //==========================================================================================================
@@ -580,8 +581,28 @@ axi_quad_spi_0 axi_quad_spi_0_inst(
     .ip2intc_irpt        (qspi_intp                     )  // output wire ip2intc_irpt
 );
 
-
-
+ila_axil32 ila_axil32_inst (
+	.clk    (axi_aclk), // input wire clk
+	.probe1     (m02_axil_awaddr ), // input wire [31:0]  probe1 
+	.probe18    ({1'b0, eos, qspi_intp} ),// input wire [2:0]  probe18
+	.probe11    (m02_axil_awvalid), // input wire [0:0]  probe11 
+	.probe12    (m02_axil_awready), // input wire [0:0]  probe12 
+	.probe14    (m02_axil_wdata  ), // input wire [31:0]  probe14 
+	.probe15    (m02_axil_wstrb  ), // input wire [3:0]  probe15 
+	.probe7     (m02_axil_wvalid ), // input wire [0:0]  probe7 
+	.probe0     (m02_axil_wready ), // input wire [0:0] probe0  
+	.probe2     (m02_axil_bresp  ), // input wire [1:0]  probe2 
+	.probe3     (m02_axil_bvalid ), // input wire [0:0]  probe3 
+	.probe4     (m02_axil_bready ), // input wire [0:0]  probe4 
+	.probe5     (m02_axil_araddr ), // input wire [31:0]  probe5 
+	.probe17    (3'b0            ), // input wire [2:0]  probe17  
+	.probe8     (m02_axil_arvalid), // input wire [0:0]  probe8 
+	.probe9     (m02_axil_arready), // input wire [0:0]  probe9 
+	.probe10    (m02_axil_rdata  ), // input wire [31:0]  probe10 
+	.probe13    (m02_axil_rresp  ), // input wire [1:0]  probe13 
+	.probe16    (m02_axil_rvalid ), // input wire [0:0]  probe16 
+	.probe6     (m02_axil_rready )  // input wire [0:0]  probe6 
+);
 //==========================================================================================================
 //3. fpga boot
 
