@@ -44,7 +44,7 @@ using namespace std;
 /*       exactly waht is populated on the IPI Address tab                         */
 #define DDR4_BASE 0x10000000
 #define BRAM_BASE 0x00000000
-#define ICAP_BASE 0x00080000
+#define ICAP_BASE 0x00010000
 
 /* Address Offset of various Peripheral Registers */ 
 #define ICAP_CNTRL_REG           ICAP_BASE + 0x10C

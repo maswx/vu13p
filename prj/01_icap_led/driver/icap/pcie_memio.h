@@ -73,7 +73,7 @@ class fpga_mmio {
         int fpga_mmio_init(addr_type base_address, uint32_t PAGE_SIZE_i) {
             PAGE_SIZE = PAGE_SIZE_i;
 
-            if((fp_dev_mem = open("/dev/mem", O_RDWR | O_SYNC)) == -1) FAUT_CONDITION;
+            if((fp_dev_mem = open("/dev/xdma0_user", O_RDWR | O_SYNC)) == -1) FAUT_CONDITION;
             fflush(stdout);
 
             //cout << " Base Address = " << hex << "0x" << base_address << endl;
