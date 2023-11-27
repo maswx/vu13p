@@ -52,33 +52,25 @@ class fpga_mmio {
 
         fpga_mmio (void) {}
         
-        template <class access_type>
-        int fpga_poke (uint32_t register_offset, access_type val) {
-            access_type *tmp_addr;
-            tmp_addr = (access_type *)((uint8_t *)virt_page_base + register_offset);
-
-            *tmp_addr = val;
+        int fpga_regwrite (uint64_t offset , uint32_t val) {
+			volatile uint64_t *LocalAddr = (volatile uint64_t *)((uint64_t*)virt_page_base + offset);
+        	*LocalAddr = val;
             return 0;
         }
 
-        template <class access_type>
-        access_type fpga_peek (uint32_t register_offset) {
-            access_type *tmp_addr;
-            tmp_addr = (access_type *)((uint8_t *)virt_page_base + register_offset);
-            return(*tmp_addr);
+        uint32_t fpga_regread (uint64_t offset) {
+			return *(volatile uint64_t *) ((uint64_t*)virt_page_base + offset);
         }
 
 
-        template <class addr_type>
-        int fpga_mmio_init(addr_type base_address, uint32_t PAGE_SIZE_i) {
-            PAGE_SIZE = PAGE_SIZE_i;
+        //template 
+        int fpga_mmio_init() {
+            PAGE_SIZE = 0x10000;
 
             if((fp_dev_mem = open("/dev/xdma0_user", O_RDWR | O_SYNC)) == -1) FAUT_CONDITION;
             fflush(stdout);
 
-            //cout << " Base Address = " << hex << "0x" << base_address << endl;
-            virt_page_base = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fp_dev_mem, base_address & ~(PAGE_SIZE-1));
-            //cout << " Virtual Base Address = " << hex << virt_page_base << endl;
+            virt_page_base = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fp_dev_mem, 0x10000);
             if(virt_page_base == (void *) -1) FAUT_CONDITION;
 
             return 0;
