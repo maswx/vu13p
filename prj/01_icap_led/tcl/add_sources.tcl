@@ -13,7 +13,7 @@ add_files -fileset sources_1 {
 }
 
 add_files "
-	[glob ./*.v      ]
+	[glob ./src/*.v      ]
 	[glob ../../submodule/verilog-axi/rtl/*.v      ]
 	[glob ../../submodule/verilog-axis/rtl/*.v     ]
 	[glob ../../submodule/verilog-ethernet/rtl/*.v ]

@@ -9,7 +9,7 @@ set_property -dict [list \
     CONFIG.mode_selection                  Advanced    \
     CONFIG.pl_link_cap_max_link_speed      8.0_GT/s    \
     CONFIG.pl_link_cap_max_link_width      X16         \
-    CONFIG.xdma_num_usr_irq                2           \
+    CONFIG.xdma_num_usr_irq                1           \
     CONFIG.xdma_rnum_chnl                  1           \
     CONFIG.xdma_wnum_chnl                  1           \
 ] [get_ips xdma_0]

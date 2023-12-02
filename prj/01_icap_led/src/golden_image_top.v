@@ -21,8 +21,8 @@
               
               
 module golden_image_top (
-	input           pcie_ref_clk_p ,
-	input           pcie_ref_clk_n ,
+	input  [   0:0] pcie_ref_clk_p ,
+	input  [   0:0] pcie_ref_clk_n ,
 	input  [  15:0] pcie_lane_rxp  ,
 	input  [  15:0] pcie_lane_rxn  ,
 	output [  15:0] pcie_lane_txp  ,
@@ -199,7 +199,7 @@ axil_interconnect_wrap_1x2 # (
     .M01_ADDR_WIDTH       ( {M_REGIONS{32'd16}} ),//64kB
     .M01_CONNECT_READ     ( 1'b1                ),
     .M01_CONNECT_WRITE    ( 1'b1                ),
-    .M01_SECURE           ( 1'b0                ),
+    .M01_SECURE           ( 1'b0                )
 )axil_interconnect_wrap_1x2_inst (
     .clk                  ( axi_aclk            ),
     .rst                  (~axi_aresetn         ),
@@ -265,28 +265,28 @@ axil_interconnect_wrap_1x2 # (
     .m01_axil_rready      (m01_axil_rready      ) //output wire                     m01_axil_rready,
                                                 
 );
-alex_ail_qspi alex_ail_qspi_inst(
-  .s_axi_aclk      (  axi_aclk         ),// input  wire s_axi_aclk
-  .s_axi_aresetn   (  axi_aresetn      ),// input  wire s_axi_aresetn
-  .S_AXI_araddr    (m00_axil_araddr    ),// input  wire [4 : 0] S_AXI_araddr
-  .S_AXI_arprot    (m00_axil_arprot    ),// input  wire [2 : 0] S_AXI_arprot
-  .S_AXI_arready   (m00_axil_arready   ),// output wire S_AXI_arready
-  .S_AXI_arvalid   (m00_axil_arvalid   ),// input  wire S_AXI_arvalid
-  .S_AXI_awaddr    (m00_axil_awaddr    ),// input  wire [4 : 0] S_AXI_awaddr
-  .S_AXI_awprot    (m00_axil_awprot    ),// input  wire [2 : 0] S_AXI_awprot
-  .S_AXI_awready   (m00_axil_awready   ),// output wire S_AXI_awready
-  .S_AXI_awvalid   (m00_axil_awvalid   ),// input  wire S_AXI_awvalid
-  .S_AXI_bready    (m00_axil_bready    ),// input  wire S_AXI_bready
-  .S_AXI_bresp     (m00_axil_bresp     ),// output wire [1 : 0] S_AXI_bresp
-  .S_AXI_bvalid    (m00_axil_bvalid    ),// output wire S_AXI_bvalid
-  .S_AXI_rdata     (m00_axil_rdata     ),// output wire [31 : 0] S_AXI_rdata
-  .S_AXI_rready    (m00_axil_rready    ),// input  wire S_AXI_rready
-  .S_AXI_rresp     (m00_axil_rresp     ),// output wire [1 : 0] S_AXI_rresp
-  .S_AXI_rvalid    (m00_axil_rvalid    ),// output wire S_AXI_rvalid
-  .S_AXI_wdata     (m00_axil_wdata     ),// input  wire [31 : 0] S_AXI_wdata
-  .S_AXI_wready    (m00_axil_wready    ),// output wire S_AXI_wready
-  .S_AXI_wstrb     (m00_axil_wstrb     ),// input  wire [3 : 0] S_AXI_wstrb
-  .S_AXI_wvalid    (m00_axil_wvalid    ) // input  wire S_AXI_wvalid
+alex_axil_qspi alex_axil_qspi_inst(
+  .axi_aclk      (  axi_aclk         ),// input  wire s_axi_aclk
+  .axi_aresetn   (  axi_aresetn      ),// input  wire s_axi_aresetn
+  .s_axil_araddr    (m00_axil_araddr    ),// input  wire [4 : 0] S_AXI_araddr
+  .s_axil_arprot    (m00_axil_arprot    ),// input  wire [2 : 0] S_AXI_arprot
+  .s_axil_arready   (m00_axil_arready   ),// output wire S_AXI_arready
+  .s_axil_arvalid   (m00_axil_arvalid   ),// input  wire S_AXI_arvalid
+  .s_axil_awaddr    (m00_axil_awaddr    ),// input  wire [4 : 0] S_AXI_awaddr
+  .s_axil_awprot    (m00_axil_awprot    ),// input  wire [2 : 0] S_AXI_awprot
+  .s_axil_awready   (m00_axil_awready   ),// output wire S_AXI_awready
+  .s_axil_awvalid   (m00_axil_awvalid   ),// input  wire S_AXI_awvalid
+  .s_axil_bready    (m00_axil_bready    ),// input  wire S_AXI_bready
+  .s_axil_bresp     (m00_axil_bresp     ),// output wire [1 : 0] S_AXI_bresp
+  .s_axil_bvalid    (m00_axil_bvalid    ),// output wire S_AXI_bvalid
+  .s_axil_rdata     (m00_axil_rdata     ),// output wire [31 : 0] S_AXI_rdata
+  .s_axil_rready    (m00_axil_rready    ),// input  wire S_AXI_rready
+  .s_axil_rresp     (m00_axil_rresp     ),// output wire [1 : 0] S_AXI_rresp
+  .s_axil_rvalid    (m00_axil_rvalid    ),// output wire S_AXI_rvalid
+  .s_axil_wdata     (m00_axil_wdata     ),// input  wire [31 : 0] S_AXI_wdata
+  .s_axil_wready    (m00_axil_wready    ),// output wire S_AXI_wready
+  .s_axil_wstrb     (m00_axil_wstrb     ),// input  wire [3 : 0] S_AXI_wstrb
+  .s_axil_wvalid    (m00_axil_wvalid    ) // input  wire S_AXI_wvalid
 );
 
 BUFGCE_DIV #(

@@ -7,7 +7,7 @@ open_project ${output_path}/${fpga_top_name}.xpr
 open_run impl_1
 
 set_property BITSTREAM.CONFIG.CONFIGFALLBACK   ENABLE     [current_design] ;#使能回退
-set_property BITSTREAM.CONFIG.COMPRESS         TRUE       [current_design]
+set_property BITSTREAM.GENERAL.COMPRESS         TRUE       [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH     4          [current_design]
 set_property BITSTREAM.CONFIG.NEXT_CONFIG_ADDR 0x01000000 [current_design] ;# update inmage 不能带这句话，仅仅Golden Image可以带
 

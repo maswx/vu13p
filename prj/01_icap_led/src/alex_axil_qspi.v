@@ -12,7 +12,7 @@
 
 // 模块集成  STARTUPE3
 
-module alex_ail_qspi#(
+module alex_axil_qspi#(
     parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 32,
     parameter STRB_WIDTH = (DATA_WIDTH/8)
@@ -57,7 +57,7 @@ wire [ADDR_WIDTH-1:0]  reg_rd_addr;
 wire                   reg_rd_en  ;
 reg  [DATA_WIDTH-1:0]  reg_rd_data;
 
-retg  ctrl_reg_rd_ack_reg ;
+reg  ctrl_reg_rd_ack_reg ;
 
 axil_reg_if axil_reg_if_inst (
     .clk              ( axi_aclk          ),
@@ -102,6 +102,7 @@ reg       qspi_clk_reg        ;
 reg       qspi_cs_reg         ;
 reg [3:0] qspi_dq_o_reg       ;
 reg [3:0] qspi_dq_oe_reg      ;
+wire[3:0] qspi_dq_int      ;
 //写入
 always @ (posedge axi_aclk or negedge axi_aresetn)
 	if(!axi_aresetn) begin
@@ -122,19 +123,19 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
             // QSPI flash
             8'h6C: begin
                 // SPI flash ctrl: format
-                fpga_boot_reg <= ctrl_reg_wr_data == 32'hFEE1DEAD;
+                fpga_boot_reg <= reg_wr_data == 32'hFEE1DEAD;
             end
             8'h70: begin
                 // SPI flash ctrl: control 0
                 if (reg_wr_strb[0]) begin
-                    qspi_dq_o_reg <= ctrl_reg_wr_data[3:0];
+                    qspi_dq_o_reg <= reg_wr_data[3:0];
                 end
                 if (reg_wr_strb[1]) begin
-                    qspi_dq_oe_reg <= ctrl_reg_wr_data[11:8];
+                    qspi_dq_oe_reg <= reg_wr_data[11:8];
                 end
                 if (reg_wr_strb[2]) begin
-                    qspi_clk_reg <= ctrl_reg_wr_data[16];
-                    qspi_cs_reg <= ctrl_reg_wr_data[17];
+                    qspi_clk_reg <= reg_wr_data[16];
+                    qspi_cs_reg <= reg_wr_data[17];
                 end
             end
 		endcase
@@ -150,7 +151,7 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
             // QSPI flash
             8'h60: reg_rd_data <= 32'h0000C120;             // SPI flash ctrl: Type
             8'h64: reg_rd_data <= 32'h00000200;             // SPI flash ctrl: Version
-            8'h68: reg_rd_data <= RB_DRP_QSFP0_BASE;        // SPI flash ctrl: Next header
+            8'h68: reg_rd_data <= 32'h0;        // SPI flash ctrl: Next header
             8'h6C: begin
                 // SPI flash ctrl: format
                 reg_rd_data[3:0]   <= 2;                   // configuration (two segments)
@@ -160,7 +161,7 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
             end
             8'h70: begin
                 // SPI flash ctrl: control 0
-                reg_rd_data[ 3:0] <= qspi_dq_i_reg ;
+                reg_rd_data[ 3:0] <= qspi_dq_int   ;
                 reg_rd_data[11:8] <= qspi_dq_oe_reg;
                 reg_rd_data[  16] <= qspi_clk_reg  ;
                 reg_rd_data[  17] <= qspi_cs_reg   ;
@@ -259,7 +260,7 @@ assign icap_di_rev[26] = icap_di_reg[29];
 assign icap_di_rev[25] = icap_di_reg[30];
 assign icap_di_rev[24] = icap_di_reg[31];
 
-always @ (posedge axi_aclk )
+always @ (posedge axi_aclk )begin
     case (icap_state)
         0: begin
             icap_state <= 0;
