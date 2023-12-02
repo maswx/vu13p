@@ -9,7 +9,7 @@ open_run impl_1
 set_property BITSTREAM.CONFIG.CONFIGFALLBACK   ENABLE     [current_design] ;#使能回退
 set_property BITSTREAM.GENERAL.COMPRESS         TRUE       [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH     4          [current_design]
-set_property BITSTREAM.CONFIG.NEXT_CONFIG_ADDR 0x03000000 [current_design] ;# update inmage 不能带这句话，仅仅Golden Image可以带
+set_property BITSTREAM.CONFIG.NEXT_CONFIG_ADDR 0x08000000 [current_design] ;# update inmage 不能带这句话，仅仅Golden Image可以带
 
 write_bitstream    -force ${fpga_top_name}_${current_time}_${tag}.bit
 write_debug_probes -force ${fpga_top_name}_${current_time}_${tag}.ltx

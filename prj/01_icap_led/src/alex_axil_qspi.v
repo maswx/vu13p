@@ -157,7 +157,7 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
                 reg_rd_data[3:0]   <= 2;                   // configuration (two segments)
                 reg_rd_data[7:4]   <= 0;                   // default segment
                 reg_rd_data[11:8]  <= 1;                   // fallback segment
-                reg_rd_data[31:12] <= 32'h03000000 >> 12;  // first segment size (48 M)
+                reg_rd_data[31:12] <= 32'h08000000 >> 12;  // first segment size (128 MB)
             end
             8'h70: begin
                 // SPI flash ctrl: control 0
