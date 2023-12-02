@@ -16,7 +16,7 @@ fi
 
 
 
-fpga_top_name=mcap_led_top
+fpga_top_name=golden_image_top
 prjcnt=0
 output_path=~/alivu13p/prjs/${fpga_top_name}_${prjcnt}
 echo $output_path
