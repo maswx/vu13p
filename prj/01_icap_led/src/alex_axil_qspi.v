@@ -144,10 +144,10 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
 always @ (posedge axi_aclk or negedge axi_aresetn)
 	if(!axi_aresetn)
 		reg_rd_data <= 32'd0;
-	else if(reg_rd_en)
+	else if(reg_rd_en && !ctrl_reg_rd_ack_reg)
 	begin
 		case({reg_rd_addr[7:2],2'b00})
-			4'h0: reg_rd_data <= {31'd0, fpga_reboot_reg};
+			8'h0: reg_rd_data <= {31'd0, fpga_reboot_reg};
             // QSPI flash
             8'h60: reg_rd_data <= 32'h0000C120;             // SPI flash ctrl: Type
             8'h64: reg_rd_data <= 32'h00000200;             // SPI flash ctrl: Version
@@ -175,10 +175,12 @@ always @ (posedge axi_aclk or negedge axi_aresetn)
 always @ (posedge axi_aclk or negedge axi_aresetn)
 	if(!axi_aresetn)
 		ctrl_reg_rd_ack_reg <= 1'd0;
+	else if (reg_rd_en && !ctrl_reg_rd_ack_reg)
+        ctrl_reg_rd_ack_reg <= 1'b1;
 	else
-		ctrl_reg_rd_ack_reg <= reg_rd_en;
+		ctrl_reg_rd_ack_reg <= 1'd0;
 
-
+// ~/work_local/alivu13p/submodule/corundum/fpga/mqnic/XUPP3R/fpga_100g/rtl/fpga_core.v
 
 
 
