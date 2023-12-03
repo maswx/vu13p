@@ -21,6 +21,7 @@ source ./tcl/ip_bram.tcl
 source ./tcl/ip_axil_bram.tcl
 source ./tcl/ip_hwicap.tcl
 source ./tcl/ip_ila_axil32.tcl
+source ./tcl/ip_axigpio.tcl
 
 #5. 修改全局配置
 source ./tcl/config.tcl
