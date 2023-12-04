@@ -14,12 +14,6 @@ set_property BITSTREAM.CONFIG.NEXT_CONFIG_ADDR 0x08000000 [current_design] ;# up
 write_bitstream    -force ${fpga_top_name}_${current_time}_${tag}.bit
 write_debug_probes -force ${fpga_top_name}_${current_time}_${tag}.ltx
 
-#write_cfgmem -format bin -file ${fpga_top_name}_${current_time}_${tag}.bin -size 256 -interface SPIx4 -loadbit {up 0x00000000 "${fpga_top_name}_${current_time}_${tag}_tandem1.bit"}
-
-#write_cfgmem -format bin -file  ${fpga_top_name}_${current_time}_${tag}.bin -size 256 -interface SPIx4 -loadbit \
-#                {up 0x00000000 "${fpga_top_name}_${current_time}_${tag}_tandem1.bit"\
-#                 up 0x02000000 "${fpga_top_name}_${current_time}_${tag}_tandem2.bit"} 
-			 # 前32M留给tandem1 
 
 
 
