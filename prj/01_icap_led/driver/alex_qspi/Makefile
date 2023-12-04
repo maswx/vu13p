@@ -5,7 +5,7 @@ CFLAGS   := -g -Wall -lpthread
 CXXFLAGS :=       # FILL: compile flags
 DBGFLAGS := -g -lpthread
 COBJFLAGS := $(CFLAGS) -c
-TARGET_NAME := alexdown# FILL: target name
+TARGET_NAME := vu13p-fw#FILL: target name
 
 # path macros
 SRC_PATH := src
