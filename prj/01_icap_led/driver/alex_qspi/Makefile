@@ -5,7 +5,7 @@ CFLAGS   := -g -Wall -lpthread
 CXXFLAGS :=       # FILL: compile flags
 DBGFLAGS := -g -lpthread
 COBJFLAGS := $(CFLAGS) -c
-TARGET_NAME := main# FILL: target name
+TARGET_NAME := alexdown# FILL: target name
 
 # path macros
 SRC_PATH := src
@@ -33,8 +33,10 @@ CLEAN_LIST := $(TARGET) \
 			  $(DISTCLEAN_LIST)
 
 # default rule
-default: makedir all
-
+default: makedir all ${TARGET_NAME}
+	
+${TARGET_NAME}:
+	@ln -s compile/bin/$@
 # non-phony targets
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $(OBJ) $(CFLAGS)
