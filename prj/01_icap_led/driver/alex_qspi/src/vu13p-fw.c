@@ -708,7 +708,7 @@ int main(int argc, char *argv[])
         uint32_t reg_val;
 
         // SPI flash
-        flash_format = reg_read32(flash_rb->base + 0x6C) & 0xf;// 读寄存器0x6c[3:0] reg_rd_data[3:0]   <= 2;// configuration (two segments)
+        flash_format = reg_read32(flash_rb->base + 0x6C) ;// 读寄存器0x6c[3:0] reg_rd_data[3:0]   <= 2;// configuration (two segments)
 
         printf("Flash type: SPI\n");
         printf("Flash format: 0x%08x\n", flash_format);
