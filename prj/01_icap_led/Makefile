@@ -14,21 +14,21 @@ all: example1_led_top example2_bram_top golden_image_top
 
 
 example1_led_top:
-	#vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl        -tclargs $@ ${outputpath}_$@ 
+	vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl        -tclargs $@ ${outputpath}_$@ 
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl         -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl          -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit_nogold.tcl -tclargs $@ ${outputpath}_$@ ${tag}
 
 
 example2_bram_top:
-	#vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl        -tclargs $@ ${outputpath}_$@ 
+	vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl        -tclargs $@ ${outputpath}_$@ 
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl         -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl          -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit_nogold.tcl -tclargs $@ ${outputpath}_$@ ${tag}
 
 
 golden_image_top:
-	#vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl -tclargs $@ ${outputpath}_$@ 
+	vivado -nojournal -nolog -mode batch -source ./tcl/prj_create.tcl -tclargs $@ ${outputpath}_$@ 
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_synth.tcl  -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_impl.tcl   -tclargs $@ ${outputpath}_$@ ${core_jobs}
 	vivado -nojournal -nolog -mode batch -source ./tcl/prj_genbit.tcl -tclargs $@ ${outputpath}_$@ ${tag}
