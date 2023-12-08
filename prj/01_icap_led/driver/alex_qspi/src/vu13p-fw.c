@@ -713,31 +713,39 @@ int main(int argc, char *argv[])
         printf("Flash type: SPI\n");
         printf("Flash format: 0x%08x\n", flash_format);
 
-        switch (flash_rb->version) {
-            case 0x00000100:
-                flash_configuration = (flash_format >> 8) & 0xff;
-                flash_default_segment = (flash_configuration > 1 ? 1 : 0);
-                flash_fallback_segment = 0;
-                flash_segment0_length = 0;
+//--强配，不用读回值了--        switch (flash_rb->version) {
+//--强配，不用读回值了--            case 0x00000100:
+//--强配，不用读回值了--                flash_configuration = (flash_format >> 8) & 0xff;
+//--强配，不用读回值了--                flash_default_segment = (flash_configuration > 1 ? 1 : 0);
+//--强配，不用读回值了--                flash_fallback_segment = 0;
+//--强配，不用读回值了--                flash_segment0_length = 0;
+//--强配，不用读回值了--
+//--强配，不用读回值了--                if (flash_configuration == 0x81)
+//--强配，不用读回值了--                {
+//--强配，不用读回值了--                    // Alveo boards
+//--强配，不用读回值了--                    flash_configuration = 2;
+//--强配，不用读回值了--                    flash_segment0_length = 0x01002000;
+//--强配，不用读回值了--                }
+//--强配，不用读回值了--                break;
+//--强配，不用读回值了--            case 0x00000200:
+//--强配，不用读回值了--                flash_configuration = flash_format & 0xf;
+//--强配，不用读回值了--                flash_default_segment = (flash_format >> 4) & 0xf;
+//--强配，不用读回值了--                flash_fallback_segment = (flash_format >> 8) & 0xf;
+//--强配，不用读回值了--                flash_segment0_length = flash_format & 0xfffff000;
+//--强配，不用读回值了--                break;
+//--强配，不用读回值了--            default:
+//--强配，不用读回值了--                fprintf(stderr, "Unknown SPI flash block version\n");
+//--强配，不用读回值了--                ret = -1;
+//--强配，不用读回值了--                goto skip_flash;
+//--强配，不用读回值了--        }
+        flash_configuration    = 2;
+        flash_default_segment  = 1;
+        flash_fallback_segment = 0;
+        flash_segment0_length  = 0x08000000;
 
-                if (flash_configuration == 0x81)
-                {
-                    // Alveo boards
-                    flash_configuration = 2;
-                    flash_segment0_length = 0x01002000;
-                }
-                break;
-            case 0x00000200:
-                flash_configuration = flash_format & 0xf;
-                flash_default_segment = (flash_format >> 4) & 0xf;
-                flash_fallback_segment = (flash_format >> 8) & 0xf;
-                flash_segment0_length = flash_format & 0xfffff000;
-                break;
-            default:
-                fprintf(stderr, "Unknown SPI flash block version\n");
-                ret = -1;
-                goto skip_flash;
-        }
+
+
+
 
         // determine data width-- log by 通过读写寄存器，判定QSPI的位宽数, 这里读回来一定是4
         flash_data_width = 0;
