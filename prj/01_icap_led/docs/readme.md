@@ -75,8 +75,6 @@ make
 
 ### 3.3 XVC 测试
 
-![](./images/pcie_icap.drawio.png)
-
 
 工程example3中，配置了 AXI debug bridge 的地址为  `0x2_0000` , 这个地址与xdma的驱动 /dev/xdma0_xvc的默认地址`0x4_0000`并不一致
 
