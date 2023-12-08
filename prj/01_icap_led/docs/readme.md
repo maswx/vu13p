@@ -39,7 +39,7 @@ usage: vu13p-fw [options]
 
 ```shell
 ./vu13p-fw -w xxxxxxxx.bit -s 0 # 0代表是QSPI flash的第0个扇区
-./vu13p-fw -w xxxxxxxx.bit -s 1 # 1代表是QSPI flash的第0个扇区
+./vu13p-fw -w xxxxxxxx.bit -s 1 # 1代表是QSPI flash的第1个扇区
 ```
 
 ![](./images/QQ20231205000804.png)
@@ -71,5 +71,43 @@ make
 # 确认已经启动了 bram 的fpga 固件
 ./bram
 ```
+
+
+### 3.3 XVC 测试
+
+![](./images/pcie_icap.drawio.png)
+
+
+工程example3中，配置了 AXI debug bridge 的地址为  `0x2_0000` , 这个地址与xdma的驱动 /dev/xdma0_xvc的默认地址`0x4_0000`并不一致
+
+上位机安装xdma驱动后，会自带 /dev/xdma0_xvc , 另外vivado的路径里会带有一个 xvc_pcie, 如果已经将vivado的路径添加到了PATH中，则可以任意路径下执行 
+
+```shell
+#初始化 xvc服务
+xvc_pcie -s TCP::10200 -d /dev/xdma0_xvc &
+```
+
+即可在vivdao中使用xvc, 
+
+
+![](./images/opentarget.png)
+
+![](./images/opentarget_2.png)
+
+![](./images/opentarget_3.png)
+
+
+* 一些额外的notes: 如果你把AXI bridge 挂在的AXIL地址不是0x4_0000，而是0x2_0000, 则需要重新编译/安装驱动并重启xdma.ko。 
+
+```shell
+cd dma_ip_drivers/XDMA/linux-kernel/xdma/
+sudo make xvc_bar_offset=0x20000
+sudo make install 
+```
+
+
+
+
+
 
 
