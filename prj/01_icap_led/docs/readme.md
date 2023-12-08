@@ -1,12 +1,12 @@
 
 ## Step 1  编译FPGA
 
-3个FPGA工程一起编译（自己CPU不够强的话可以分开编译，不带 ```-j3``` 参数即可）
+3个FPGA工程一起编译（自己CPU不够强的话可以分开编译，不带 ```-j4``` 参数即可）
 
 
 ```shell
 cd vu13p/prj/01_icap_led
-make -j3 tag=hello_masw
+make -j4 tag=hello_masw
 # CPU 起飞
 ```
 
@@ -96,6 +96,7 @@ xvc_pcie -s TCP::10200 -d /dev/xdma0_xvc &
 
 ![](./images/opentarget_3.png)
 
+* 需要加载 probes file 才会有ila的波形显示。
 
 * 一些额外的notes: 如果你把AXI bridge 挂在的AXIL地址不是0x4_0000，而是0x2_0000, 则需要重新编译/安装驱动并重启xdma.ko。 
 
