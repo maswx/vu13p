@@ -15,12 +15,20 @@
 
 #### [01 icap qspi](./prj/01_icap_led/docs/readme.md)
 
-* 介绍如何通过PCIE下载固件
 * 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
   * 支持内部JTAG(PCIe-XVC)(已验证 ✔)
-  * 支持 ICAP(PCIe更新bit)(Debug中)
-  * 支持QSPI(PCIe更新Flash)(Debug中)
-  * 支持IIC (PCIe访问板子IIC外设,PMBus等)(Debug中) 
+  * 支持QSPI(PCIe更新Flash)(已验证 ✔)
+* 3个example(已验证 ✔)
+  * LED驱动
+  * BRAM驱动
+  * XVC驱动
+
+#### [01 mcap](./prj/01_mcap_led/docs/readme.md)
+
+* 介绍如何通过PCIE下载固件
+* 从QSPI启动Tandem PCIE main stage, 从PCIE更新其他bit
+  * 使用tcl划分多个编译区(已验证 ✔)
+  * pcie-mcap下载bit(已验证 ✔)
 
 #### [02 pcie ddr4x4](./prj/02_pcie_ddr4x4/readme.md)
 
