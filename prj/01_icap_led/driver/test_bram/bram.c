@@ -29,7 +29,7 @@ int main() {
 	{
 		val = *((volatile uint32_t *)(bram_ptr + i));
 		if(val != i)
-			printf("error: check addr 0x%016lx[%02d] fail : readbak=%08x ", (unsigned long )bram_ptr , i , val);
+			printf("error: check addr 0x%016lx[%02d] fail : readbak=%08x \n", (unsigned long )bram_ptr , i , val);
 	}
 
 
