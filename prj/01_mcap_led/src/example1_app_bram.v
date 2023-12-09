@@ -79,7 +79,7 @@ wire           m_axil_rready    ;
 wire [ 1:0]usr_irq_req = 2'd0;
 
 xdma_mcap_top#(
-	.WIRQ       (2),//中断信号的个数
+	.WIRQ       (2) //中断信号的个数
 )xdma_mcap_top_inst (
 	.pcie_ref_clk_p (pcie_ref_clk_p ),
 	.pcie_ref_clk_n (pcie_ref_clk_n ),
@@ -162,25 +162,25 @@ axil_ram # (
     .DATA_WIDTH ( 32),
     .ADDR_WIDTH ( 8 ) 
 )axil_ram_inst (
-  .clk               (  axi_aclk              ),
-  .rst               ( ~axi_aresetn           ),
-  .s_axil_awaddr     (m_axil_awaddr[7:0]      ),// input  wire [8 : 0] s_axi_awaddr
-  .s_axil_awvalid    (m_axil_awvalid          ),// input  wire s_axi_awvalid
-  .s_axil_awready    (m_axil_awready          ),// output wire s_axi_awready
-  .s_axil_wdata      (m_axil_wdata            ),// input  wire [31 : 0] s_axi_wdata
-  .s_axil_wstrb      (m_axil_wstrb            ),// input  wire [3 : 0] s_axi_wstrb
-  .s_axil_wvalid     (m_axil_wvalid           ),// input  wire s_axi_wvalid
-  .s_axil_wready     (m_axil_wready           ),// output wire s_axi_wready
-  .s_axil_bresp      (m_axil_bresp            ),// output wire [1 : 0] s_axi_bresp
-  .s_axil_bvalid     (m_axil_bvalid           ),// output wire s_axi_bvalid
-  .s_axil_bready     (m_axil_bready           ),// input  wire s_axi_bready
-  .s_axil_araddr     (m_axil_araddr[7:0]      ),// input  wire [8 : 0] s_axi_araddr
-  .s_axil_arvalid    (m_axil_arvalid          ),// input  wire s_axi_arvalid
-  .s_axil_arready    (m_axil_arready          ),// output wire s_axi_arready
-  .s_axil_rdata      (m_axil_rdata            ),// output wire [31 : 0] s_axi_rdata
-  .s_axil_rresp      (m_axil_rresp            ),// output wire [1 : 0] s_axi_rresp
-  .s_axil_rvalid     (m_axil_rvalid           ),// output wire s_axi_rvalid
-  .s_axil_rready     (m_axil_rready           ) // input  wire s_axi_rready
+    .clk               (  axi_aclk              ),
+    .rst               ( ~axi_aresetn           ),
+    .s_axil_awaddr     (m_axil_awaddr[7:0]      ),// input  wire [8 : 0] s_axi_awaddr
+    .s_axil_awvalid    (m_axil_awvalid          ),// input  wire s_axi_awvalid
+    .s_axil_awready    (m_axil_awready          ),// output wire s_axi_awready
+    .s_axil_wdata      (m_axil_wdata            ),// input  wire [31 : 0] s_axi_wdata
+    .s_axil_wstrb      (m_axil_wstrb            ),// input  wire [3 : 0] s_axi_wstrb
+    .s_axil_wvalid     (m_axil_wvalid           ),// input  wire s_axi_wvalid
+    .s_axil_wready     (m_axil_wready           ),// output wire s_axi_wready
+    .s_axil_bresp      (m_axil_bresp            ),// output wire [1 : 0] s_axi_bresp
+    .s_axil_bvalid     (m_axil_bvalid           ),// output wire s_axi_bvalid
+    .s_axil_bready     (m_axil_bready           ),// input  wire s_axi_bready
+    .s_axil_araddr     (m_axil_araddr[7:0]      ),// input  wire [8 : 0] s_axi_araddr
+    .s_axil_arvalid    (m_axil_arvalid          ),// input  wire s_axi_arvalid
+    .s_axil_arready    (m_axil_arready          ),// output wire s_axi_arready
+    .s_axil_rdata      (m_axil_rdata            ),// output wire [31 : 0] s_axi_rdata
+    .s_axil_rresp      (m_axil_rresp            ),// output wire [1 : 0] s_axi_rresp
+    .s_axil_rvalid     (m_axil_rvalid           ),// output wire s_axi_rvalid
+    .s_axil_rready     (m_axil_rready           ) // input  wire s_axi_rready
 );
 
 
@@ -188,11 +188,11 @@ axil_ram # (
 
 axi_ram # (
     .DATA_WIDTH ( 512),
-    .ADDR_WIDTH (   8),
-    .ID_WIDTH   (   4),
+    .ADDR_WIDTH (  10),
+    .ID_WIDTH   (   4) 
 )axi_ram_inst (
-    .clk             (  axi_aclk              ),
-    .rst             ( ~axi_aresetn           ),
+    .clk             (  axi_aclk      ),
+    .rst             ( ~axi_aresetn   ),
     .s_axi_awid      (m_axi_awid      ),
     .s_axi_awaddr    (m_axi_awaddr    ),
     .s_axi_awlen     (m_axi_awlen     ),

@@ -5,7 +5,7 @@
 //========================================================================
 
 
-module example1_app_bram(
+module example2_app_led(
 	input  [   0:0] pcie_ref_clk_p ,
 	input  [   0:0] pcie_ref_clk_n ,
 	input  [  15:0] pcie_lane_rxp  ,
@@ -80,7 +80,7 @@ wire           m_axil_rready    ;
 wire [ 1:0]usr_irq_req = LED[1:0];
 
 xdma_mcap_top#(
-	.WIRQ       (2),//中断信号的个数
+	.WIRQ       (2) //中断信号的个数
 )xdma_mcap_top_inst (
 	.pcie_ref_clk_p (pcie_ref_clk_p ),
 	.pcie_ref_clk_n (pcie_ref_clk_n ),
@@ -186,11 +186,11 @@ axi_gpio_0 axi_gpio_0_inst(
 
 axi_ram # (
     .DATA_WIDTH ( 512),
-    .ADDR_WIDTH (   8),
-    .ID_WIDTH   (   4),
+    .ADDR_WIDTH (  10),
+    .ID_WIDTH   (   4)
 )axi_ram_inst (
-    .clk             (  axi_aclk              ),
-    .rst             ( ~axi_aresetn           ),
+    .clk             (  axi_aclk      ),
+    .rst             ( ~axi_aresetn   ),
     .s_axi_awid      (m_axi_awid      ),
     .s_axi_awaddr    (m_axi_awaddr    ),
     .s_axi_awlen     (m_axi_awlen     ),
