@@ -1,9 +1,10 @@
-set_property CFGBVS GND [current_design]
-set_property CONFIG_VOLTAGE 1.8 [current_design]
-#set_property BITSTREAM.GENERAL.COMPRESS true [current_design]
-set_property BITSTREAM.CONFIG.CONFIGRATE 85.0 [current_design]
-set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
-set_property BITSTREAM.CONFIG.SPI_FALL_EDGE Yes [current_design]
+# mv to genbit.tcl --- set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES    [current_design]
+# mv to genbit.tcl --- set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4        [current_design]
+# mv to genbit.tcl --- set_property BITSTREAM.GENERAL.COMPRESS TRUE        [current_design]
+# mv to genbit.tcl --- set_property CFGBVS GND                             [current_design]
+# mv to genbit.tcl --- set_property CONFIG_VOLTAGE 1.8                     [current_design]
+# mv to genbit.tcl --- set_property BITSTREAM.CONFIG.CONFIGRATE 85.0       [current_design]
+# mv to genbit.tcl --- set_property BITSTREAM.CONFIG.SPI_FALL_EDGE Yes     [current_design]
 
 
 
