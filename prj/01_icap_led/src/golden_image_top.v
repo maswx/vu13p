@@ -295,7 +295,7 @@ BUFGCE_DIV #(
    .IS_CE_INVERTED(1'b0),       // Optional inversion for CE
    .IS_CLR_INVERTED(1'b0),      // Optional inversion for CLR
    .IS_I_INVERTED(1'b0),        // Optional inversion for I
-   .SIM_DEVICE("VERSAL_PRIME")  // VERSAL_PRIME, VERSAL_PRIME_ES1
+   .SIM_DEVICE("ULTRASCALE_PLUS")  // VERSAL_PRIME, VERSAL_PRIME_ES1
 )
 BUFGCE_DIV_inst (
    .O   (clk50M  ),     // 1-bit output: Buffer
