@@ -1,0 +1,16 @@
+VIVADO   ?= /nasopt/Xilinx/Vivado/2024.1/bin/vivado
+TOP_NAME := example1_app_bram
+PART     := xcvu13p-fhgb2104-2L-e
+OUTDIR   := ~/alivu13p/new2025_multiboot
+
+
+DEPS_TCL := ./tcl/add_prjfiles.tcl
+DEPS_TCL += ./tcl/ip_axixvc.tcl
+DEPS_TCL += ./tcl/ip_xdma.tcl
+
+
+DEPS_XDC := ./tcl/multiboot.tcl
+
+PRJTAG   := muboot
+
+include ./tcl/processing.mk
