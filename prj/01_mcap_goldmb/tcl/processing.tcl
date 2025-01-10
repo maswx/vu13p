@@ -149,7 +149,7 @@ proc add_filex {} {
             set_property top tb [get_fileset sim_1]
         }
     }
-	puts "=====================debug 4=============="
+	#puts "=====================debug 4=============="
     update_compile_order -fileset sources_1
     set_property top $top_name [current_fileset];# 配置top
     update_compile_order -fileset sources_1

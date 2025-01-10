@@ -1,4 +1,4 @@
-PRJTCL := ./tcl/processing.tcl
+PRJTCL ?= ./tcl/processing.tcl
 
 OUTDIR                     ?= ./output
 USE_OOC_SYNTHESIS          ?= 0
@@ -50,24 +50,26 @@ RTL_PATH_VHDL= $(wildcard $(addsuffix *.vhdl, $(RTL_PATHS)))
 
 # 6. 定义仅仅导出bit文件
 bit:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs runall
+	$(VIVADO) -nojournal -nolog -mode batch -source $(PRJTCL) -notrace -tclargs runall
 
 vivado: gui
 
 gui:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs openprj &
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs openprj &
 
 # 2. 导出lint报告
 lint:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs export_lint
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs export_lint
 
 # 3. 定义仅仅导出仿真平台
 sim:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs export_sim 
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs export_sim 
 
 test:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs $@
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs $@
 
 genmcs:
-	$(VIVADO) -mode batch -source $(PRJTCL) -notrace -tclargs genmcs
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs genmcs
+
+
 
