@@ -1,16 +1,11 @@
-fpga_top_name=xdma_ddr4x4_top 
-output_path=~/alivu13p/prjs/${fpga_top_name}
-core_jobs=8
+VIVADO   := /nasopt/Xilinx/Vivado/2024.1/bin/vivado
+TOP_NAME := xdma_ddr4x4_top 
+PART     := xcvu13p-fhgb2104-2L-e
+OUTDIR   := ~/alivu13p
 
-bit:
-	vivado -mode batch -source ./tcl/createprj.tcl -tclargs ${fpga_top_name} ${output_path} 
-	vivado -mode batch -source ./tcl/run.tcl       -tclargs ${fpga_top_name} ${output_path}  ${core_jobs}
+DEPS_TCL := ./tcl/add_prjfiles.tcl
+DEPS_BD  := ./tcl/system.tcl
+PRJTCL   := ../common/processing.tcl 
 
 
-
-run:
-	#sed -i '/^create_project/s/.*/create_project $$\{_xil_proj_name_\} . -part xcvu13p-fhgb2104-2-i /' project.tcl
-	rm project.tcl
-	git co project.tcl
-	sed -i '/^create_project/s/$$/ -force/' project.tcl
-	vivado -mode batch -source compile.tcl
+include ../common/processing.mk
