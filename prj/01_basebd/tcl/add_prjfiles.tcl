@@ -13,5 +13,6 @@ read_verilog {
 read_xdc {
     ../../xdc/vu13p_pcie.xdc
     ../../xdc/vu13p_led.xdc
+    ../../xdc/golden.xdc
 }
 
