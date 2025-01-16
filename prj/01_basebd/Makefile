@@ -10,11 +10,10 @@ PRJTCL := ../common/processing.tcl
 
 
 
-#TARGET_NAME := $(TOP_NAME)
-#GBIT_FNAME  := $(TOP_NAME)_$(PRJTAG).bit
-##MBIT_FNAME  := $(GBIT_FNAME)
-#MBIT_FNAME  := ~/alivu13p/02_pcie_ddr4x4_streamloop2/alivu13p_top/alivu13p_top.data/alivu13p_top_empty.bit
-#MBADDR      := 0x08000000
+TARGET_NAME := $(TOP_NAME)
+GBIT_FNAME  := $(TOP_NAME)_$(PRJTAG).bit
+MBIT_FNAME  := $(GBIT_FNAME)
+MBADDR      := 0x08000000
 
 all: bit
 
