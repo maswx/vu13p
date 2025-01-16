@@ -1,5 +1,6 @@
 PRJTCL ?= ./tcl/processing.tcl
 
+PART     ?= xcvu13p-fhgb2104-2L-e
 OUTDIR                     ?= ./output
 USE_OOC_SYNTHESIS          ?= 0
 USE_INCR_COMP              ?= 1
@@ -9,7 +10,13 @@ SIMULATOR                  ?= xsim
 MAX_OOC_JOBS               ?= 16
 NO_BITSTREAM_COMPRESSION   ?= 1
 POWER_OPTIMIZATION         ?= 0
-PRJTAG                     ?= empty
+PRJTAG                     ?= notag
+
+
+HWTARGET    ?= xcvu13p_0
+TARGET_NAME ?= alivu13p
+FLASH_SIZE  ?= 256
+MBADDR      ?= 0x800000
 
 export MKENV_OUTDIR                   = $(OUTDIR) 
 export MKENV_TOP_NAME                 = $(TOP_NAME) 
@@ -35,22 +42,18 @@ export MKENV_NO_BITSTREAM_COMPRESSION = $(NO_BITSTREAM_COMPRESSION)
 export MKENV_POWER_OPTIMIZATION       = $(POWER_OPTIMIZATION) 
 export MKENV_PRJTAG                   = $(PRJTAG)
 
+export MKENV_HWTARGET                 = $(HWTARGET)
 export MKENV_TARGET_NAME              = $(TARGET_NAME)
 export MKENV_FLASH_SIZE               = $(FLASH_SIZE)
 export MKENV_GBIT_FNAME               = $(GBIT_FNAME)
 export MKENV_MBIT_FNAME               = $(MBIT_FNAME)
-
-
-RTL_PATH_V   = $(wildcard $(addsuffix *.v,    $(RTL_PATHS)))
-RTL_PATH_SV  = $(wildcard $(addsuffix *.sv,   $(RTL_PATHS)))
-RTL_PATH_VHDL= $(wildcard $(addsuffix *.vhdl, $(RTL_PATHS)))
-
+export MKENV_MBADDR                   = $(MBADDR)
 
 
 
 # 6. 定义仅仅导出bit文件
 bit:
-	$(VIVADO) -nojournal -nolog -mode batch -source $(PRJTCL) -notrace -tclargs runall
+	$(VIVADO) -nojournal -nolog -mode batch -source $(PRJTCL) -notrace -tclargs runall &
 
 vivado: gui
 
@@ -71,5 +74,11 @@ implonly:
 genmcs:
 	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs genmcs
 
+multibootbin:
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs multibootbin
 
+genbitonly:
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs genbitonly
 
+downloadbit:
+	$(VIVADO) -nojournal -nolog  -mode batch -source $(PRJTCL) -notrace -tclargs $@ $(GBIT_FNAME)

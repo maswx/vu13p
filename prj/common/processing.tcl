@@ -220,26 +220,31 @@ proc impl_flow {} {
     launch_runs -jobs ${MAX_OOC_JOBS} impl_1 
     wait_on_run impl_1 
     open_run impl_1
-    report_timing_summary -warn_on_violation -file ${project_dir}timing_impl.log
+    report_timing_summary -warn_on_violation -file ${project_dir}/${top_name}_impl_timing.log
+    write_checkpoint -force ${project_dir}/${top_name}_impl.dcp
+	genbit_flow	
+}
+proc genbit_flow {} {
+    set USE_OOC_SYNTHESIS [get_env MKENV_USE_OOC_SYNTHESIS]
+    set MAX_OOC_JOBS      [get_env MKENV_MAX_OOC_JOBS]
+    set outdir           [get_env MKENV_OUTDIR]
+    set top_name         [get_env MKENV_TOP_NAME]
+	set project_dir      [file normalize ${outdir}/${top_name}/${top_name}.data]
+
+    # 如果有dcp文件，则使用增量编译
+    open_run impl_1
     # 生成加上时间戳和当前linux用户名的bit文件，预先set 时间和用户名变量, 时间精准到分钟
     set username  [exec whoami]
     set prjtag    [get_env MKENV_PRJTAG]
     write_bitstream -force ${project_dir}/${top_name}_${prjtag}.bit
-    # 判断当前工程是否有内置ila, 如果有则生成ila的ltx文件
-    #if {[get_property ILA_INSTANCES [get_runs impl_1]] ne ""} {
-    #    write_debug_probes -force ${project_dir}/${top_name}_${username}_${prjtag}.ltx
-    #}
-    ## 导出xsa硬件平台
-    #write_hw_platform -force ${project_dir}/${top_name}_${username}_${prjtag}.xsa
-    # 导出 dcp
-    write_checkpoint -force ${project_dir}/${top_name}_impl.dcp
+    write_bitstream -force ./${top_name}_${prjtag}.bit
 }
 
 proc runstep {} {
 	launch_runs impl_1 -to_step write_bitstream -jobs 28
 }
 # runall
-proc runall {} {
+proc runall {argv} {
     load_project
     add_filex
     #export_siml
@@ -247,30 +252,30 @@ proc runall {} {
     lint_flow
     impl_flow
 }
-proc openprj {} {
+proc openprj {argv} {
     load_project
 	start_gui
 }
 
-proc export_lint {} {
+proc export_lint {argv} {
     load_project
     add_filex
 }
 
-proc export_sim {} {
+proc export_sim {argv} {
     load_project
     add_filex
     export_siml
 }
 
-proc export_synth {} {
+proc export_synth {argv} {
     load_project
     add_filex
     synth_flow
     lint_flow
 }
 
-proc export_impl {} {
+proc export_impl {argv} {
     load_project
     add_filex
     synth_flow
@@ -278,31 +283,65 @@ proc export_impl {} {
     impl_flow
 }
 
-proc genmcs {} {
+proc genmcs {argv} {
+	set targetname [get_env MKENV_TARGET_NAME]
+    set flashsize  [get_env MKENV_FLASH_SIZE]
+    set goldenbit  [get_env MKENV_GBIT_FNAME]
+	set gbit       [get_abspath ${goldenbit}]
+	write_cfgmem -force -format MCS -size ${flashsize} -interface SPIx4 -loadbit "up 0x00000000 ${gbit}" ${targetname}
+}
+
+proc multibootbin {argv} {
 	set targetname [get_env MKENV_TARGET_NAME]
     set flashsize  [get_env MKENV_FLASH_SIZE]
     set goldenbit  [get_env MKENV_GBIT_FNAME]
     set mbootbit   [get_env MKENV_MBIT_FNAME]
+    set mbootaddr  [get_env MKENV_MBADDR]
 	set gbit       [get_abspath ${goldenbit}]
 	set mbit       [get_abspath ${mbootbit}]
-	write_cfgmem -force -format MCS -size ${flashsize} -interface SPIx4 -loadbit "up 0x00000000 ${gbit} up 0x800000  ${mbit}" ${targetname}
+	write_cfgmem -force -format MCS -size ${flashsize} -interface SPIx4 -loadbit "up 0x00000000 ${gbit} up ${mbootaddr}  ${mbit}" ${targetname}
 }
 
-proc implonly {} {
+proc downloadbit {argv} {
+    set HWTARGET [get_env MKENV_HWTARGET]
+	set bitname [lindex $argv 1] 
+	open_hw_manager
+	connect_hw_server
+	open_hw_target
+	current_hw_device [get_hw_devices ${HWTARGET}]
+	refresh_hw_device -update_hw_probes false [lindex [get_hw_devices ${HWTARGET}] 0]
+	#program_hw_devices -file $bitname 
+	if {[llength $argv] > 2} {
+		# 如果参数长度大于 2，将第三个参数赋值给变量
+		set ltxname [lindex $argv 2] 
+		set_property PROBES.FILE ${ltxname} [get_hw_devices ${HWTARGET}]
+	} else {
+	    puts "no ltx file"
+	}	
+	set_property FULL_PROBES.FILE {} [get_hw_devices ${HWTARGET}]
+	set_property PROGRAM.FILE ${bitname} [get_hw_devices ${HWTARGET}]
+	program_hw_devices [get_hw_devices ${HWTARGET}]
+	refresh_hw_device [lindex [get_hw_devices ${HWTARGET}] 0]
+	close_hw_target
+	disconnect_hw_server
+}
+
+proc implonly {argv} {
     load_project
+    add_filex
 	impl_flow 
+}
+proc genbitonly {argv} {
+    load_project
+    add_filex
+	genbit_flow	
 }
 
 set function_name [lindex $argv 0]
-# 检查是否传入了两个参数 ?  必须为2个参数, 不能大不能小
-if {[llength $argv] > 1} {
-	set mode          [lindex $argv 1]
-}
-# 获取传递的参数
 
 # 调用指定的函数
 if {[info commands $function_name] != ""} {
-    eval $function_name 
+    eval $function_name {$argv}
 } else {
     puts "Function $function_name not found"
 }
