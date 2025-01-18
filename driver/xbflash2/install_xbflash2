@@ -1,0 +1,13 @@
+# 检查 xbflash2 是否正在运行 
+if command -v xbflash2 > /dev/null
+then
+    echo "xbflash2 is already running. Skipping dpkg installation."
+else
+    # 下载并安装
+    wget -c https://www.xilinx.com/bin/public/openDownload?filename=xrt_202210.2.13.466_20.04-amd64-xbflash2.deb -O xbflash.deb
+    sudo dpkg -i xbflash.deb
+fi
+
+# 查看 xbflash2 的帮助
+xbflash2 -h
+
