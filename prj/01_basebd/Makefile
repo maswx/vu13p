@@ -13,9 +13,7 @@ PRJTCL := ../common/processing.tcl
 TARGET_NAME := $(TOP_NAME)
 GBIT_FNAME  := $(TOP_NAME)_$(PRJTAG).bit
 MBIT_FNAME  := $(GBIT_FNAME)
-MBADDR      := 0x08000000
-
-all: bit
+MBADDR      := 0x04000000
 
 
 include ../common/processing.mk

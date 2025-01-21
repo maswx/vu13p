@@ -21,7 +21,7 @@ module alivu13p_top(
 
 
 
-basepcie basepcie_inst (
+basebd basepcie_inst (
 	.LED            (LED            ),
     .pcie_lane_rxn  (pcie_lane_rxn  ),
     .pcie_lane_rxp  (pcie_lane_rxp  ),
