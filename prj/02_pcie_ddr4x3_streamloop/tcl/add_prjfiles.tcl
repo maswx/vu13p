@@ -5,7 +5,7 @@
 
 read_verilog {
 
-	./src/pcie_ddr4x4_streamloop.v
+	./src/pcie_ddr4x3_streamloop.v
 }
 
 
