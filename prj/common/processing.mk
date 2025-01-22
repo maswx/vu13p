@@ -1,4 +1,5 @@
 PRJTCL ?= ./tcl/processing.tcl
+VIVADO   ?= /nasopt/Xilinx/Vivado/2024.1/bin/vivado
 
 PART     ?= xcvu13p-fhgb2104-2L-e
 OUTDIR                     ?= ./output
