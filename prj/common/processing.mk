@@ -18,6 +18,7 @@ HWTARGET    ?= xcvu13p_0
 TARGET_NAME ?= alivu13p
 FLASH_SIZE  ?= 256
 MBADDR      ?= 0x800000
+MCS_SADDR   ?= 0x04000000
 
 export MKENV_OUTDIR                   = $(OUTDIR) 
 export MKENV_TOP_NAME                 = $(TOP_NAME) 
@@ -49,6 +50,7 @@ export MKENV_FLASH_SIZE               = $(FLASH_SIZE)
 export MKENV_GBIT_FNAME               = $(GBIT_FNAME)
 export MKENV_MBIT_FNAME               = $(MBIT_FNAME)
 export MKENV_MBADDR                   = $(MBADDR)
+export MKENV_MCS_SADDR                = $(MCS_SADDR)
 
 
 

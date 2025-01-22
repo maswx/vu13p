@@ -287,8 +287,9 @@ proc genmcs {argv} {
 	set targetname [get_env MKENV_TARGET_NAME]
     set flashsize  [get_env MKENV_FLASH_SIZE]
     set goldenbit  [get_env MKENV_GBIT_FNAME]
+    set offsetaddr [get_env MKENV_MCS_SADDR]
 	set gbit       [get_abspath ${goldenbit}]
-	write_cfgmem -force -format MCS -size ${flashsize} -interface SPIx4 -loadbit "up 0x00000000 ${gbit}" ${targetname}
+	write_cfgmem -force -format MCS -size ${flashsize} -interface SPIx4 -loadbit "up ${offsetaddr} ${gbit}" ${targetname}
 }
 
 proc multibootbin {argv} {
