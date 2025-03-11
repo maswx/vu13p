@@ -2,3 +2,6 @@ vivado_*
 output_*
 *.jou
 *.log
+*.mif
+*.bit
+*.txt
