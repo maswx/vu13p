@@ -13,19 +13,29 @@
 * 逆向工程，懂的都懂 DDDD
 * 已验证 ✔
 
-#### [01 icap qspi](./prj/01_icap_led/docs/readme.md)
+#### [01_basebd](./prj/01_basebd/readme.md)
 
-* 支持远程更新QSPI，更新QSPI后，支持从QSPI暖重启FPGA而无需重启PC
-  * 支持内部JTAG(PCIe-XVC)(已验证 ✔)
-  * 支持QSPI(PCIe更新Flash)(已验证 ✔)
-* 3个example(已验证 ✔)
-  * LED驱动
-  * BRAM驱动
-  * XVC驱动
+* 基础的BD和工程脚本的example
+  * Makefile脚本和公共的工程tcl文件
+  * GPIO 驱动LED灯
 
-#### [01 mcap](./prj/01_mcap_led/docs/readme.md)
+#### [01_basebd_golden](./prj/01_basebd_golden/readme.md)
 
-* 介绍如何通过PCIE下载固件
+* 板卡的基础golden镜像，可以固化到QSPI中
+  * GPIO 驱动LED
+  * BRAM 测试程序
+  * QSPI 驱动程序
+  * AXI XVC example
+
+#### [01_basebd_multiboot](./prj/01_basebd_mb/readme.md)
+
+* 板卡的基础 multiboot 镜像，可以固化到QSPI的multiboot中
+  * 仅仅包含QSPI 驱动程序
+
+
+#### [01 mcap_goldmb](./prj/01_mcap_goldmb/docs/readme.md)
+
+* 介绍如何通过PCIE走mcap下载固件
 * 从QSPI启动Tandem PCIE main stage, 从PCIE更新其他bit
   * 使用tcl划分多个编译区(已验证 ✔)
   * pcie-mcap下载bit(已验证 ✔)
