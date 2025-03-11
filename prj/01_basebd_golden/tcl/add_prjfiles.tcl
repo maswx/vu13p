@@ -1,6 +1,6 @@
 
 read_verilog {
-	../01_basebd/src/alivu13p_top.v
+	./src/alivu13p_top.v
 }
 
 read_xdc {

@@ -1,7 +1,7 @@
 VIVADO   := /nasopt/Xilinx/Vivado/2024.1/bin/vivado
 TOP_NAME := alivu13p_top
 PART     := xcvu13p-fhgb2104-2L-e
-OUTDIR   := ~/alivu13p/01_basebd_golden3
+OUTDIR   := ~/alivu13p/01_basebd_golden4
 PRJTAG   := golden
 
 
