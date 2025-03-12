@@ -17,8 +17,8 @@ PRJTAG                     ?= notag
 HWTARGET    ?= xcvu13p_0
 TARGET_NAME ?= alivu13p
 FLASH_SIZE  ?= 256
-MBADDR      ?= 0x800000
-MCS_SADDR   ?= 0x04000000
+MBADDR      ?= 0x04000000
+MCS_SADDR   ?= 0x00000000
 
 export MKENV_OUTDIR                   = $(OUTDIR) 
 export MKENV_TOP_NAME                 = $(TOP_NAME) 

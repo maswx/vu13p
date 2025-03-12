@@ -11,8 +11,8 @@ PRJTCL   := ../common/processing.tcl
 
 
 TARGET_NAME := $(TOP_NAME)
-GBIT_FNAME  := ../01_basebd/alivu13p_top_base.bit
-MBIT_FNAME  := $(OUTDIR)/$(TOP_NAME)/$(TOP_NAME).runs/impl_1/$(TOP_NAME)_tandem1.bit
+GBIT_FNAME  := ../01_basebd_golden/alivu13p_top_golden.bit
+MBIT_FNAME  := ./alivu13p_top_base_tandem1.bit
 MBADDR      := 0x04000000
 
 
