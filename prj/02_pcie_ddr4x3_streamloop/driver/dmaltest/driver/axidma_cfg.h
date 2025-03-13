@@ -34,14 +34,15 @@ DMA可访问的另一片空间为 S2MM_BUFFER_SIZE 这是 一个通过define定�
 #define DMA_DEV_BASE_ADDR  0x50000  // AXI DMA 设备的物理地址,大小固定为64k
 
 // 缓冲区和传输大小定义
-#define MM2S_BUFFER_BASEADDR 0x0_0000_0000
+#define MM2S_BUFFER_BASEADDR 0x000000000
 #define MM2S_BUFFER_SIZE     (4ULL * 1024 * 1024 * 1024)  // 4GB
-#define MM2S_ONE_PACKET_SIZE      (16 * 1024 * 1024)           // 16MB
-#define MAX_DESC_COUNT       (DMA_DESC_ALL_SIZE/64/2)   // 最大描述符数量, 64是一个描述符的大小，2是S2MM/MM2S各占一半
+//#define MM2S_ONE_PACKET_SIZE      (16 * 1024 * 1024)           // 16MB
+#define MM2S_ONE_PACKET_SIZE  0x40000           // 16MB
+#define MAX_DESC_COUNT       (DMA_DESC_ALL_SIZE/64/2  )   // 最大描述符数量, 64是一个描述符的大小，2是S2MM/MM2S各占一半
 
 
 // 缓冲区和传输大小定义
-#define S2MM_BUFFER_BASEADDR 0x1_0000_0000        // 
+#define S2MM_BUFFER_BASEADDR 0x100000000        // 
 #define S2MM_BUFFER_SIZE     (128 * 1024 * 1024)  // 128MB
 #define S2MM_WORK_QUEUE      32                   // DMA到上位机的工作队列大小
 

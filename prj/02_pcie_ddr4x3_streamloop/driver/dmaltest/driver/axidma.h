@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #include <time.h>
-
+#include <sys/poll.h>   // 用于poll函数和相关常量
 typedef struct {
     int dma_fd;             // DMA控制器文件描述符
     int data_fd;            // 数据文件描述符
@@ -171,6 +171,7 @@ void *worker_thread(void *arg);
 
 
 
+void print_mm2s_dma_registers(mm2s_dma_t *mm2s_dma);
 
 
 #endif /* _AXIDMA_H_ */
