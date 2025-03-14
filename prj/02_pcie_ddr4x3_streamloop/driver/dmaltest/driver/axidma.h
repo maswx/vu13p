@@ -142,6 +142,7 @@ void *worker_thread(void *arg);
 #define DMACR_KEYHOLE    (1 << 3)    // Keyhole
 #define DMACR_CYCLIC     (1 << 4)    // Cyclic BD Enable
 #define DMACR_IOC_IRQ    (1 << 12)   // IOC中断使能
+#define DMACR_DLY_IRQ    (1 << 13)   // DLY中断使能
 #define DMACR_ERR_IRQ    (1 << 14)   // 错误中断使能
                          
 // 状态寄存器位          
@@ -171,7 +172,6 @@ void *worker_thread(void *arg);
 
 
 
-void print_mm2s_dma_registers(mm2s_dma_t *mm2s_dma);
 
 
 #endif /* _AXIDMA_H_ */

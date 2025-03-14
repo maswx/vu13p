@@ -1,20 +1,23 @@
-/*
-描述符保存的基地址为0x30000, 大小64kB, 低32kB用于保存S2MM的描述符，高32kB用于保存MM2S的描述符;它可以通过字符设备/dev/xdma0_user访问。
-另外 AXI_DMA控制器的寄存器空间可以通过字符设备/dev/xdma0_user 的地址 0x20000访问
+/* 
+你是一名Linux应用程序设计专家，熟悉Xilinx的PCIe/XDMA的Linux用户态驱动开发，现有一个PCIe的FPGA设备，FPGA中有一个AXI DMA模块以及附带一片DDR存储空间。
 
-1. 编写一个mm2s的驱动程序：
-DMA可访问的空间为 MM2S_BUFFER_SIZE 这是 一个默认4GB大小的空间。
-硬盘中存在一个10～100GB大小的文件，在初始化阶段一次性写满buffer（通过 /dev/xdma0_h2c_0访问）, 然后配置DMA 周期性地以每次 MM2S_ONE_PACKET_SIZE = 16MB的数据搬运出来
-搬运完一次后触发中断（通过字符设备/dev/xdma0_events_1），然后再填满第一个buffer, 依次反复，直到发完文件。
-1.1 一些特殊情况
-如果文件小于MM2S_BUFFER_SIZE, 当然填满后就无需再次动态写入了。此时都无需配置Cyclic BD Enable
-如果文件更小于MM2S_ONE_PACKET_SIZE ，则只需要一个描述符即可。
+1. 编写一个mm2s的驱动程序将host端硬盘里的文件走pcie发送到FPGA内部的DDR作为缓存，然后再配置AXI DMA控制器将数据搬出即可:
+1.1 首先要配置描述符：描述符的个数就是固定的 MM2S_DESC_COUNT，将描述串成一个循环链表，每个描述符可以DMA大小为MM2S_ONE_PACKET_SIZE的数据，总buffer固定为MM2S_BUFFER_SIZE      
+1.2 在初始化阶段通过/dev/xdma0_h2c_0一次性写满buffer(基地址为MM2S_BUFFER_BASEADDR)
+1.3 待发送的文件一定小于 MM2S_BUFFER_SIZE, 否则提示不支持，并建议加大buffer
+1.3.1 如果文件size小于等于1个包的大小 MM2S_ONE_PACKET_SIZE, 注意配置正确的size， 启动DMA时, 如果是单次播放，配置起始/结尾描述符且播放一次就可以；如果用户配置无限播放，则开启cyclic BD Enable
+1.3.2 如果文件size大于1个包的大小且小于等于总buffer大小，则也可直接填满buffer, 在启动DMA时，配置起始/结束描述符的位置。如果用户需要配置无限播放，则，则开启cyclic BD Enable
+1.4 如果用户按下了结束键, 则配置 cyclic BD disable 也就是结束循环描述符，等待DMA控制器将buffer里的内容发完;确认数据都发完了之后，才关闭DMA
 
-2. 编写一个s2mm的驱动程序：
-DMA可访问的另一片空间为 S2MM_BUFFER_SIZE 这是 一个通过define定义的默认128MB大小的空间。
-配完所有 DMA 描述符，将BUFFER平均分配给所有描述符，并且固定使能Cyclic BD Enable， 以此构建一个环形buffer。
-配置中断函数，在中断函数中，一次性读回S2MM描述符的内容，找到帧开始到帧结束的已完成的描述符中对应buffer(这里应当注意避免重复查询), 
-并将buffer中的内容通过字符设备/dev/xdma0_c2h_0读回主机。
+一些额外的要求：
+1. 避免使用全局变量，我希望做成动态库;
+2. 注意AXI DMA控制器的启动顺序为：先配置 DMCSR_RS 再配置tail desc才能启动
+3. 访问空间open(/dev/xdma0_user)后在做mmap时直接指定偏移地址DMA_DESC_BASE_ADDR和device的偏移地址DMA_DEV_BASE_ADDR, 访问这两片空间时，应当优雅地使用指针结构体指向这两片空间
+4. 配置描述符时，应当优雅地使用memset()
+6. 访问/dev/xdma0_h2c_0 时，只能通过write操作
+7. 此外，额外编写一个API函数，允许用户通过动态库调用此函数将数据流从内存中传输，而不是读取文件。
+8. 合理地区分好axidma_mm2s.h/axidma_mm2s.c文件,并且额外写一个play_test.c测试文件, 一个调用动态库的play_test_so.c , 以及一个Makefile
+
 */
 
 
@@ -35,10 +38,9 @@ DMA可访问的另一片空间为 S2MM_BUFFER_SIZE 这是 一个通过define定�
 
 // 缓冲区和传输大小定义
 #define MM2S_BUFFER_BASEADDR 0x000000000
-#define MM2S_BUFFER_SIZE     (4ULL * 1024 * 1024 * 1024)  // 4GB
-//#define MM2S_ONE_PACKET_SIZE      (16 * 1024 * 1024)           // 16MB
-#define MM2S_ONE_PACKET_SIZE  0x40000           // 16MB
-#define MAX_DESC_COUNT       (DMA_DESC_ALL_SIZE/64/2  )   // 最大描述符数量, 64是一个描述符的大小，2是S2MM/MM2S各占一半
+#define MM2S_BUFFER_SIZE      (4ULL * 1024 * 1024 * 1024)  // 4GB
+#define MM2S_DESC_COUNT       (DMA_DESC_ALL_SIZE/64/2  )   // 最大描述符数量, 64是一个描述符的大小，2是S2MM/MM2S各占一半
+#define MM2S_ONE_PACKET_SIZE  (MM2S_BUFFER_SIZE/MM2S_DESC_COUNT)
 
 
 // 缓冲区和传输大小定义

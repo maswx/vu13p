@@ -6,75 +6,8 @@
  * @param desc_index 描述符索引（用于显示）
  */
 void print_s2mm_dma_registers(s2mm_dma_t *dma);
-void print_mm2s_descriptor(volatile uint32_t *desc_ptr)
-{
-    if (!desc_ptr) {
-        printf("[ERROR] 描述符指针为NULL\n");
-        return;
-    }
-
-    printf("\n===== 描述符 =======\n");
-    printf("描述符地址: %p\n", (void*)desc_ptr);
-
-    // 下一描述符地址
-    uint32_t next_desc_lo = desc_ptr[0];
-    uint32_t next_desc_hi = desc_ptr[1];
-    printf("下一描述符地址: 0x%08x%08x\n", next_desc_hi, next_desc_lo);
-    if (next_desc_lo == 0 && next_desc_hi == 0) {
-        printf("  (这是链表中的最后一个描述符)\n");
-    }
-
-    // 缓冲区地址
-    uint32_t buffer_addr_lo = desc_ptr[2];
-    uint32_t buffer_addr_hi = desc_ptr[3];
-    printf("缓冲区地址: 0x%08x%08x\n", buffer_addr_hi, buffer_addr_lo);
-
-    // 保留字段
-    printf("保留字段: 0x%08x\n", desc_ptr[4]);
-
-    // 控制字
-    uint32_t control = desc_ptr[6];
-    printf("控制字: 0x%08x\n", control);
-    printf("  - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
-
-    // 控制位
-    if (control & 0x8000000) printf("  - SOP: 是 (包起始)\n");
-    if (control & 0x4000000) printf("  - EOP: 是 (包结束)\n");
-
-    // 可选的其他控制位
-    if (control & 0x10000000) printf("  - TXSOF: 是\n");
-    if (control & 0x20000000) printf("  - TXEOF: 是\n");
-
-    // 状态字
-    uint32_t status = desc_ptr[7];
-    printf("状态字: 0x%08x\n", status);
-
-    // 状态位
-    printf("  - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
-
-    if (status & 0x80000000) {  // 如果已完成，显示更多状态信息
-        printf("  - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
-        printf("  - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
-        printf("  - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
-        printf("  - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
-
-        // 检查传输长度是否与请求长度匹配
-        uint32_t requested_len = control & 0x3FFFFFF;
-        uint32_t actual_len = status & 0x3FFFFFF;
-
-        if (requested_len != actual_len) {
-            printf("  [警告] 实际传输长度(%u)与请求长度(%u)不匹配!\n",
-                   actual_len, requested_len);
-        }
-    }
-
-    // 应用数据（通常用于用户自定义数据）
-    printf("应用数据: 0x%08x\n", desc_ptr[7]);
-
-    // 额外的调试信息：计算描述符的物理地址
-    printf("描述符物理地址估计: 0x%lx\n",
-           (uintptr_t)desc_ptr & 0xFFFFFFFFFFFFF000UL);  // 假设页对齐
-}
+void print_mm2s_dma_registers(mm2s_dma_t *mm2s_dma);
+void print_mm2s_descriptor(volatile uint32_t *desc_ptr);
 
 // 打开设备文件并映射内存
 int init_mm2s_dma(mm2s_dma_t *dma, const char *filename) {
@@ -97,7 +30,7 @@ int init_mm2s_dma(mm2s_dma_t *dma, const char *filename) {
     }
 
     // 映射描述符空间
-    dma->desc_base = mmap(NULL, DMA_DESC_ALL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
+    dma->desc_base = mmap(NULL, DMA_DESC_ALL_SIZE/2, PROT_READ | PROT_WRITE, MAP_SHARED,
                            dma->dma_fd, DMA_DESC_BASE_ADDR);
     if (dma->desc_base == MAP_FAILED) {
         perror("Failed to map descriptor space");
@@ -155,7 +88,7 @@ int init_mm2s_dma(mm2s_dma_t *dma, const char *filename) {
     }
 
     dma->bytes_sent = 0;
-    dma->running = 0;
+    dma->running = 1;
 
     // 确定是否使用循环模式
     dma->is_cyclic = (dma->file_size > dma->buffer_size);
@@ -254,13 +187,13 @@ int setup_mm2s_descriptors(mm2s_dma_t *dma) {
         // 设置控制字段
         control = transfer_size & 0x3FFFFFF; // 传输大小
         
-        // 设置SOF和EOF标志
-        if (desc_idx == 0 || buffer_offset == 0) {
-            control |= CONTROL_TXSOF; // 第一个描述符或新包的开始
-        }
-        if ((desc_idx == (dma->desc_count - 1)) || remaining_size == transfer_size) {
-            control |= CONTROL_TXEOF; // 最后一个描述符或包的结束
-        }
+        // 设置SOF和EOF标志, 注意，在配置的包长时间内，必须有tlast信号
+        //if (desc_idx == 0 || buffer_offset == 0) {
+        //    control |= CONTROL_TXSOF; // 第一个描述符或新包的开始
+        //}
+        //if ((desc_idx == (dma->desc_count - 1)) || remaining_size == transfer_size) {
+        //    control |= CONTROL_TXEOF; // 最后一个描述符或包的结束
+        //}
         control |= CONTROL_TXSOF ; // 第一个描述符或新包的开始
         control |= CONTROL_TXEOF; // 最后一个描述符或包的结束
         *(volatile uint32_t *)(desc + CONTROL_OFFSET) = control;
@@ -313,7 +246,7 @@ int start_mm2s_dma(mm2s_dma_t *dma) {
     *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_CURDESC_MSB) = first_desc_addr >> 32;
     
     // 配置DMA控制寄存器
-    dmacr = DMACR_IOC_IRQ | DMACR_ERR_IRQ;
+    dmacr = DMACR_DLY_IRQ | DMACR_IOC_IRQ | DMACR_ERR_IRQ;
     
     // 如果需要循环模式
     if (dma->is_cyclic) {
@@ -326,9 +259,9 @@ int start_mm2s_dma(mm2s_dma_t *dma) {
     
     // 设置尾描述符指针
     if (dma->desc_count > 1) {
-        tail_desc_addr =  (dma->desc_count - 1) * DESC_SIZE;
+        tail_desc_addr =  (dma->desc_count - 1) * DESC_SIZE + DMA_DESC_BASE_ADDR ;
     } else {
-        tail_desc_addr = 0;
+        tail_desc_addr = DMA_DESC_BASE_ADDR;
     }
     
     *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_TAILDESC) = tail_desc_addr & 0xFFFFFFFC;
@@ -344,42 +277,77 @@ int start_mm2s_dma(mm2s_dma_t *dma) {
 void *mm2s_event_handler_thread(void *arg) {
     mm2s_dma_t *dma = (mm2s_dma_t *)arg;
     uint32_t event_data;
-    ssize_t bytes_read;
- 
-    printf("MM2S中断处理线程启动, 等待中断\n");
-
+    struct pollfd fds[1];
+    
+    // 设置poll结构
+    fds[0].fd = dma->event_fd;
+    fds[0].events = POLLIN;
+    
+    printf("MM2S中断处理线程启动, 使用POLL模式等待中断dma->running=%d, \n", dma->running);
 
     while (dma->running) {
-        // 读取事件
-        bytes_read = read(dma->event_fd, &event_data, sizeof(event_data));
-        if (bytes_read <= 0) {
-            if (errno == EAGAIN || errno == EINTR) {
-                continue;
+        // 使用poll等待事件，超时时间设为100ms
+        int ret = poll(fds, 1, 100);
+
+        if (ret < 0) {
+            // 出错处理
+            if (errno == EINTR) {
+                continue;  // 被信号中断，继续循环
             }
-            perror("Error reading event");
+            perror("MM2S poll error");
             break;
+        } else if (ret == 0) {
+            // 超时，继续循环
+            continue;
         }
         
-        printf("Received mm2s interrupt event: 0x%08x\n", event_data);
-        // 检查DMA状态
-        uint32_t dmasr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR);
-        
-        // 清除中断标志
-        if (dmasr & DMASR_IOC_IRQ) {
-            *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR) = DMASR_IOC_IRQ;
-            printf("IOC interrupt cleared\n");
-            
-            // 更新已发送字节数
-            dma->bytes_sent += MM2S_ONE_PACKET_SIZE;
-            if (dma->bytes_sent > dma->file_size) {
-                dma->bytes_sent = dma->file_size;
+        // 检查是否有可读事件
+        if (fds[0].revents & POLLIN) {
+            // 读取事件数据
+            ssize_t bytes_read = read(dma->event_fd, &event_data, sizeof(event_data));
+            if (bytes_read <= 0) {
+                if (errno == EAGAIN || errno == EINTR) {
+                    continue;
+                }
+                perror("Error reading MM2S event");
+                break;
             }
             
-            printf("Bytes sent: %lu / %lu\n", dma->bytes_sent, dma->file_size);
+            //printf("Received mm2s interrupt event: 0x%08x\n", event_data);
             
-            // 如果所有数据都已发送，停止DMA
-            if (dma->bytes_sent >= dma->file_size && !dma->is_cyclic) {
-                printf("All data sent, stopping DMA\n");
+            // 检查DMA状态
+            uint32_t dmasr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR);
+            
+            // 清除中断标志
+            if (dmasr & DMASR_IOC_IRQ) {
+                *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR) = DMASR_IOC_IRQ;
+                //printf("IOC interrupt cleared\n");
+                
+                // 更新已发送字节数
+                dma->bytes_sent += MM2S_ONE_PACKET_SIZE;
+                if (dma->bytes_sent > dma->file_size) {
+                    dma->bytes_sent = dma->file_size;
+                }
+                
+                printf("Bytes sent: %08lx / %08lx\n", dma->bytes_sent, dma->file_size);
+                
+                // 如果所有数据都已发送，停止DMA
+                if (dma->bytes_sent >= dma->file_size && !dma->is_cyclic) {
+                    printf("All data sent, stopping DMA\n");
+                    uint32_t dmacr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR);
+                    dmacr &= ~DMACR_RS;
+                    *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR) = dmacr;
+                    dma->running = 0;
+                    break;
+                }
+            }
+            
+            // 处理错误中断
+            if (dmasr & DMASR_ERR_IRQ) {
+                *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR) = DMASR_ERR_IRQ;
+                printf("Error mm2s interrupt received, DMA status: 0x%08x\n", dmasr);
+                
+                // 如果发生错误，停止 MM2S 的 DMA
                 uint32_t dmacr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR);
                 dmacr &= ~DMACR_RS;
                 *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR) = dmacr;
@@ -388,16 +356,9 @@ void *mm2s_event_handler_thread(void *arg) {
             }
         }
         
-        // 处理错误中断
-        if (dmasr & DMASR_ERR_IRQ) {
-            *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMASR) = DMASR_ERR_IRQ;
-            printf("Error mm2s interrupt received, DMA status: 0x%08x\n", dmasr);
-            
-            // 如果发生错误，停止 MM2S 的 DMA
-            uint32_t dmacr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR);
-            dmacr &= ~DMACR_RS;
-            *(volatile uint32_t *)((uint8_t *)dma->dma_regs + MM2S_DMACR) = dmacr;
-            dma->running = 0;
+        // 检查错误事件
+        if (fds[0].revents & (POLLERR | POLLHUP | POLLNVAL)) {
+            printf("MM2S poll error event: 0x%x\n", fds[0].revents);
             break;
         }
     }
@@ -522,8 +483,8 @@ int init_s2mm_dma(s2mm_dma_t *dma, const char *output_dir) {
     }
 
     // 映射描述符空间
-    dma->desc_base = mmap(NULL, DMA_DESC_ALL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
-                           dma->dma_fd, DMA_DESC_BASE_ADDR);
+    dma->desc_base = mmap(NULL, DMA_DESC_ALL_SIZE/2, PROT_READ | PROT_WRITE, MAP_SHARED,
+                           dma->dma_fd, DMA_DESC_BASE_ADDR+DMA_DESC_ALL_SIZE/2);
     if (dma->desc_base == MAP_FAILED) {
         perror("Failed to map descriptor space");
         munmap(dma->dma_regs, 4096);
@@ -598,7 +559,7 @@ int init_s2mm_dma(s2mm_dma_t *dma, const char *output_dir) {
         return -1;
     }
 
-    dma->running = 0;
+    dma->running = 1;
     dma->frame_count = 0;
 
     return 0;
@@ -607,7 +568,7 @@ int init_s2mm_dma(s2mm_dma_t *dma, const char *output_dir) {
 
 // 设置S2MM描述符
 int setup_s2mm_descriptors(s2mm_dma_t *dma) {
-    uint8_t *s2mm_desc_base = (uint8_t *)dma->desc_base + DMA_DESC_ALL_SIZE/2; // S2MM描述符在低32KB
+    uint8_t *s2mm_desc_base = (uint8_t *)dma->desc_base ; // S2MM描述符在低32KB
     
     printf("Setting up %d S2MM descriptors, segment size: %zu bytes\n", 
            dma->desc_count, dma->segment_size);
@@ -647,8 +608,7 @@ int setup_s2mm_descriptors(s2mm_dma_t *dma) {
 int start_s2mm_dma(s2mm_dma_t *dma) {
     uint32_t dmacr, dmasr;
     uint64_t first_desc_addr = DMA_DESC_BASE_ADDR + DMA_DESC_ALL_SIZE/2; // S2MM描述符起始地址
-    //uint64_t tail_desc_addr = (dma->desc_count - 1) * dma->desc_size + first_desc_addr;
-    uint64_t tail_desc_addr = DMA_DESC_BASE_ADDR + DMA_DESC_ALL_SIZE/2;
+    uint64_t tail_desc_addr = (dma->desc_count - 1) * dma->desc_size + first_desc_addr;
     // 等待DMA处于停止状态
     dmasr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR);
     if (!(dmasr & DMASR_HALTED)) {
@@ -678,7 +638,7 @@ int start_s2mm_dma(s2mm_dma_t *dma) {
     *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_CURDESC_MSB) = first_desc_addr >> 32;
     
     // 配置DMA控制寄存器 - 启用循环模式和中断
-    dmacr = DMACR_CYCLIC | DMACR_IOC_IRQ | DMACR_ERR_IRQ;
+    dmacr = DMACR_CYCLIC | DMACR_IOC_IRQ | DMACR_ERR_IRQ | DMACR_DLY_IRQ;
     
     // 启动DMA
     dmacr |= DMACR_RS;
@@ -687,10 +647,11 @@ int start_s2mm_dma(s2mm_dma_t *dma) {
     // 设置尾描述符指针
     *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_TAILDESC) = tail_desc_addr & 0xFFFFFFFC;
     *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_TAILDESC_MSB) = tail_desc_addr >> 32;
-    
+   
     dma->running = 1;
     printf("S2MM DMA started in cyclic mode\n");
-    
+	//print_s2mm_dma_registers(dma);
+
     return 0;
 }
 
@@ -903,46 +864,77 @@ void process_descriptors(s2mm_dma_t *dma) {
     }
 }
 
-// 中断处理线程
+// 中断处理线程启动
+// MM2S中断处理线程
+
+// S2MM中断处理线程
 void *s2mm_event_handler_thread(void *arg) {
     s2mm_dma_t *dma = (s2mm_dma_t *)arg;
     uint32_t event_data;
-    ssize_t bytes_read;
+    struct pollfd fds[1];
     
-    printf("S2MM中断处理线程启动, 等待中断\n");
+    // 设置poll结构
+    fds[0].fd = dma->event_fd;
+    fds[0].events = POLLIN;
+    
+    printf("S2MM中断处理线程启动, 使用POLL模式等待中断\n");
     
     while (dma->running) {
-        // 读取事件
-        bytes_read = read(dma->event_fd, &event_data, sizeof(event_data));
-        if (bytes_read <= 0) {
-            if (errno == EAGAIN || errno == EINTR) {
-                continue;
+        // 使用poll等待事件，超时时间设为100ms
+        int ret = poll(fds, 1, 100);
+
+        if (ret < 0) {
+            // 出错处理
+            if (errno == EINTR) {
+                continue;  // 被信号中断，继续循环
             }
-            perror("Error reading event");
+            perror("S2MM poll error");
             break;
+        } else if (ret == 0) {
+            // 超时，继续循环
+            continue;
         }
         
-        printf("Received s2mm interrupt event: 0x%08x\n", event_data);
-        
-        // 检查DMA状态
-        uint32_t dmasr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR);
-        
-        // 清除中断标志
-        if (dmasr & DMASR_IOC_IRQ) {
-            *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR) = DMASR_IOC_IRQ;
-            printf("IOC interrupt cleared\n");
+        // 检查是否有可读事件
+        if (fds[0].revents & POLLIN) {
+            // 读取事件数据
+            ssize_t bytes_read = read(dma->event_fd, &event_data, sizeof(event_data));
+            if (bytes_read <= 0) {
+                if (errno == EAGAIN || errno == EINTR) {
+                    continue;
+                }
+                perror("Error reading S2MM event");
+                break;
+            }
             
-            // 处理描述符
-            process_descriptors(dma);
+            //printf("Received s2mm interrupt event: 0x%08x\n", event_data);
+            
+            // 检查DMA状态
+            uint32_t dmasr = *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR);
+            
+            // 清除中断标志
+            if (dmasr & DMASR_IOC_IRQ) {
+                *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR) = DMASR_IOC_IRQ;
+                printf("IOC interrupt cleared\n");
+                
+                // 处理描述符
+                process_descriptors(dma);
+            }
+            
+            // 处理错误中断
+            if (dmasr & DMASR_ERR_IRQ) {
+                *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR) = DMASR_ERR_IRQ;
+                printf("Error s2mm interrupt received, DMA status: 0x%08x\n", dmasr);
+                
+                // 如果发生错误，可以选择是否停止DMA
+                // 在这里我们选择继续运行，只记录错误
+            }
         }
         
-        // 处理错误中断
-        if (dmasr & DMASR_ERR_IRQ) {
-            *(volatile uint32_t *)((uint8_t *)dma->dma_regs + S2MM_DMASR) = DMASR_ERR_IRQ;
-            printf("Error s2mm interrupt received, DMA status: 0x%08x\n", dmasr);
-            
-            // 如果发生错误，可以选择是否停止DMA
-            // 在这里我们选择继续运行，只记录错误
+        // 检查错误事件
+        if (fds[0].revents & (POLLERR | POLLHUP | POLLNVAL)) {
+            printf("S2MM poll error event: 0x%x\n", fds[0].revents);
+            break;
         }
     }
     
@@ -975,51 +967,51 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
-	printf("initial s2mm !\n");
+	//----printf("initial s2mm !\n");
 
-    // 初始化DMA
-    ret = init_s2mm_dma(&s2mm_dma, argv[2]);
-    if (ret < 0) {
-        fprintf(stderr, "Failed to initialize S2MM DMA\n");
-        return 1;
-    }
-    
-    // 设置S2MM描述符
-    ret = setup_s2mm_descriptors(&s2mm_dma);
-    if (ret < 0) {
-        fprintf(stderr, "Failed to setup S2MM descriptors\n");
-        cleanup_s2mm_dma(&s2mm_dma);
-        return 1;
-    }
-    
-    // 创建工作线程
-    ret = pthread_create(&s2mm_dma.worker_thread, NULL, worker_thread, &s2mm_dma);
-    if (ret < 0) {
-        perror("Failed to create worker thread");
-        cleanup_s2mm_dma(&s2mm_dma);
-        return 1;
-    }
-    
-    // 创建事件处理线程
-    ret = pthread_create(&s2mm_dma.event_thread, NULL, s2mm_event_handler_thread, &s2mm_dma);
-    if (ret < 0) {
-        perror("Failed to create event thread");
-        s2mm_dma.running = 0;
-        pthread_join(s2mm_dma.worker_thread, NULL);
-        cleanup_s2mm_dma(&s2mm_dma);
-        return 1;
-    }
-    
-    // 启动DMA传输
-    ret = start_s2mm_dma(&s2mm_dma);
-    if (ret < 0) {
-        fprintf(stderr, "Failed to start S2MM DMA\n");
-        s2mm_dma.running = 0;
-        pthread_join(s2mm_dma.event_thread, NULL);
-        pthread_join(s2mm_dma.worker_thread, NULL);
-        cleanup_s2mm_dma(&s2mm_dma);
-        return 1;
-    }
+    //----// 初始化DMA
+    //----ret = init_s2mm_dma(&s2mm_dma, argv[2]);
+    //----if (ret < 0) {
+    //----    fprintf(stderr, "Failed to initialize S2MM DMA\n");
+    //----    return 1;
+    //----}
+    //----
+    //----// 设置S2MM描述符
+    //----ret = setup_s2mm_descriptors(&s2mm_dma);
+    //----if (ret < 0) {
+    //----    fprintf(stderr, "Failed to setup S2MM descriptors\n");
+    //----    cleanup_s2mm_dma(&s2mm_dma);
+    //----    return 1;
+    //----}
+    //----
+    //----// 创建工作线程
+    //----ret = pthread_create(&s2mm_dma.worker_thread, NULL, worker_thread, &s2mm_dma);
+    //----if (ret < 0) {
+    //----    perror("Failed to create worker thread");
+    //----    cleanup_s2mm_dma(&s2mm_dma);
+    //----    return 1;
+    //----}
+    //----
+    //----// 创建事件处理线程
+    //----ret = pthread_create(&s2mm_dma.event_thread, NULL, s2mm_event_handler_thread, &s2mm_dma);
+    //----if (ret < 0) {
+    //----    perror("Failed to create event thread");
+    //----    s2mm_dma.running = 0;
+    //----    pthread_join(s2mm_dma.worker_thread, NULL);
+    //----    cleanup_s2mm_dma(&s2mm_dma);
+    //----    return 1;
+    //----}
+    //----
+    //----// 启动DMA传输
+    //----ret = start_s2mm_dma(&s2mm_dma);
+    //----if (ret < 0) {
+    //----    fprintf(stderr, "Failed to start S2MM DMA\n");
+    //----    s2mm_dma.running = 0;
+    //----    pthread_join(s2mm_dma.event_thread, NULL);
+    //----    pthread_join(s2mm_dma.worker_thread, NULL);
+    //----    cleanup_s2mm_dma(&s2mm_dma);
+    //----    return 1;
+    //----}
    
 
 	printf("S2MM ready!\n");
@@ -1061,7 +1053,15 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Failed to start MM2S DMA\n");
         return 1;
     }
-    
+   
+	//for(int i = 0; i < 100000; i++) {
+	//	volatile uint32_t *desc_ptr = s2mm_dma.desc_base;
+	//	uint32_t status = desc_ptr[7];
+    //	printf("  - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
+    //	printf("  - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
+    //	printf("  - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
+    //	printf("  - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
+	//}
     // 等待事件处理线程结束
     pthread_join(mm2s_dma.event_thread, NULL);
     printf("MM2S DMA is done. \n");
@@ -1073,21 +1073,21 @@ int main(int argc, char *argv[]) {
 
 
     
-    // 停止DMA
-    s2mm_dma.running = 0;
-    
-    // 停止DMA控制器
-    uint32_t dmacr = *(volatile uint32_t *)((uint8_t *)s2mm_dma.dma_regs + S2MM_DMACR);
-    dmacr &= ~DMACR_RS;
-    *(volatile uint32_t *)((uint8_t *)s2mm_dma.dma_regs + S2MM_DMACR) = dmacr;
-    
-    printf("waiting s2mm dma done ..... \n");
-    // 等待线程结束
-    pthread_join(s2mm_dma.event_thread, NULL);
-    pthread_join(s2mm_dma.worker_thread, NULL);
-    
-    // 清理资源
-    cleanup_s2mm_dma(&s2mm_dma);
+    //----// 停止DMA
+    //----s2mm_dma.running = 0;
+    //----
+    //----// 停止DMA控制器
+    //----uint32_t dmacr = *(volatile uint32_t *)((uint8_t *)s2mm_dma.dma_regs + S2MM_DMACR);
+    //----dmacr &= ~DMACR_RS;
+    //----*(volatile uint32_t *)((uint8_t *)s2mm_dma.dma_regs + S2MM_DMACR) = dmacr;
+    //----
+    //----printf("waiting s2mm dma done ..... \n");
+    //----// 等待线程结束
+    //----pthread_join(s2mm_dma.event_thread, NULL);
+    //----pthread_join(s2mm_dma.worker_thread, NULL);
+    //----
+    //----// 清理资源
+    //----cleanup_s2mm_dma(&s2mm_dma);
 
     // mm2s清理资源
     if (mm2s_dma.buffer) {
@@ -1159,67 +1159,36 @@ void print_mm2s_dma_registers(mm2s_dma_t *mm2s_dma)
     printf("  - IRQDelayStatus: %u\n", (dmasr >> 24) & 0xFF);
 
     // 当前描述符地址
-    printf("MM2S当前描述符地址(0x08): 0x%08x\n", dma_regs[0x08/4]);
-    printf("MM2S当前描述符MSB(0x0C): 0x%08x\n", dma_regs[0x0C/4]);
-
+    printf("MM2S当前描述符地址(0x0C+0x08): 0x%08x%08x\n", dma_regs[0x0C/4], dma_regs[0x08/4]);
     // 尾描述符地址
-    printf("MM2S尾描述符地址(0x10): 0x%08x\n", dma_regs[0x10/4]);
-    printf("MM2S尾描述符MSB(0x14): 0x%08x\n", dma_regs[0x14/4]);
+    printf("MM2S最尾描述符地址(0x14+0x10): 0x%08x%08x\n", dma_regs[0x14/4], dma_regs[0x10/4]);
 
     // 描述符信息
     if (desc_base) {
-        printf("\n===== MM2S描述符内容 =====\n");
-
-        // 假设描述符结构为8个32位字
-        printf("描述符地址: %p\n", (void*)desc_base);
-        printf("  [0] 下一描述符地址: 0x%08x\n", desc_base[0]);
-        printf("  [1] 下一描述符MSB: 0x%08x\n", desc_base[1]);
-        printf("  [2] 缓冲区地址: 0x%08x\n", desc_base[2]);
-        printf("  [3] 缓冲区地址MSB: 0x%08x\n", desc_base[3]);
-        printf("  [4] 保留: 0x%08x\n", desc_base[4]);
-
-        // 控制字
-        uint32_t control = desc_base[6];
-        printf("  [5] 控制: 0x%08x\n", control);
-        printf("      - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
-        printf("      - SOP: %s\n", (control & 0x8000000) ? "是" : "否");
-        printf("      - EOP: %s\n", (control & 0x4000000) ? "是" : "否");
-
-        // 状态字
-        uint32_t status = desc_base[7];
-        printf("  [6] 状态: 0x%08x\n", status);
-        printf("      - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
-        printf("      - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
-        printf("      - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
-        printf("      - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
-        printf("      - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
-
-        printf("  [7] 应用数据: 0x%08x\n", desc_base[7]);
-
-        // 如果是详细模式，打印更多描述符
         if (mm2s_dma->desc_count > 1) {
-            printf("\n===== 额外的MM2S描述符 =====\n");
-            for (uint32_t i = 1; i < mm2s_dma->desc_count; i++) {
-                volatile uint32_t *next_desc = desc_base + (i * 8); // 假设每个描述符占8个32位字
+            printf("\n===== MM2S描述符 =====\n");
+            //for (uint32_t i = 1; i < dma->desc_count; i++) {
+            for (uint32_t i = 0; i < 3; i++) {
+                volatile uint32_t *next_desc = desc_base + (i * 16); // 假设每个描述符占8个32位字
                 printf("描述符 #%d 地址: %p\n", i, (void*)next_desc);
-                printf("  [0] 下一描述符地址: 0x%08x\n", next_desc[0]);
-                printf("  [1] 下一描述符MSB: 0x%08x\n", next_desc[1]);
-                printf("  [2] 缓冲区地址: 0x%08x\n", next_desc[2]);
-                printf("  [3] 缓冲区地址MSB: 0x%08x\n", next_desc[3]);
-                printf("  [5] 控制: 0x%08x\n", next_desc[5]);
-                printf("  [6] 状态: 0x%08x\n", next_desc[6]);
+                printf("  [0] 第%d的下一个描述符地址: 0x%08x%08x\n",i,next_desc[1], next_desc[0]);
+                printf("  [1] 第%d的下一个缓冲区地址: 0x%08x%08x\n",i, next_desc[3], next_desc[2]);
+				uint32_t control = next_desc[6];
+        		printf("  [2] 控制: 0x%08x\n", control);
+        		printf("      - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
+        		printf("      - SOP: %s\n", (control & 0x8000000) ? "是" : "否");
+        		printf("      - EOP: %s\n", (control & 0x4000000) ? "是" : "否");
+        		uint32_t status = desc_base[7];
+        		printf("  [3] 状态: 0x%08x\n", status);
+        		printf("      - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
+        		printf("      - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
+        		printf("      - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
+        		printf("      - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
+        		printf("      - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
             }
         }
     } else {
-        printf("[警告] MM2S描述符基地址为NULL\n");
-    }
-
-    // 打印其他重要寄存器（如果有）
-    if (1) {
-        printf("\n===== 其他MM2S寄存器 =====\n");
-        printf("MM2S_SA(0x18): 0x%08x\n", dma_regs[0x18/4]);
-        printf("MM2S_SA_MSB(0x1C): 0x%08x\n", dma_regs[0x1C/4]);
-        printf("MM2S_LENGTH(0x28): 0x%08x\n", dma_regs[0x28/4]);
+        printf("[警告] S2MM描述符基地址为NULL\n");
     }
 
     printf("\n");
@@ -1244,7 +1213,7 @@ void print_s2mm_dma_registers(s2mm_dma_t *dma)
 
     // 控制寄存器 (S2MM_DMACR, 0x00)
     uint32_t dmacr = dma_regs[0x30/4];
-    printf("S2MM控制寄存器(0x00): 0x%08x\n", dmacr);
+    printf("S2MM控制寄存器(0x30): 0x%08x\n", dmacr);
     printf("  - 运行状态: %s\n", (dmacr & 0x1) ? "启用" : "禁用");
     printf("  - 复位状态: %s\n", (dmacr & 0x4) ? "复位中" : "正常");
     printf("  - Keyhole模式: %s\n", (dmacr & 0x8) ? "启用" : "禁用");
@@ -1257,7 +1226,7 @@ void print_s2mm_dma_registers(s2mm_dma_t *dma)
 
     // 状态寄存器 (S2MM_DMASR, 0x04)
     uint32_t dmasr = dma_regs[0x34/4];
-    printf("S2MM状态寄存器(0x04): 0x%08x\n", dmasr);
+    printf("S2MM状态寄存器(0x34): 0x%08x\n", dmasr);
     printf("  - DMA引擎状态: %s\n", (dmasr & 0x1) ? "停止" : "运行中");
     printf("  - 空闲状态: %s\n", (dmasr & 0x2) ? "空闲" : "忙碌");
     printf("  - DMA内部错误: %s\n", (dmasr & 0x10) ? "有错误" : "无错误");
@@ -1273,69 +1242,100 @@ void print_s2mm_dma_registers(s2mm_dma_t *dma)
     printf("  - IRQDelayStatus: %u\n", (dmasr >> 24) & 0xFF);
 
     // 当前描述符地址
-    printf("S2MM当前描述符地址(0x38): 0x%08x\n", dma_regs[0x38/4]);
-    printf("S2MM当前描述符MSB(0x3C): 0x%08x\n", dma_regs[0x3C/4]);
-
+    printf("MM2S当前描述符地址(0x3C+0x38): 0x%08x%08x\n", dma_regs[0x3C/4], dma_regs[0x38/4]);
     // 尾描述符地址
-    printf("S2MM尾描述符地址(0x40): 0x%08x\n", dma_regs[0x40/4]);
-    printf("S2MM尾描述符MSB(0x44): 0x%08x\n", dma_regs[0x44/4]);
+    printf("MM2S最尾描述符地址(0x44+0x40): 0x%08x%08x\n", dma_regs[0x44/4], dma_regs[0x40/4]);
+
 
     // 描述符信息
     if (desc_base) {
-        printf("\n===== S2MM描述符内容 =====\n");
-
-        // 假设描述符结构为8个32位字
-        printf("描述符地址: %p\n", (void*)desc_base);
-        printf("  [0] 下一描述符地址: 0x%08x\n", desc_base[0]);
-        printf("  [1] 下一描述符MSB: 0x%08x\n", desc_base[1]);
-        printf("  [2] 缓冲区地址: 0x%08x\n", desc_base[2]);
-        printf("  [3] 缓冲区地址MSB: 0x%08x\n", desc_base[3]);
-        printf("  [4] 保留: 0x%08x\n", desc_base[4]);
-
-        // 控制字
-        uint32_t control = desc_base[6];
-        printf("  [5] 控制: 0x%08x\n", control);
-        printf("      - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
-        printf("      - SOP: %s\n", (control & 0x8000000) ? "是" : "否");
-        printf("      - EOP: %s\n", (control & 0x4000000) ? "是" : "否");
-
-        // 状态字
-        uint32_t status = desc_base[7];
-        printf("  [6] 状态: 0x%08x\n", status);
-        printf("      - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
-        printf("      - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
-        printf("      - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
-        printf("      - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
-        printf("      - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
-
-        printf("  [7] 应用数据: 0x%08x\n", desc_base[7]);
-
-        // 如果是详细模式，打印更多描述符
         if (dma->desc_count > 1) {
-            printf("\n===== 额外的S2MM描述符 =====\n");
+            printf("\n===== S2MM描述符 =====\n");
             //for (uint32_t i = 1; i < dma->desc_count; i++) {
-            for (uint32_t i = 1; i < 3; i++) {
-                volatile uint32_t *next_desc = desc_base + (i * 8); // 假设每个描述符占8个32位字
+            for (uint32_t i = 0; i < 3; i++) {
+                volatile uint32_t *next_desc = desc_base + (i * 16); // 假设每个描述符占8个32位字
                 printf("描述符 #%d 地址: %p\n", i, (void*)next_desc);
-                printf("  [0] 下一描述符地址: 0x%08x\n", next_desc[0]);
-                printf("  [1] 下一描述符MSB: 0x%08x\n", next_desc[1]);
-                printf("  [2] 缓冲区地址: 0x%08x\n", next_desc[2]);
-                printf("  [3] 缓冲区地址MSB: 0x%08x\n", next_desc[3]);
-                printf("  [5] 控制: 0x%08x\n", next_desc[5]);
-                printf("  [6] 状态: 0x%08x\n", next_desc[6]);
+                printf("  [0] 第%d的下一个描述符地址: 0x%08x%08x\n",i,next_desc[1], next_desc[0]);
+                printf("  [1] 第%d的下一个缓冲区地址: 0x%08x%08x\n",i, next_desc[3], next_desc[2]);
+				uint32_t control = next_desc[6];
+        		printf("  [2] 控制: 0x%08x\n", control);
+        		printf("      - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
+        		printf("      - SOP: %s\n", (control & 0x8000000) ? "是" : "否");
+        		printf("      - EOP: %s\n", (control & 0x4000000) ? "是" : "否");
+        		uint32_t status = desc_base[7];
+        		printf("  [3] 状态: 0x%08x\n", status);
+        		printf("      - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
+        		printf("      - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
+        		printf("      - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
+        		printf("      - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
+        		printf("      - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
             }
         }
     } else {
         printf("[警告] S2MM描述符基地址为NULL\n");
     }
 
-    // 打印其他重要寄存器（如果有）
-    if (1) {
-        printf("\n===== 其他S2MM寄存器 =====\n");
-        printf("S2MM_SA    (0x48): 0x%08x\n", dma_regs[0x48/4]);
-        printf("S2MM_SA_MSB(0x4C): 0x%08x\n", dma_regs[0x4C/4]);
-        printf("S2MM_LENGTH(0x58): 0x%08x\n", dma_regs[0x58/4]);
+    printf("\n");
+}
+void print_mm2s_descriptor(volatile uint32_t *desc_ptr)
+{
+    if (!desc_ptr) {
+        printf("[ERROR] 描述符指针为NULL\n");
+        return;
     }
 
-    printf("\n");
+    printf("\n===== 描述符 =======\n");
+    printf("描述符地址: %p\n", (void*)desc_ptr);
+
+    // 下一描述符地址
+    uint32_t next_desc_lo = desc_ptr[0];
+    uint32_t next_desc_hi = desc_ptr[1];
+    printf("下一描述符地址: 0x%08x%08x\n", next_desc_hi, next_desc_lo);
+    if (next_desc_lo == 0 && next_desc_hi == 0) {
+        printf("  (这是链表中的最后一个描述符)\n");
+    }
+
+    // 缓冲区地址
+    uint32_t buffer_addr_lo = desc_ptr[2];
+    uint32_t buffer_addr_hi = desc_ptr[3];
+    printf("缓冲区地址: 0x%08x%08x\n", buffer_addr_hi, buffer_addr_lo);
+
+    // 控制字
+    uint32_t control = desc_ptr[6];
+    printf("控制字: 0x%08x\n", control);
+    printf("  - 缓冲区长度: %u 字节\n", control & 0x3FFFFFF);
+
+    // 控制位
+    if (control & 0x8000000) printf("  - SOP: 是 (包起始)\n");
+    if (control & 0x4000000) printf("  - EOP: 是 (包结束)\n");
+
+    // 状态字
+    uint32_t status = desc_ptr[7];
+    printf("状态字: 0x%08x\n", status);
+
+    // 状态位
+    printf("  - 完成状态: %s\n", (status & 0x80000000) ? "已完成" : "未完成");
+
+    if (status & 0x80000000) {  // 如果已完成，显示更多状态信息
+        printf("  - 解码错误: %s\n", (status & 0x40000000) ? "有错误" : "无错误");
+        printf("  - 从属错误: %s\n", (status & 0x20000000) ? "有错误" : "无错误");
+        printf("  - 内部错误: %s\n", (status & 0x10000000) ? "有错误" : "无错误");
+        printf("  - 实际传输长度: %u 字节\n", status & 0x3FFFFFF);
+
+        // 检查传输长度是否与请求长度匹配
+        uint32_t requested_len = control & 0x3FFFFFF;
+        uint32_t actual_len = status & 0x3FFFFFF;
+
+        if (requested_len != actual_len) {
+            printf("  [警告] 实际传输长度(%u)与请求长度(%u)不匹配!\n",
+                   actual_len, requested_len);
+        }
+    }
+
+    // 应用数据（通常用于用户自定义数据）
+    printf("应用数据: 0x%08x\n", desc_ptr[7]);
+
+    // 额外的调试信息：计算描述符的物理地址
+    printf("描述符物理地址估计: 0x%lx\n",
+           (uintptr_t)desc_ptr & 0xFFFFFFFFFFFFF000UL);  // 假设页对齐
 }
