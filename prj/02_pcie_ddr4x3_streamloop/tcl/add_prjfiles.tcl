@@ -20,6 +20,6 @@ read_xdc {
     ../../xdc/ddr4_64/pblock_ddr4_c0.xdc
     ../../xdc/ddr4_64/pblock_ddr4_c1.xdc
     ../../xdc/ddr4_64/pblock_ddr4_c2.xdc
-	./tcl/tandem_pblock_placement.xdc
 }
+	#./tcl/tandem_pblock_placement.xdc
 

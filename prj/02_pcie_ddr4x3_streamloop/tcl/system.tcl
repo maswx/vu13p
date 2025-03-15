@@ -141,10 +141,8 @@ xilinx.com:ip:axis_data_fifo:2.0\
 xilinx.com:ip:axi_bram_ctrl:4.1\
 xilinx.com:ip:blk_mem_gen:8.4\
 xilinx.com:ip:ila:6.2\
-xilinx.com:ip:debug_bridge:3.0\
-xilinx.com:ip:axi_hwicap:3.0\
-xilinx.com:ip:axi_quad_spi:3.2\
 xilinx.com:ip:xlconstant:1.1\
+xilinx.com:ip:axi_quad_spi:3.2\
 "
 
    set list_ips_missing ""
@@ -219,27 +217,6 @@ proc create_hier_cell_debug_bridge { parentCell nameHier } {
   create_bd_pin -dir I aresetn
   create_bd_pin -dir O -from 1 -to 0 irq
 
-  # Create instance: axi_bram_ctrl_0, and set properties
-  set axi_bram_ctrl_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_0 ]
-  set_property CONFIG.PROTOCOL {AXI4LITE} $axi_bram_ctrl_0
-
-
-  # Create instance: debug_bridge_0, and set properties
-  set debug_bridge_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:debug_bridge:3.0 debug_bridge_0 ]
-  set_property -dict [list \
-    CONFIG.C_DEBUG_MODE {2} \
-    CONFIG.C_DESIGN_TYPE {1} \
-  ] $debug_bridge_0
-
-
-  # Create instance: axi_hwicap_0, and set properties
-  set axi_hwicap_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_hwicap:3.0 axi_hwicap_0 ]
-  set_property -dict [list \
-    CONFIG.C_OPERATION {0} \
-    CONFIG.C_WRITE_FIFO_DEPTH {128} \
-  ] $axi_hwicap_0
-
-
   # Create instance: axi_quad_spi_0, and set properties
   set axi_quad_spi_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi:3.2 axi_quad_spi_0 ]
   set_property -dict [list \
@@ -256,15 +233,7 @@ proc create_hier_cell_debug_bridge { parentCell nameHier } {
 
   # Create instance: axi_crossbar_0, and set properties
   set axi_crossbar_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_crossbar:2.1 axi_crossbar_0 ]
-  set_property CONFIG.NUM_MI {5} $axi_crossbar_0
-
-
-  # Create instance: blk_mem_gen_0, and set properties
-  set blk_mem_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_gen_0 ]
-  set_property -dict [list \
-    CONFIG.Memory_Type {True_Dual_Port_RAM} \
-    CONFIG.PRIM_type_to_Implement {URAM} \
-  ] $blk_mem_gen_0
+  set_property CONFIG.NUM_MI {2} $axi_crossbar_0
 
 
   # Create instance: util_ds_buf_0, and set properties
@@ -288,37 +257,21 @@ proc create_hier_cell_debug_bridge { parentCell nameHier } {
   ] $cons_0
 
 
-  # Create instance: util_ds_buf_1, and set properties
-  set util_ds_buf_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.2 util_ds_buf_1 ]
-  set_property -dict [list \
-    CONFIG.C_BUFGCE_DIV {3} \
-    CONFIG.C_BUF_TYPE {BUFGCE_DIV} \
-  ] $util_ds_buf_1
-
-
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
 
   # Create interface connections
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins S00_AXI] [get_bd_intf_pins axi_crossbar_0/S00_AXI]
-  connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTA]
-  connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTB [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTB]
   connect_bd_intf_net -intf_net axi_crossbar_0_M00_AXI [get_bd_intf_pins axi_crossbar_0/M00_AXI] [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
-  connect_bd_intf_net -intf_net axi_crossbar_0_M01_AXI [get_bd_intf_pins axi_crossbar_0/M01_AXI] [get_bd_intf_pins axi_hwicap_0/S_AXI_LITE]
-  connect_bd_intf_net -intf_net axi_crossbar_0_M02_AXI [get_bd_intf_pins axi_crossbar_0/M02_AXI] [get_bd_intf_pins debug_bridge_0/S_AXI]
-  connect_bd_intf_net -intf_net axi_crossbar_0_M03_AXI [get_bd_intf_pins axi_crossbar_0/M03_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
-  connect_bd_intf_net -intf_net axi_crossbar_0_M04_AXI [get_bd_intf_pins PCIE_AXIL] [get_bd_intf_pins axi_crossbar_0/M04_AXI]
+  connect_bd_intf_net -intf_net axi_crossbar_0_M01_AXI [get_bd_intf_pins PCIE_AXIL] [get_bd_intf_pins axi_crossbar_0/M01_AXI]
 
   # Create port connections
-  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axi_crossbar_0/aclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_hwicap_0/s_axi_aclk] [get_bd_pins axi_quad_spi_0/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins util_ds_buf_0/BUFGCE_I] [get_bd_pins util_ds_buf_1/BUFGCE_I]
-  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axi_crossbar_0/aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_hwicap_0/s_axi_aresetn] [get_bd_pins axi_quad_spi_0/s_axi_aresetn] [get_bd_pins debug_bridge_0/s_axi_aresetn]
-  connect_bd_net -net axi_hwicap_0_ip2intc_irpt [get_bd_pins axi_hwicap_0/ip2intc_irpt] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net axi_quad_spi_0_eos [get_bd_pins axi_quad_spi_0/eos] [get_bd_pins axi_hwicap_0/eos_in]
-  connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net cons_0_dout [get_bd_pins cons_0/dout] [get_bd_pins util_ds_buf_0/BUFGCE_CLR] [get_bd_pins util_ds_buf_1/BUFGCE_CLR]
-  connect_bd_net -net cons_1_dout [get_bd_pins cons_1/dout] [get_bd_pins util_ds_buf_0/BUFGCE_CE] [get_bd_pins util_ds_buf_1/BUFGCE_CE]
+  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axi_crossbar_0/aclk] [get_bd_pins axi_quad_spi_0/s_axi_aclk] [get_bd_pins util_ds_buf_0/BUFGCE_I]
+  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axi_crossbar_0/aresetn] [get_bd_pins axi_quad_spi_0/s_axi_aresetn]
+  connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins xlconcat_0/In0] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net cons_0_dout [get_bd_pins cons_0/dout] [get_bd_pins util_ds_buf_0/BUFGCE_CLR]
+  connect_bd_net -net cons_1_dout [get_bd_pins cons_1/dout] [get_bd_pins util_ds_buf_0/BUFGCE_CE]
   connect_bd_net -net util_ds_buf_0_BUFGCE_O [get_bd_pins util_ds_buf_0/BUFGCE_O] [get_bd_pins axi_quad_spi_0/ext_spi_clk]
-  connect_bd_net -net util_ds_buf_1_BUFGCE_O [get_bd_pins util_ds_buf_1/BUFGCE_O] [get_bd_pins axi_hwicap_0/icap_clk]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins irq]
 
   # Restore current instance
@@ -410,18 +363,29 @@ proc create_hier_cell_dma_loop { parentCell nameHier } {
   ] $axi_crossbar_2
 
 
-  # Create instance: xlconcat_0, and set properties
-  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
-
   # Create instance: ila_0, and set properties
   set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
-  set_property CONFIG.C_SLOT_0_AXI_PROTOCOL {AXI4S} $ila_0
+  set_property -dict [list \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {6} \
+    CONFIG.C_PROBE0_WIDTH {32} \
+    CONFIG.C_PROBE1_WIDTH {4} \
+    CONFIG.C_PROBE2_WIDTH {1} \
+    CONFIG.C_SLOT_0_AXI_PROTOCOL {AXI4S} \
+  ] $ila_0
 
 
   # Create instance: axi_interconnect_0, and set properties
   set axi_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0 ]
   set_property CONFIG.NUM_MI {2} $axi_interconnect_0
 
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
 
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXI_LITE_1 [get_bd_intf_pins S_AXI_LITE] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
@@ -435,15 +399,18 @@ proc create_hier_cell_dma_loop { parentCell nameHier } {
   connect_bd_intf_net -intf_net axi_dma_0_M_AXI_SG [get_bd_intf_pins axi_dma_0/M_AXI_SG] [get_bd_intf_pins axi_crossbar_0/S01_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_interconnect_0/M00_AXI] [get_bd_intf_pins axi_dma_0/S_AXI_LITE]
   connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_interconnect_0/M01_AXI] [get_bd_intf_pins axi_crossbar_0/S00_AXI]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins axi_dma_0/S_AXIS_S2MM]
-  connect_bd_intf_net -intf_net [get_bd_intf_nets axis_data_fifo_0_M_AXIS] [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins ila_0/SLOT_0_AXIS]
 
   # Create port connections
-  connect_bd_net -net axi_dma_0_mm2s_introut [get_bd_pins axi_dma_0/mm2s_introut] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axi_dma_0_s2mm_introut [get_bd_pins axi_dma_0/s2mm_introut] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net s_axil_clk_1 [get_bd_pins s_axil_clk] [get_bd_pins axi_crossbar_0/aclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axi_crossbar_2/aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins axi_dma_0/m_axi_sg_aclk] [get_bd_pins ila_0/clk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/M01_ACLK]
+  connect_bd_net -net axi_dma_0_mm2s_introut [get_bd_pins axi_dma_0/mm2s_introut] [get_bd_pins ila_0/probe4] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axi_dma_0_s2mm_introut [get_bd_pins axi_dma_0/s2mm_introut] [get_bd_pins ila_0/probe5] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tdata [get_bd_pins axis_data_fifo_0/m_axis_tdata] [get_bd_pins axi_dma_0/s_axis_s2mm_tdata] [get_bd_pins ila_0/probe0]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tkeep [get_bd_pins axis_data_fifo_0/m_axis_tkeep] [get_bd_pins axi_dma_0/s_axis_s2mm_tkeep] [get_bd_pins ila_0/probe1]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tlast [get_bd_pins axis_data_fifo_0/m_axis_tlast] [get_bd_pins axi_dma_0/s_axis_s2mm_tlast] [get_bd_pins ila_0/probe2]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tvalid [get_bd_pins axis_data_fifo_0/m_axis_tvalid] [get_bd_pins axi_dma_0/s_axis_s2mm_tvalid] [get_bd_pins ila_0/probe3]
+  connect_bd_net -net s_axil_clk_1 [get_bd_pins s_axil_clk] [get_bd_pins axi_crossbar_0/aclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axi_crossbar_2/aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins ila_0/clk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins axi_dma_0/m_axi_sg_aclk]
   connect_bd_net -net s_axil_rstn_1 [get_bd_pins s_axil_rstn] [get_bd_pins axi_crossbar_0/aresetn] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axi_crossbar_2/aresetn] [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/M01_ARESETN]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins intp]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins axis_data_fifo_0/m_axis_tready]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -607,14 +574,6 @@ proc create_hier_cell_DDR4x4 { parentCell nameHier } {
   ] $util_vector_logic_2
 
 
-  # Create instance: util_vector_logic_3, and set properties
-  set util_vector_logic_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_3 ]
-  set_property -dict [list \
-    CONFIG.C_OPERATION {not} \
-    CONFIG.C_SIZE {1} \
-  ] $util_vector_logic_3
-
-
   # Create instance: proc_sys_reset_1, and set properties
   set proc_sys_reset_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_1 ]
 
@@ -748,7 +707,8 @@ proc create_root_design { parentCell } {
     CONFIG.axilite_master_en {true} \
     CONFIG.axilite_master_size {1} \
     CONFIG.cfg_mgmt_if {false} \
-    CONFIG.mcap_enablement {Tandem_PCIe} \
+    CONFIG.enable_jtag_dbg {false} \
+    CONFIG.mcap_enablement {None} \
     CONFIG.mode_selection {Advanced} \
     CONFIG.pcie_extended_tag {false} \
     CONFIG.pf0_msi_enabled {false} \
@@ -798,12 +758,9 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI] [get_bd_addr_segs DDR4x4/ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
   assign_bd_address -offset 0x000100000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI] [get_bd_addr_segs DDR4x4/ddr4_1/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
   assign_bd_address -offset 0x000200000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI] [get_bd_addr_segs DDR4x4/ddr4_2/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
-  assign_bd_address -offset 0x00020000 -range 0x00002000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs debug_bridge/axi_bram_ctrl_0/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00030000 -range 0x00010000 -with_name SEG_axi_bram_ctrl_0_Mem0_1 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs dma_loop/axi_bram_ctrl_0/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs dma_loop/axi_dma_0/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs debug_bridge/axi_hwicap_0/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0x00010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs debug_bridge/axi_quad_spi_0/AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x00040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs debug_bridge/debug_bridge_0/S_AXI/Reg0] -force
   assign_bd_address -offset 0x00000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces dma_loop/axi_dma_0/Data_MM2S] [get_bd_addr_segs DDR4x4/ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
   assign_bd_address -offset 0x000100000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces dma_loop/axi_dma_0/Data_MM2S] [get_bd_addr_segs DDR4x4/ddr4_1/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
   assign_bd_address -offset 0x000200000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces dma_loop/axi_dma_0/Data_MM2S] [get_bd_addr_segs DDR4x4/ddr4_2/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
@@ -816,6 +773,7 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -827,6 +785,4 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-
-common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
