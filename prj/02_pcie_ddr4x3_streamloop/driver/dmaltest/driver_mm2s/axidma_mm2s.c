@@ -539,6 +539,7 @@ static void* interrupt_handler(void *arg)
     uint32_t temp_status;;
     uint64_t half_buffer = ctx->buffer_size / 2;
     char *buffer = NULL;
+	uint64_t intpcnt=0;
     
     // 如果文件已经完全加载到缓冲区，不需要继续处理
     if (ctx->file_completed && !ctx->is_cyclic) {
@@ -589,7 +590,7 @@ static void* interrupt_handler(void *arg)
 		} 
         // 处理IOC中断
         if (temp_status & DMASR_IOC_IRQ) {
-		//	printf("status =%08x\n",temp_status );
+		  	//printf("intpcnt =%ld\n",intpcnt++);
             
             // 切换到下一个描述符
             ctx->current_desc_idx = (ctx->current_desc_idx + 1) % 2;
